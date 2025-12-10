@@ -5,8 +5,8 @@ namespace Litepie\Layout\Components;
 class MediaSection extends BaseComponent
 {
     protected string $mediaType = 'image'; // image, video, gallery, audio
-    protected string $layout = 'grid'; // grid, masonry, carousel, list
-    protected int $columns = 3;
+    protected string $layout = 'grid'; // grid, masonry, carousel
+    protected int $mediaColumns = 3;
     protected string $aspectRatio = '16:9';
     protected bool $lightbox = true;
     protected bool $captions = true;
@@ -71,7 +71,7 @@ class MediaSection extends BaseComponent
 
     public function columns(int $columns): self
     {
-        $this->columns = $columns;
+        $this->mediaColumns = $columns;
         return $this;
     }
 
@@ -116,7 +116,7 @@ class MediaSection extends BaseComponent
             'icon' => $this->icon,
             'media_type' => $this->mediaType,
             'layout' => $this->layout,
-            'columns' => $this->columns,
+            'columns' => $this->mediaColumns,
             'aspect_ratio' => $this->aspectRatio,
             'lightbox' => $this->lightbox,
             'captions' => $this->captions,

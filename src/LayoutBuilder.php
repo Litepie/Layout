@@ -35,7 +35,6 @@ class LayoutBuilder
     protected string $name;
     protected string $mode;
     protected array $sections = [];
-    protected array $components = [];
     protected ?string $sharedDataUrl = null; // Single API endpoint for all components
     protected array $sharedDataParams = [];
 
@@ -279,7 +278,7 @@ class LayoutBuilder
     public function section(string $name): Section
     {
         $section = new Section($name, $this);
-        $this->components[$name] = $section;
+        $this->sections[$name] = $section;
         return $section;
     }
 
@@ -310,7 +309,7 @@ class LayoutBuilder
      */
     public function getComponents(): array
     {
-        return $this->components;
+        return $this->sections;
     }
 
     /**
@@ -320,7 +319,7 @@ class LayoutBuilder
      */
     public function getSections(): array
     {
-        return $this->components;
+        return $this->sections;
     }
 
     /**
@@ -328,7 +327,7 @@ class LayoutBuilder
      */
     public function getComponent(string $name): ?Component
     {
-        return $this->components[$name] ?? null;
+        return $this->sections[$name] ?? null;
     }
 
     /**

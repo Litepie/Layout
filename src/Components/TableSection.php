@@ -4,7 +4,7 @@ namespace Litepie\Layout\Components;
 
 class TableSection extends BaseComponent
 {
-    protected array $columns = [];
+    protected array $tableColumns = [];
     protected bool $searchable = false;
     protected bool $sortable = false;
     protected bool $paginated = false;
@@ -24,7 +24,7 @@ class TableSection extends BaseComponent
 
     public function columns(array $columns): self
     {
-        $this->columns = $columns;
+        $this->tableColumns = $columns;
         return $this;
     }
 
@@ -67,7 +67,7 @@ class TableSection extends BaseComponent
             'title' => $this->title,
             'subtitle' => $this->subtitle,
             'icon' => $this->icon,
-            'columns' => $this->columns,
+            'columns' => $this->tableColumns,
             'searchable' => $this->searchable,
             'sortable' => $this->sortable,
             'paginated' => $this->paginated,

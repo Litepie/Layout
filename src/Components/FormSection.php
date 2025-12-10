@@ -7,7 +7,7 @@ class FormSection extends BaseComponent
     protected array $formFields = [];
     protected ?string $label = null;
     protected ?string $description = null;
-    protected int $columns = 1;
+    protected int $formColumns = 1;
     protected string $gap = 'md';
     protected bool $collapsible = false;
     protected bool $collapsed = false;
@@ -36,7 +36,7 @@ class FormSection extends BaseComponent
 
     public function columns(int $columns): self
     {
-        $this->columns = $columns;
+        $this->formColumns = $columns;
         return $this;
     }
 
@@ -97,7 +97,7 @@ class FormSection extends BaseComponent
             'label' => $this->label,
             'description' => $this->description,
             'fields' => array_map(fn($field) => method_exists($field, 'toArray') ? $field->toArray() : (array) $field, $this->formFields),
-            'columns' => $this->columns,
+            'columns' => $this->formColumns,
             'gap' => $this->gap,
             'collapsible' => $this->collapsible,
             'collapsed' => $this->collapsed,

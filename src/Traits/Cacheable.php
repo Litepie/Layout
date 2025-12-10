@@ -61,13 +61,21 @@ trait Cacheable
     {
         if ($this->cacheManager === null) {
             $this->cacheManager = new CacheManager(
-                config('litepie.layout.cache.driver', 'file'),
-                config('litepie.layout.cache.ttl', 3600),
-                config('litepie.layout.cache.prefix', 'litepie_layout')
+                $this->config('litepie.layout.cache.driver', 'file'),
+                $this->config('litepie.layout.cache.ttl', 3600),
+                $this->config('litepie.layout.cache.prefix', 'litepie_layout')
             );
         }
 
         return $this->cacheManager;
+    }
+
+    /**
+     * Safe config helper
+     */
+    protected function config(string $key, mixed $default = null): mixed
+    {
+        return function_exists('config') ? config($key, $default) : $default;
     }
 
     /**
@@ -99,8 +107,9 @@ trait Cacheable
         }
 
         // Include user context if needed (for permission-based caching)
-        if (config('litepie.layout.cache.per_user', false)) {
-            $params['user'] = auth()->id() ?? 'guest';
+        if ($this->config('litepie.layout.cache.per_user', false)) {
+            $userId = function_exists('auth') ? (auth()->id() ?? 'guest') : 'guest';
+            $params['user'] = $userId;
         }
 
         return !empty($params) ? $params : null;

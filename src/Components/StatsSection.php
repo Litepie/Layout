@@ -6,7 +6,7 @@ class StatsSection extends BaseComponent
 {
     protected array $metrics = []; // Array of metric configurations
     protected string $layout = 'grid'; // grid, list, inline
-    protected int $columns = 4;
+    protected int $statsColumns = 4;
     protected string $size = 'md'; // sm, md, lg
     protected bool $showTrend = true;
     protected bool $showChange = true;
@@ -48,7 +48,7 @@ class StatsSection extends BaseComponent
 
     public function columns(int $columns): self
     {
-        $this->columns = $columns;
+        $this->statsColumns = $columns;
         return $this;
     }
 
@@ -80,7 +80,7 @@ class StatsSection extends BaseComponent
             'icon' => $this->icon,
             'metrics' => $this->metrics,
             'layout' => $this->layout,
-            'columns' => $this->columns,
+            'columns' => $this->statsColumns,
             'size' => $this->size,
             'show_trend' => $this->showTrend,
             'show_change' => $this->showChange,

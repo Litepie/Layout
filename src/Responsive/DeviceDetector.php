@@ -10,14 +10,7 @@ class DeviceDetector
     public function __construct(?string $userAgent = null)
     {
         $this->userAgent = $userAgent ?? ($_SERVER['HTTP_USER_AGENT'] ?? '');
-        $this->breakpoints = config('litepie.layout.breakpoints', [
-            'xs' => 0,
-            'sm' => 640,
-            'md' => 768,
-            'lg' => 1024,
-            'xl' => 1280,
-            '2xl' => 1536,
-        ]);
+        $this->breakpoints = $this->getBreakpointsConfig();
     }
 
     /**
@@ -85,5 +78,32 @@ class DeviceDetector
         }
 
         return 'xl';
+    }
+
+    /**
+     * Get breakpoints configuration with fallback
+     */
+    protected function getBreakpointsConfig(): array
+    {
+        if (function_exists('config')) {
+            return config('litepie.layout.breakpoints', $this->getDefaultBreakpoints());
+        }
+        
+        return $this->getDefaultBreakpoints();
+    }
+
+    /**
+     * Get default breakpoints
+     */
+    protected function getDefaultBreakpoints(): array
+    {
+        return [
+            'xs' => 0,
+            'sm' => 640,
+            'md' => 768,
+            'lg' => 1024,
+            'xl' => 1280,
+            '2xl' => 1536,
+        ];
     }
 }
