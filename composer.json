@@ -1,16 +1,20 @@
 {
     "name": "litepie/layout",
-    "description": "A flexible layout structure package for organizing content into sections and subsections, designed to work with Litepie/Form",
+    "version": "3.0.0",
+    "description": "A flexible, component-based layout organizer for Laravel with infinite composition of different section types",
     "keywords": [
         "laravel",
         "layout",
+        "components",
         "form",
         "structure",
         "sections",
-        "subsections",
+        "composition",
         "litepie",
         "authorization",
-        "cache"
+        "grid",
+        "flexible",
+        "nesting"
     ],
     "homepage": "https://github.com/Litepie/Layout",
     "license": "MIT",
