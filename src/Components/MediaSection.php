@@ -5,11 +5,17 @@ namespace Litepie\Layout\Components;
 class MediaSection extends BaseComponent
 {
     protected string $mediaType = 'image'; // image, video, gallery, audio
+
     protected string $layout = 'grid'; // grid, masonry, carousel, list
+
     protected int $columns = 3;
+
     protected string $aspectRatio = '16:9';
+
     protected bool $lightbox = true;
+
     protected bool $captions = true;
+
     protected array $items = []; // Item configurations
 
     public function __construct(string $name)
@@ -25,6 +31,7 @@ class MediaSection extends BaseComponent
     public function mediaType(string $type): self
     {
         $this->mediaType = $type;
+
         return $this;
     }
 
@@ -51,6 +58,7 @@ class MediaSection extends BaseComponent
     public function layout(string $layout): self
     {
         $this->layout = $layout;
+
         return $this;
     }
 
@@ -72,24 +80,28 @@ class MediaSection extends BaseComponent
     public function columns(int $columns): self
     {
         $this->columns = $columns;
+
         return $this;
     }
 
     public function aspectRatio(string $ratio): self
     {
         $this->aspectRatio = $ratio;
+
         return $this;
     }
 
     public function lightbox(bool $lightbox = true): self
     {
         $this->lightbox = $lightbox;
+
         return $this;
     }
 
     public function captions(bool $captions = true): self
     {
         $this->captions = $captions;
+
         return $this;
     }
 
@@ -103,6 +115,7 @@ class MediaSection extends BaseComponent
             'alt' => $options['alt'] ?? null,
             'caption' => $options['caption'] ?? null,
         ];
+
         return $this;
     }
 
@@ -131,7 +144,7 @@ class MediaSection extends BaseComponent
             'data_key' => $this->dataKey,
             'actions' => $this->actions,
             'sections' => array_map(
-                fn($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
+                fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
                 $this->sections
             ),
             'order' => $this->order,

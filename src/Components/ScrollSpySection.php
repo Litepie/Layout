@@ -5,8 +5,11 @@ namespace Litepie\Layout\Components;
 class ScrollSpySection extends BaseComponent
 {
     protected array $spySections = [];
+
     protected string $position = 'left'; // left or right
+
     protected bool $sticky = true;
+
     protected int $offset = 80; // Scroll offset for active state
 
     public function __construct(string $name)
@@ -34,7 +37,7 @@ class ScrollSpySection extends BaseComponent
             'roles' => $options['roles'] ?? [],
             'description' => $options['description'] ?? null,
         ];
-        
+
         return $this;
     }
 
@@ -44,6 +47,7 @@ class ScrollSpySection extends BaseComponent
     public function position(string $position): self
     {
         $this->position = $position;
+
         return $this;
     }
 
@@ -53,6 +57,7 @@ class ScrollSpySection extends BaseComponent
     public function sticky(bool $sticky = true): self
     {
         $this->sticky = $sticky;
+
         return $this;
     }
 
@@ -62,6 +67,7 @@ class ScrollSpySection extends BaseComponent
     public function offset(int $offset): self
     {
         $this->offset = $offset;
+
         return $this;
     }
 
@@ -87,19 +93,19 @@ class ScrollSpySection extends BaseComponent
     public function resolveAuthorization($user = null): self
     {
         parent::resolveAuthorization($user);
-        
+
         foreach ($this->spySections as &$section) {
             // Check section-level permissions
-            if (!empty($section['permissions'])) {
+            if (! empty($section['permissions'])) {
                 $section['authorized'] = $this->checkPermissions($user, $section['permissions']);
-            } elseif (!empty($section['roles'])) {
+            } elseif (! empty($section['roles'])) {
                 $section['authorized'] = $this->checkRoles($user, $section['roles']);
             } else {
                 $section['authorized'] = true;
             }
-            
+
             // Resolve authorization for components in the section
-            if (!empty($section['components'])) {
+            if (! empty($section['components'])) {
                 foreach ($section['components'] as $component) {
                     if (method_exists($component, 'resolveAuthorization')) {
                         $component->resolveAuthorization($user);
@@ -107,7 +113,7 @@ class ScrollSpySection extends BaseComponent
                 }
             }
         }
-        
+
         return $this;
     }
 
@@ -123,7 +129,7 @@ class ScrollSpySection extends BaseComponent
                 'authorized' => $section['authorized'] ?? true,
                 'description' => $section['description'],
                 'components' => array_map(
-                    fn($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
+                    fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
                     $section['components']
                 ),
                 'permissions' => $section['permissions'],

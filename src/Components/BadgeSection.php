@@ -5,10 +5,15 @@ namespace Litepie\Layout\Components;
 class BadgeSection extends BaseComponent
 {
     protected string $variant = 'default'; // default, primary, secondary, success, warning, error, info
+
     protected string $size = 'md'; // xs, sm, md, lg
+
     protected bool $pill = false; // Rounded pill style
+
     protected bool $outlined = false;
+
     protected bool $removable = false;
+
     protected array $badges = []; // Badge configurations
 
     public function __construct(string $name)
@@ -24,6 +29,7 @@ class BadgeSection extends BaseComponent
     public function variant(string $variant): self
     {
         $this->variant = $variant;
+
         return $this;
     }
 
@@ -50,6 +56,7 @@ class BadgeSection extends BaseComponent
     public function size(string $size): self
     {
         $this->size = $size;
+
         return $this;
     }
 
@@ -66,18 +73,21 @@ class BadgeSection extends BaseComponent
     public function pill(bool $pill = true): self
     {
         $this->pill = $pill;
+
         return $this;
     }
 
     public function outlined(bool $outlined = true): self
     {
         $this->outlined = $outlined;
+
         return $this;
     }
 
     public function removable(bool $removable = true): self
     {
         $this->removable = $removable;
+
         return $this;
     }
 
@@ -93,6 +103,7 @@ class BadgeSection extends BaseComponent
             'variant' => $options['variant'] ?? $this->variant,
             'removable' => $options['removable'] ?? $this->removable,
         ];
+
         return $this;
     }
 
@@ -120,7 +131,7 @@ class BadgeSection extends BaseComponent
             'data_key' => $this->dataKey,
             'actions' => $this->actions,
             'sections' => array_map(
-                fn($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
+                fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
                 $this->sections
             ),
             'order' => $this->order,

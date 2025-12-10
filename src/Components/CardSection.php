@@ -5,7 +5,9 @@ namespace Litepie\Layout\Components;
 class CardSection extends BaseComponent
 {
     protected ?string $description = null;
+
     protected ?string $image = null;
+
     protected string $variant = 'default'; // default, outlined, elevated
 
     public function __construct(string $name)
@@ -21,18 +23,21 @@ class CardSection extends BaseComponent
     public function description(string $description): self
     {
         $this->description = $description;
+
         return $this;
     }
 
     public function image(string $image): self
     {
         $this->image = $image;
+
         return $this;
     }
 
     public function variant(string $variant): self
     {
         $this->variant = $variant;
+
         return $this;
     }
 
@@ -57,7 +62,7 @@ class CardSection extends BaseComponent
             'data_key' => $this->dataKey,
             'actions' => $this->actions,
             'sections' => array_map(
-                fn($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
+                fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
                 $this->sections
             ),
             'order' => $this->order,

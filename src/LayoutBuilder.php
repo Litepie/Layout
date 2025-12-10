@@ -2,41 +2,46 @@
 
 namespace Litepie\Layout;
 
-use Litepie\Layout\Traits\HandlesComputedFields;
-use Litepie\Layout\Traits\Cacheable;
-use Litepie\Layout\Traits\Testable;
-use Litepie\Layout\Traits\Exportable;
-use Litepie\Layout\Traits\Debuggable;
-use Litepie\Layout\Contracts\Component;
-use Litepie\Layout\Components\FormSection;
-use Litepie\Layout\Components\TextSection;
-use Litepie\Layout\Components\CardSection;
-use Litepie\Layout\Components\TableSection;
-use Litepie\Layout\Components\GridSection;
-use Litepie\Layout\Components\StatsSection;
-use Litepie\Layout\Components\TabsSection;
 use Litepie\Layout\Components\AccordionSection;
-use Litepie\Layout\Components\ScrollSpySection;
-use Litepie\Layout\Components\CustomSection;
-use Litepie\Layout\Components\ListSection;
-use Litepie\Layout\Components\TimelineSection;
 use Litepie\Layout\Components\AlertSection;
-use Litepie\Layout\Components\ModalSection;
-use Litepie\Layout\Components\WizardSection;
-use Litepie\Layout\Components\ChartSection;
-use Litepie\Layout\Components\MediaSection;
-use Litepie\Layout\Components\CommentSection;
 use Litepie\Layout\Components\BadgeSection;
+use Litepie\Layout\Components\CardSection;
+use Litepie\Layout\Components\ChartSection;
+use Litepie\Layout\Components\CommentSection;
+use Litepie\Layout\Components\CustomSection;
+use Litepie\Layout\Components\FormSection;
+use Litepie\Layout\Components\GridSection;
+use Litepie\Layout\Components\ListSection;
+use Litepie\Layout\Components\MediaSection;
+use Litepie\Layout\Components\ModalSection;
+use Litepie\Layout\Components\ScrollSpySection;
+use Litepie\Layout\Components\StatsSection;
+use Litepie\Layout\Components\TableSection;
+use Litepie\Layout\Components\TabsSection;
+use Litepie\Layout\Components\TextSection;
+use Litepie\Layout\Components\TimelineSection;
+use Litepie\Layout\Components\WizardSection;
+use Litepie\Layout\Contracts\Component;
+use Litepie\Layout\Traits\Cacheable;
+use Litepie\Layout\Traits\Debuggable;
+use Litepie\Layout\Traits\Exportable;
+use Litepie\Layout\Traits\HandlesComputedFields;
+use Litepie\Layout\Traits\Testable;
 
 class LayoutBuilder
 {
-    use HandlesComputedFields, Cacheable, Testable, Exportable, Debuggable;
-    
+    use Cacheable, Debuggable, Exportable, HandlesComputedFields, Testable;
+
     protected string $name;
+
     protected string $mode;
+
     protected array $sections = [];
+
     protected array $components = [];
+
     protected ?string $sharedDataUrl = null; // Single API endpoint for all components
+
     protected array $sharedDataParams = [];
 
     public function __construct(string $name, string $mode)
@@ -51,6 +56,7 @@ class LayoutBuilder
     public function sharedDataUrl(string $url): self
     {
         $this->sharedDataUrl = $url;
+
         return $this;
     }
 
@@ -60,6 +66,7 @@ class LayoutBuilder
     public function sharedDataParams(array $params): self
     {
         $this->sharedDataParams = array_merge($this->sharedDataParams, $params);
+
         return $this;
     }
 
@@ -78,6 +85,7 @@ class LayoutBuilder
         } else {
             $this->sections[] = $component;
         }
+
         return $this;
     }
 
@@ -88,6 +96,7 @@ class LayoutBuilder
     {
         $section = FormSection::make($name);
         $this->addComponent($section);
+
         return $section;
     }
 
@@ -98,6 +107,7 @@ class LayoutBuilder
     {
         $section = TextSection::make($name);
         $this->addComponent($section);
+
         return $section;
     }
 
@@ -108,6 +118,7 @@ class LayoutBuilder
     {
         $section = CardSection::make($name);
         $this->addComponent($section);
+
         return $section;
     }
 
@@ -118,6 +129,7 @@ class LayoutBuilder
     {
         $section = TableSection::make($name);
         $this->addComponent($section);
+
         return $section;
     }
 
@@ -128,6 +140,7 @@ class LayoutBuilder
     {
         $section = GridSection::make($name);
         $this->addComponent($section);
+
         return $section;
     }
 
@@ -138,6 +151,7 @@ class LayoutBuilder
     {
         $section = StatsSection::make($name);
         $this->addComponent($section);
+
         return $section;
     }
 
@@ -148,6 +162,7 @@ class LayoutBuilder
     {
         $section = TabsSection::make($name);
         $this->addComponent($section);
+
         return $section;
     }
 
@@ -158,6 +173,7 @@ class LayoutBuilder
     {
         $section = AccordionSection::make($name);
         $this->addComponent($section);
+
         return $section;
     }
 
@@ -168,6 +184,7 @@ class LayoutBuilder
     {
         $section = ScrollSpySection::make($name);
         $this->addComponent($section);
+
         return $section;
     }
 
@@ -178,6 +195,7 @@ class LayoutBuilder
     {
         $section = CustomSection::make($name, $type);
         $this->addComponent($section);
+
         return $section;
     }
 
@@ -188,6 +206,7 @@ class LayoutBuilder
     {
         $section = ListSection::make($name);
         $this->addComponent($section);
+
         return $section;
     }
 
@@ -198,6 +217,7 @@ class LayoutBuilder
     {
         $section = TimelineSection::make($name);
         $this->addComponent($section);
+
         return $section;
     }
 
@@ -208,6 +228,7 @@ class LayoutBuilder
     {
         $section = AlertSection::make($name);
         $this->addComponent($section);
+
         return $section;
     }
 
@@ -218,6 +239,7 @@ class LayoutBuilder
     {
         $section = ModalSection::make($name);
         $this->addComponent($section);
+
         return $section;
     }
 
@@ -228,6 +250,7 @@ class LayoutBuilder
     {
         $section = WizardSection::make($name);
         $this->addComponent($section);
+
         return $section;
     }
 
@@ -238,6 +261,7 @@ class LayoutBuilder
     {
         $section = ChartSection::make($name);
         $this->addComponent($section);
+
         return $section;
     }
 
@@ -248,6 +272,7 @@ class LayoutBuilder
     {
         $section = MediaSection::make($name);
         $this->addComponent($section);
+
         return $section;
     }
 
@@ -258,6 +283,7 @@ class LayoutBuilder
     {
         $section = CommentSection::make($name);
         $this->addComponent($section);
+
         return $section;
     }
 
@@ -268,24 +294,26 @@ class LayoutBuilder
     {
         $section = BadgeSection::make($name);
         $this->addComponent($section);
+
         return $section;
     }
 
     /**
      * Legacy support: Create a Section (old structure)
-     * 
+     *
      * @deprecated Use formSection() or other specific section types
      */
     public function section(string $name): Section
     {
         $section = new Section($name, $this);
         $this->components[$name] = $section;
+
         return $section;
     }
 
     /**
      * Legacy support: Add a Section
-     * 
+     *
      * @deprecated Use addComponent() instead
      */
     public function addSection(Component $section): self
@@ -315,7 +343,7 @@ class LayoutBuilder
 
     /**
      * Legacy support: Get sections
-     * 
+     *
      * @deprecated Use getComponents() instead
      */
     public function getSections(): array
@@ -333,7 +361,7 @@ class LayoutBuilder
 
     /**
      * Legacy support: Get section
-     * 
+     *
      * @deprecated Use getComponent() instead
      */
     public function getSection(string $name): mixed
@@ -353,8 +381,8 @@ class LayoutBuilder
             'context' => $this->mode,
             'shared_data_url' => $this->sharedDataUrl,
             'shared_data_params' => $this->sharedDataParams,
-            'components' => array_map(fn($component) => 
-                method_exists($component, 'toArray') ? $component->toArray() : (array) $component,
+            'components' => array_map(
+                fn ($component) => method_exists($component, 'toArray') ? $component->toArray() : (array) $component,
                 $this->components
             ),
         ];

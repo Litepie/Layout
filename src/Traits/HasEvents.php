@@ -2,15 +2,22 @@
 
 namespace Litepie\Layout\Traits;
 
-use Litepie\Layout\Events\{BeforeRender, AfterRender, DataLoaded, DataError};
 use Illuminate\Support\Facades\Event;
+use Litepie\Layout\Events\AfterRender;
+use Litepie\Layout\Events\BeforeRender;
+use Litepie\Layout\Events\DataError;
+use Litepie\Layout\Events\DataLoaded;
 
 trait HasEvents
 {
     protected array $beforeRenderCallbacks = [];
+
     protected array $afterRenderCallbacks = [];
+
     protected array $dataLoadedCallbacks = [];
+
     protected array $dataErrorCallbacks = [];
+
     protected bool $eventsEnabled = true;
 
     /**
@@ -19,6 +26,7 @@ trait HasEvents
     public function onBeforeRender(callable $callback): self
     {
         $this->beforeRenderCallbacks[] = $callback;
+
         return $this;
     }
 
@@ -28,6 +36,7 @@ trait HasEvents
     public function onAfterRender(callable $callback): self
     {
         $this->afterRenderCallbacks[] = $callback;
+
         return $this;
     }
 
@@ -37,6 +46,7 @@ trait HasEvents
     public function onDataLoaded(callable $callback): self
     {
         $this->dataLoadedCallbacks[] = $callback;
+
         return $this;
     }
 
@@ -46,6 +56,7 @@ trait HasEvents
     public function onDataError(callable $callback): self
     {
         $this->dataErrorCallbacks[] = $callback;
+
         return $this;
     }
 
@@ -55,6 +66,7 @@ trait HasEvents
     public function withEvents(bool $enabled = true): self
     {
         $this->eventsEnabled = $enabled;
+
         return $this;
     }
 
@@ -63,7 +75,7 @@ trait HasEvents
      */
     protected function fireBeforeRender(array $data = []): array
     {
-        if (!$this->eventsEnabled) {
+        if (! $this->eventsEnabled) {
             return $data;
         }
 
@@ -86,7 +98,7 @@ trait HasEvents
      */
     protected function fireAfterRender(array $rendered): array
     {
-        if (!$this->eventsEnabled) {
+        if (! $this->eventsEnabled) {
             return $rendered;
         }
 
@@ -109,7 +121,7 @@ trait HasEvents
      */
     protected function fireDataLoaded(mixed $data, ?string $url = null): mixed
     {
-        if (!$this->eventsEnabled) {
+        if (! $this->eventsEnabled) {
             return $data;
         }
 
@@ -132,7 +144,7 @@ trait HasEvents
      */
     protected function fireDataError(\Throwable $exception, ?string $url = null): void
     {
-        if (!$this->eventsEnabled) {
+        if (! $this->eventsEnabled) {
             return;
         }
 

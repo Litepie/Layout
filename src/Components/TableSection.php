@@ -5,11 +5,17 @@ namespace Litepie\Layout\Components;
 class TableSection extends BaseComponent
 {
     protected array $columns = [];
+
     protected bool $searchable = false;
+
     protected bool $sortable = false;
+
     protected bool $paginated = false;
+
     protected ?int $perPage = null;
+
     protected ?string $sortColumn = null;
+
     protected string $sortDirection = 'asc';
 
     public function __construct(string $name)
@@ -25,30 +31,35 @@ class TableSection extends BaseComponent
     public function columns(array $columns): self
     {
         $this->columns = $columns;
+
         return $this;
     }
 
     public function searchable(bool $searchable = true): self
     {
         $this->searchable = $searchable;
+
         return $this;
     }
 
     public function sortable(bool $sortable = true): self
     {
         $this->sortable = $sortable;
+
         return $this;
     }
 
     public function paginated(bool $paginated = true): self
     {
         $this->paginated = $paginated;
+
         return $this;
     }
 
     public function perPage(int $perPage): self
     {
         $this->perPage = $perPage;
+
         return $this;
     }
 
@@ -56,6 +67,7 @@ class TableSection extends BaseComponent
     {
         $this->sortColumn = $column;
         $this->sortDirection = $direction;
+
         return $this;
     }
 
@@ -84,7 +96,7 @@ class TableSection extends BaseComponent
             'data_key' => $this->dataKey,
             'actions' => $this->actions,
             'sections' => array_map(
-                fn($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
+                fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
                 $this->sections
             ),
             'order' => $this->order,

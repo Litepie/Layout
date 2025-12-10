@@ -5,9 +5,13 @@ namespace Litepie\Layout\Components;
 class ListSection extends BaseComponent
 {
     protected string $listType = 'bullet'; // bullet, numbered, definition, checklist
+
     protected array $items = []; // Item configurations (structure, not data)
+
     protected bool $ordered = false;
+
     protected bool $nested = false;
+
     protected ?string $marker = null; // Custom bullet marker
 
     public function __construct(string $name)
@@ -24,6 +28,7 @@ class ListSection extends BaseComponent
     {
         $this->listType = $type;
         $this->ordered = in_array($type, ['numbered', 'checklist']);
+
         return $this;
     }
 
@@ -50,12 +55,14 @@ class ListSection extends BaseComponent
     public function nested(bool $nested = true): self
     {
         $this->nested = $nested;
+
         return $this;
     }
 
     public function marker(string $marker): self
     {
         $this->marker = $marker;
+
         return $this;
     }
 
@@ -71,6 +78,7 @@ class ListSection extends BaseComponent
             'color' => $options['color'] ?? null,
             'checked' => $options['checked'] ?? null, // For checklist
         ];
+
         return $this;
     }
 
@@ -97,7 +105,7 @@ class ListSection extends BaseComponent
             'data_key' => $this->dataKey,
             'actions' => $this->actions,
             'sections' => array_map(
-                fn($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
+                fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
                 $this->sections
             ),
             'order' => $this->order,

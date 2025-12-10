@@ -5,7 +5,9 @@ namespace Litepie\Layout\Components;
 class GridSection extends BaseComponent
 {
     protected array $components = [];
+
     protected int $columns = 3;
+
     protected string $gap = 'md';
 
     public function __construct(string $name)
@@ -21,18 +23,21 @@ class GridSection extends BaseComponent
     public function columns(int $columns): self
     {
         $this->columns = $columns;
+
         return $this;
     }
 
     public function gap(string $gap): self
     {
         $this->gap = $gap;
+
         return $this;
     }
 
     public function addComponent($component): self
     {
         $this->components[] = $component;
+
         return $this;
     }
 
@@ -41,6 +46,7 @@ class GridSection extends BaseComponent
         foreach ($components as $component) {
             $this->addComponent($component);
         }
+
         return $this;
     }
 
@@ -60,7 +66,7 @@ class GridSection extends BaseComponent
             'columns' => $this->columns,
             'gap' => $this->gap,
             'actions' => $this->actions,
-            'components' => array_map(fn($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp, $this->components),
+            'components' => array_map(fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp, $this->components),
             'order' => $this->order,
             'visible' => $this->visible,
             'permissions' => $this->permissions,

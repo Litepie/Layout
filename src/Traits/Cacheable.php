@@ -7,9 +7,13 @@ use Litepie\Layout\Caching\CacheManager;
 trait Cacheable
 {
     protected ?CacheManager $cacheManager = null;
+
     protected bool $cachingEnabled = false;
+
     protected ?int $cacheTtl = null;
+
     protected ?string $cacheKey = null;
+
     protected array $cacheInvalidationTags = [];
 
     /**
@@ -18,7 +22,7 @@ trait Cacheable
     public function cache(bool $enabled = true, ?int $ttl = null): self
     {
         $this->cachingEnabled = $enabled;
-        
+
         if ($ttl !== null) {
             $this->cacheTtl = $ttl;
         }
@@ -32,6 +36,7 @@ trait Cacheable
     public function cacheKey(string $key): self
     {
         $this->cacheKey = $key;
+
         return $this;
     }
 
@@ -41,6 +46,7 @@ trait Cacheable
     public function cacheTtl(int $seconds): self
     {
         $this->cacheTtl = $seconds;
+
         return $this;
     }
 
@@ -51,6 +57,7 @@ trait Cacheable
     {
         $tags = is_array($tags) ? $tags : [$tags];
         $this->cacheInvalidationTags = array_merge($this->cacheInvalidationTags, $tags);
+
         return $this;
     }
 
@@ -94,7 +101,7 @@ trait Cacheable
         $params = [];
 
         // Include shared data URL in cache key if present
-        if (!empty($this->sharedDataUrl)) {
+        if (! empty($this->sharedDataUrl)) {
             $params['shared_data'] = $this->sharedDataUrl;
         }
 
@@ -103,7 +110,7 @@ trait Cacheable
             $params['user'] = auth()->id() ?? 'guest';
         }
 
-        return !empty($params) ? $params : null;
+        return ! empty($params) ? $params : null;
     }
 
     /**
@@ -111,7 +118,7 @@ trait Cacheable
      */
     protected function getCachedLayout(): array
     {
-        if (!$this->cachingEnabled) {
+        if (! $this->cachingEnabled) {
             return $this->toArray();
         }
 
@@ -120,7 +127,7 @@ trait Cacheable
 
         return $cacheManager->remember(
             $cacheKey,
-            fn() => $this->toArray(),
+            fn () => $this->toArray(),
             $this->cacheTtl
         );
     }
@@ -130,11 +137,12 @@ trait Cacheable
      */
     public function invalidateCache(): bool
     {
-        if (!$this->cachingEnabled) {
+        if (! $this->cachingEnabled) {
             return false;
         }
 
         $cacheKey = $this->getLayoutCacheKey();
+
         return $this->getCacheManager()->forget($cacheKey);
     }
 
@@ -143,11 +151,12 @@ trait Cacheable
      */
     public function isCached(): bool
     {
-        if (!$this->cachingEnabled) {
+        if (! $this->cachingEnabled) {
             return false;
         }
 
         $cacheKey = $this->getLayoutCacheKey();
+
         return $this->getCacheManager()->has($cacheKey);
     }
 }

@@ -5,7 +5,9 @@ namespace Litepie\Layout\Export;
 class LayoutExporter
 {
     protected string $format = 'json';
+
     protected bool $pretty = true;
+
     protected bool $includeMetadata = true;
 
     /**
@@ -14,7 +16,7 @@ class LayoutExporter
     public function toJson($layout, bool $pretty = true): string
     {
         $data = $this->prepareExport($layout);
-        
+
         $flags = JSON_THROW_ON_ERROR;
         if ($pretty) {
             $flags |= JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES;
@@ -36,11 +38,12 @@ class LayoutExporter
      */
     public function toYaml($layout): string
     {
-        if (!class_exists('Symfony\Component\Yaml\Yaml')) {
+        if (! class_exists('Symfony\Component\Yaml\Yaml')) {
             throw new \RuntimeException('symfony/yaml package is required for YAML export');
         }
 
         $data = $this->prepareExport($layout);
+
         return \Symfony\Component\Yaml\Yaml::dump($data, 10, 2);
     }
 
@@ -68,6 +71,7 @@ class LayoutExporter
     public function format(string $format): self
     {
         $this->format = $format;
+
         return $this;
     }
 
@@ -77,6 +81,7 @@ class LayoutExporter
     public function withMetadata(bool $include = true): self
     {
         $this->includeMetadata = $include;
+
         return $this;
     }
 }

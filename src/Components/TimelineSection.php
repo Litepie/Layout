@@ -5,10 +5,15 @@ namespace Litepie\Layout\Components;
 class TimelineSection extends BaseComponent
 {
     protected string $orientation = 'vertical'; // vertical, horizontal
+
     protected string $position = 'left'; // left, right, center, alternate
+
     protected bool $showDates = true;
+
     protected bool $showIcons = true;
+
     protected string $dateFormat = 'relative'; // relative, absolute, custom
+
     protected array $events = []; // Event configurations
 
     public function __construct(string $name)
@@ -24,6 +29,7 @@ class TimelineSection extends BaseComponent
     public function orientation(string $orientation): self
     {
         $this->orientation = $orientation;
+
         return $this;
     }
 
@@ -40,6 +46,7 @@ class TimelineSection extends BaseComponent
     public function position(string $position): self
     {
         $this->position = $position;
+
         return $this;
     }
 
@@ -51,18 +58,21 @@ class TimelineSection extends BaseComponent
     public function showDates(bool $show = true): self
     {
         $this->showDates = $show;
+
         return $this;
     }
 
     public function showIcons(bool $show = true): self
     {
         $this->showIcons = $show;
+
         return $this;
     }
 
     public function dateFormat(string $format): self
     {
         $this->dateFormat = $format;
+
         return $this;
     }
 
@@ -77,6 +87,7 @@ class TimelineSection extends BaseComponent
             'color' => $options['color'] ?? null,
             'variant' => $options['variant'] ?? 'default', // default, success, warning, error
         ];
+
         return $this;
     }
 
@@ -104,7 +115,7 @@ class TimelineSection extends BaseComponent
             'data_key' => $this->dataKey,
             'actions' => $this->actions,
             'sections' => array_map(
-                fn($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
+                fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
                 $this->sections
             ),
             'order' => $this->order,
