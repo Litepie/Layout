@@ -5,12 +5,19 @@ namespace Litepie\Layout;
 class ActionModal
 {
     protected string $id;
+
     protected string $title;
+
     protected ?string $description = null;
+
     protected array $formFields = []; // Litepie/Form field instances
+
     protected string $submitLabel = 'Submit';
+
     protected string $cancelLabel = 'Cancel';
+
     protected string $submitClass = 'btn btn-primary';
+
     protected array $meta = [];
 
     public function __construct(string $id)
@@ -26,20 +33,21 @@ class ActionModal
     public function title(string $title): self
     {
         $this->title = $title;
+
         return $this;
     }
 
     public function description(string $description): self
     {
         $this->description = $description;
+
         return $this;
     }
 
     /**
      * Add a Litepie/Form field instance to this modal
      *
-     * @param mixed $field Litepie\Form\Field instance
-     * @return self
+     * @param  mixed  $field  Litepie\Form\Field instance
      */
     public function addFormField($field): self
     {
@@ -48,44 +56,47 @@ class ActionModal
         } else {
             $this->formFields[] = $field;
         }
+
         return $this;
     }
 
     /**
      * Add multiple Litepie/Form fields
-     *
-     * @param array $fields
-     * @return self
      */
     public function addFormFields(array $fields): self
     {
         foreach ($fields as $field) {
             $this->addFormField($field);
         }
+
         return $this;
     }
 
     public function submitLabel(string $label): self
     {
         $this->submitLabel = $label;
+
         return $this;
     }
 
     public function cancelLabel(string $label): self
     {
         $this->cancelLabel = $label;
+
         return $this;
     }
 
     public function submitClass(string $class): self
     {
         $this->submitClass = $class;
+
         return $this;
     }
 
     public function meta(array $meta): self
     {
         $this->meta = array_merge($this->meta, $meta);
+
         return $this;
     }
 
@@ -135,7 +146,7 @@ class ActionModal
             'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
-            'fields' => array_map(fn($field) => method_exists($field, 'toArray') ? $field->toArray() : (array) $field, $this->formFields),
+            'fields' => array_map(fn ($field) => method_exists($field, 'toArray') ? $field->toArray() : (array) $field, $this->formFields),
             'submit_label' => $this->submitLabel,
             'cancel_label' => $this->cancelLabel,
             'submit_class' => $this->submitClass,

@@ -7,10 +7,13 @@ use Litepie\Layout\Traits\HandlesComputedFields;
 class LayoutBuilder
 {
     use HandlesComputedFields;
-    
+
     protected string $module;
+
     protected string $context;
+
     protected array $sections = [];
+
     protected ?Section $currentSection = null;
 
     public function __construct(string $module, string $context)
@@ -29,12 +32,14 @@ class LayoutBuilder
         $section = new Section($name, $this);
         $this->sections[$name] = $section;
         $this->currentSection = $section;
+
         return $section;
     }
 
     public function addSection(Section $section): self
     {
         $this->sections[$section->getName()] = $section;
+
         return $this;
     }
 
@@ -68,7 +73,7 @@ class LayoutBuilder
         return [
             'module' => $this->module,
             'context' => $this->context,
-            'sections' => array_map(fn($section) => $section->toArray(), $this->sections),
+            'sections' => array_map(fn ($section) => $section->toArray(), $this->sections),
         ];
     }
 }

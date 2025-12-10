@@ -3,14 +3,14 @@
 namespace Litepie\Layout\Tests;
 
 use Litepie\Layout\Field;
+use Litepie\Layout\Layout;
+use Litepie\Layout\LayoutBuilder;
 use Litepie\Layout\Section;
 use Litepie\Layout\Subsection;
-use Litepie\Layout\LayoutBuilder;
-use Litepie\Layout\Layout;
 
 /**
  * Basic test examples for the Layout package
- * 
+ *
  * Note: This is a simple example. For production use, install PHPUnit
  * and use proper test framework integration.
  */
@@ -57,11 +57,11 @@ echo "✓ Section tests passed\n\n";
 echo "Testing Layout Builder...\n";
 $builder = LayoutBuilder::create('user', 'profile')
     ->section('info')
-        ->label('User Info')
-        ->subsection('basic')
-            ->field('name')->type('text')->label('Name')->end()
-            ->field('email')->type('email')->label('Email')->end()
-        ->endSubsection()
+    ->label('User Info')
+    ->subsection('basic')
+    ->field('name')->type('text')->label('Name')->end()
+    ->field('email')->type('email')->label('Email')->end()
+    ->endSubsection()
     ->endSection();
 
 $layout = $builder->build();

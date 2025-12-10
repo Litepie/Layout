@@ -7,29 +7,45 @@ use Litepie\Layout\Contracts\Renderable;
 class Subsection implements Renderable
 {
     protected string $name;
+
     protected ?string $label = null;
+
     protected ?string $description = null;
+
     protected ?string $icon = null;
+
     protected array $formFields = []; // Litepie/Form field instances
+
     protected ?int $order = null;
+
     protected bool $collapsible = false;
+
     protected bool $collapsed = false;
+
     protected bool $visible = true;
+
     protected array $meta = [];
+
     protected array $actions = [];
+
     protected array $modals = [];
+
     protected ?Section $parent = null;
-    
+
     // Authorization properties
     protected array $permissions = [];
+
     protected array $roles = [];
+
     protected ?\Closure $canSeeCallback = null;
+
     protected bool $authorizedToSee = true;
-    
+
     // Column layout
     protected int $columns = 1;
+
     protected string $gap = 'md'; // xs, sm, md, lg, xl
-    
+
     // Conditional visibility
     protected array $visibleConditions = [];
 
@@ -47,26 +63,28 @@ class Subsection implements Renderable
     public function label(string $label): self
     {
         $this->label = $label;
+
         return $this;
     }
 
     public function description(string $description): self
     {
         $this->description = $description;
+
         return $this;
     }
 
     public function icon(string $icon): self
     {
         $this->icon = $icon;
+
         return $this;
     }
 
     /**
      * Add a Litepie/Form field instance to this subsection
      *
-     * @param \Litepie\Form\Field $field
-     * @return self
+     * @param  \Litepie\Form\Field  $field
      */
     public function addFormField($field): self
     {
@@ -75,44 +93,47 @@ class Subsection implements Renderable
         } else {
             $this->formFields[] = $field;
         }
+
         return $this;
     }
 
     /**
      * Add multiple Litepie/Form fields
-     *
-     * @param array $fields
-     * @return self
      */
     public function addFormFields(array $fields): self
     {
         foreach ($fields as $field) {
             $this->addFormField($field);
         }
+
         return $this;
     }
 
     public function order(int $order): self
     {
         $this->order = $order;
+
         return $this;
     }
 
     public function collapsible(bool $collapsible = true): self
     {
         $this->collapsible = $collapsible;
+
         return $this;
     }
 
     public function collapsed(bool $collapsed = true): self
     {
         $this->collapsed = $collapsed;
+
         return $this;
     }
 
     public function visible(bool $visible = true): self
     {
         $this->visible = $visible;
+
         return $this;
     }
 
@@ -122,13 +143,14 @@ class Subsection implements Renderable
     }
 
     // Column layout methods
-    
+
     /**
      * Set number of columns for the subsection layout
      */
     public function columns(int $columns): self
     {
         $this->columns = $columns;
+
         return $this;
     }
 
@@ -138,6 +160,7 @@ class Subsection implements Renderable
     public function gap(string $gap): self
     {
         $this->gap = $gap;
+
         return $this;
     }
 
@@ -169,6 +192,7 @@ class Subsection implements Renderable
             'operator' => $operator,
             'value' => $value,
         ];
+
         return $this;
     }
 
@@ -183,6 +207,7 @@ class Subsection implements Renderable
     public function meta(array $meta): self
     {
         $this->meta = array_merge($this->meta, $meta);
+
         return $this;
     }
 
@@ -195,12 +220,14 @@ class Subsection implements Renderable
             'class' => 'btn btn-secondary',
             'method' => 'GET',
         ], $options);
+
         return $this;
     }
 
     public function addAction(array $action): self
     {
         $this->actions[] = $action;
+
         return $this;
     }
 
@@ -213,12 +240,14 @@ class Subsection implements Renderable
     {
         $modal = new \Litepie\Layout\ActionModal($id);
         $this->modals[$id] = $modal;
+
         return $modal;
     }
 
     public function addModal(\Litepie\Layout\ActionModal $modal): self
     {
         $this->modals[$modal->getId()] = $modal;
+
         return $this;
     }
 
@@ -233,22 +262,25 @@ class Subsection implements Renderable
     }
 
     // Authorization methods
-    
+
     public function permissions(array|string $permissions): self
     {
         $this->permissions = is_array($permissions) ? $permissions : [$permissions];
+
         return $this;
     }
 
     public function roles(array|string $roles): self
     {
         $this->roles = is_array($roles) ? $roles : [$roles];
+
         return $this;
     }
 
     public function canSee(\Closure $callback): self
     {
         $this->canSeeCallback = $callback;
+
         return $this;
     }
 
@@ -268,11 +300,11 @@ class Subsection implements Renderable
             $this->authorizedToSee = call_user_func($this->canSeeCallback, $user);
         }
 
-        if (!empty($this->permissions) && $user !== null) {
+        if (! empty($this->permissions) && $user !== null) {
             $this->authorizedToSee = $this->checkPermissions($user, $this->permissions);
         }
 
-        if (!empty($this->roles) && $user !== null) {
+        if (! empty($this->roles) && $user !== null) {
             $this->authorizedToSee = $this->checkRoles($user, $this->roles);
         }
 
@@ -293,9 +325,12 @@ class Subsection implements Renderable
         }
         if (method_exists($user, 'can')) {
             foreach ($permissions as $permission) {
-                if ($user->can($permission)) return true;
+                if ($user->can($permission)) {
+                    return true;
+                }
             }
         }
+
         return false;
     }
 
@@ -306,12 +341,15 @@ class Subsection implements Renderable
         }
         if (method_exists($user, 'hasRole')) {
             foreach ($roles as $role) {
-                if ($user->hasRole($role)) return true;
+                if ($user->hasRole($role)) {
+                    return true;
+                }
             }
         }
         if (isset($user->role)) {
             return in_array($user->role, $roles);
         }
+
         return false;
     }
 
@@ -332,8 +370,6 @@ class Subsection implements Renderable
 
     /**
      * End field chaining and return to subsection level
-     *
-     * @return self
      */
     public function endField(): self
     {
@@ -367,8 +403,6 @@ class Subsection implements Renderable
 
     /**
      * Get all Litepie/Form fields in this subsection
-     *
-     * @return array
      */
     public function getFormFields(): array
     {
@@ -378,7 +412,6 @@ class Subsection implements Renderable
     /**
      * Get a specific Litepie/Form field by name
      *
-     * @param string $name
      * @return mixed|null
      */
     public function getFormField(string $name)
@@ -418,9 +451,9 @@ class Subsection implements Renderable
             'label' => $this->label,
             'description' => $this->description,
             'icon' => $this->icon,
-            'fields' => array_map(fn($field) => method_exists($field, 'toArray') ? $field->toArray() : (array) $field, $this->formFields),
+            'fields' => array_map(fn ($field) => method_exists($field, 'toArray') ? $field->toArray() : (array) $field, $this->formFields),
             'actions' => $this->actions,
-            'modals' => array_map(fn($modal) => $modal->toArray(), $this->modals),
+            'modals' => array_map(fn ($modal) => $modal->toArray(), $this->modals),
             'order' => $this->order,
             'collapsible' => $this->collapsible,
             'collapsed' => $this->collapsed,
@@ -438,7 +471,7 @@ class Subsection implements Renderable
         }
 
         // Conditional visibility
-        if (!empty($this->visibleConditions)) {
+        if (! empty($this->visibleConditions)) {
             $array['visible_conditions'] = $this->visibleConditions;
         }
 

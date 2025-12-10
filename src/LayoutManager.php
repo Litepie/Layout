@@ -2,14 +2,17 @@
 
 namespace Litepie\Layout;
 
-use Illuminate\Contracts\Cache\Repository as CacheContract;
 use Closure;
+use Illuminate\Contracts\Cache\Repository as CacheContract;
 
 class LayoutManager
 {
     protected CacheContract $cache;
+
     protected array $layouts = [];
+
     protected int $cacheTtl = 3600; // 1 hour default
+
     protected string $cachePrefix = 'litepie_layout';
 
     public function __construct(CacheContract $cache)
@@ -40,18 +43,18 @@ class LayoutManager
     public function get(string $module, string $context, ?int $userId = null): ?Layout
     {
         $cacheKey = $this->makeCacheKey($module, $context, $userId);
-        
+
         return $this->cache->remember($cacheKey, $this->cacheTtl, function () use ($module, $context) {
             $key = $this->makeKey($module, $context);
-            
-            if (!isset($this->layouts[$key])) {
+
+            if (! isset($this->layouts[$key])) {
                 return null;
             }
 
             $callback = $this->layouts[$key];
             $builder = $this->for($module, $context);
             $callback($builder);
-            
+
             return $builder->build();
         });
     }
@@ -64,11 +67,11 @@ class LayoutManager
         $builder = $this->for($module, $context);
         $callback($builder);
         $layout = $builder->build();
-        
+
         // Cache the layout
         $cacheKey = $this->makeCacheKey($module, $context, $userId);
         $this->cache->put($cacheKey, $layout, $this->cacheTtl);
-        
+
         return $layout;
     }
 
@@ -78,6 +81,7 @@ class LayoutManager
     public function has(string $module, string $context): bool
     {
         $key = $this->makeKey($module, $context);
+
         return isset($this->layouts[$key]);
     }
 
@@ -98,7 +102,7 @@ class LayoutManager
         // This would require cache tagging or a custom implementation
         // For simplicity, we'll use a pattern-based approach if supported
         $pattern = "{$this->cachePrefix}:*:user:{$userId}";
-        
+
         // Note: This depends on your cache driver supporting pattern deletion
         // For Redis, you could use SCAN and DEL commands
         // For file cache, you'd need to iterate through files
@@ -118,6 +122,7 @@ class LayoutManager
     public function setCacheTtl(int $seconds): self
     {
         $this->cacheTtl = $seconds;
+
         return $this;
     }
 
@@ -127,6 +132,7 @@ class LayoutManager
     public function setCachePrefix(string $prefix): self
     {
         $this->cachePrefix = $prefix;
+
         return $this;
     }
 
@@ -152,11 +158,11 @@ class LayoutManager
     protected function makeCacheKey(string $module, string $context, ?int $userId = null): string
     {
         $key = "{$this->cachePrefix}:{$module}:{$context}";
-        
+
         if ($userId !== null) {
             $key .= ":user:{$userId}";
         }
-        
+
         return $key;
     }
 
@@ -166,15 +172,15 @@ class LayoutManager
     public function fresh(string $module, string $context): ?Layout
     {
         $key = $this->makeKey($module, $context);
-        
-        if (!isset($this->layouts[$key])) {
+
+        if (! isset($this->layouts[$key])) {
             return null;
         }
 
         $callback = $this->layouts[$key];
         $builder = $this->for($module, $context);
         $callback($builder);
-        
+
         return $builder->build();
     }
 }
