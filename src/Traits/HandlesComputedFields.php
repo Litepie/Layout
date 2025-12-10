@@ -71,7 +71,7 @@ trait HandlesComputedFields
     {
         $computedFields = [];
 
-        if (!method_exists($this, 'getSections')) {
+        if (! method_exists($this, 'getSections')) {
             return $computedFields;
         }
 

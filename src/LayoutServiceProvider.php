@@ -12,7 +12,8 @@ class LayoutServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(
-            __DIR__.'/../config/layout.php', 'layout'
+            __DIR__.'/../config/layout.php',
+            'layout'
         );
 
         $this->app->singleton('layout', function ($app) {

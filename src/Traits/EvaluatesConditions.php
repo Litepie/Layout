@@ -14,7 +14,7 @@ trait EvaluatesConditions
         $expectedValue = $condition['value'];
         $actualValue = $data[$field] ?? null;
 
-        return match($operator) {
+        return match ($operator) {
             '=' => $actualValue == $expectedValue,
             '===' => $actualValue === $expectedValue,
             '!=' => $actualValue != $expectedValue,
@@ -24,13 +24,13 @@ trait EvaluatesConditions
             '>=' => $actualValue >= $expectedValue,
             '<=' => $actualValue <= $expectedValue,
             'in' => is_array($expectedValue) && in_array($actualValue, $expectedValue),
-            'not_in' => is_array($expectedValue) && !in_array($actualValue, $expectedValue),
+            'not_in' => is_array($expectedValue) && ! in_array($actualValue, $expectedValue),
             'contains' => is_string($actualValue) && str_contains($actualValue, $expectedValue),
-            'not_contains' => is_string($actualValue) && !str_contains($actualValue, $expectedValue),
+            'not_contains' => is_string($actualValue) && ! str_contains($actualValue, $expectedValue),
             'starts_with' => is_string($actualValue) && str_starts_with($actualValue, $expectedValue),
             'ends_with' => is_string($actualValue) && str_ends_with($actualValue, $expectedValue),
             'empty' => empty($actualValue),
-            'not_empty' => !empty($actualValue),
+            'not_empty' => ! empty($actualValue),
             'null' => $actualValue === null,
             'not_null' => $actualValue !== null,
             'true' => $actualValue === true || $actualValue === '1' || $actualValue === 1,
@@ -51,11 +51,11 @@ trait EvaluatesConditions
 
         foreach ($conditions as $condition) {
             $result = $this->evaluateCondition($condition, $data);
-            
-            if ($logic === 'and' && !$result) {
+
+            if ($logic === 'and' && ! $result) {
                 return false;
             }
-            
+
             if ($logic === 'or' && $result) {
                 return true;
             }
@@ -69,7 +69,7 @@ trait EvaluatesConditions
      */
     public function shouldBeVisible(array $data): bool
     {
-        if (!method_exists($this, 'getVisibleConditions')) {
+        if (! method_exists($this, 'getVisibleConditions')) {
             return true;
         }
 
@@ -81,12 +81,12 @@ trait EvaluatesConditions
      */
     public function shouldBeRequired(array $data): bool
     {
-        if (!method_exists($this, 'getRequiredConditions')) {
+        if (! method_exists($this, 'getRequiredConditions')) {
             return method_exists($this, 'isRequired') ? $this->isRequired() : false;
         }
 
         $conditions = $this->getRequiredConditions();
-        
+
         if (empty($conditions)) {
             return method_exists($this, 'isRequired') ? $this->isRequired() : false;
         }
@@ -99,12 +99,12 @@ trait EvaluatesConditions
      */
     public function shouldBeDisabled(array $data): bool
     {
-        if (!method_exists($this, 'getDisabledConditions')) {
+        if (! method_exists($this, 'getDisabledConditions')) {
             return method_exists($this, 'isDisabled') ? $this->isDisabled() : false;
         }
 
         $conditions = $this->getDisabledConditions();
-        
+
         if (empty($conditions)) {
             return method_exists($this, 'isDisabled') ? $this->isDisabled() : false;
         }

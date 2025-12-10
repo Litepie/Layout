@@ -35,6 +35,7 @@ class LayoutBuilder
     protected string $name;
     protected string $mode;
     protected array $sections = [];
+    protected array $components = [];
     protected ?string $sharedDataUrl = null; // Single API endpoint for all components
     protected array $sharedDataParams = [];
 
@@ -290,6 +291,7 @@ class LayoutBuilder
     public function addSection(Component $section): self
     {
         $this->sections[$section->getName()] = $section;
+
         return $this;
     }
 
@@ -347,8 +349,8 @@ class LayoutBuilder
     public function toArray(): array
     {
         return [
-            'module' => $this->module,
-            'context' => $this->context,
+            'module' => $this->name,
+            'context' => $this->mode,
             'shared_data_url' => $this->sharedDataUrl,
             'shared_data_params' => $this->sharedDataParams,
             'components' => array_map(fn($component) => 

@@ -18,7 +18,9 @@ class Layout implements Renderable
 {
     use Cacheable, Testable, Exportable, Debuggable;
     protected string $module;
+
     protected string $context;
+
     protected array $sections;
     protected array $components = [];
     protected array $meta = [];
@@ -89,20 +91,19 @@ class Layout implements Renderable
     public function getSubsection(string $sectionName, string $subsectionName): ?Subsection
     {
         $section = $this->getSection($sectionName);
+
         return $section?->getSubsection($subsectionName);
     }
 
     /**
      * Get a specific form field from a subsection
      *
-     * @param string $sectionName
-     * @param string $subsectionName
-     * @param string $fieldName
      * @return mixed|null
      */
     public function getFormField(string $sectionName, string $subsectionName, string $fieldName)
     {
         $subsection = $this->getSubsection($sectionName, $subsectionName);
+
         return $subsection?->getFormField($fieldName);
     }
 
@@ -129,6 +130,7 @@ class Layout implements Renderable
                 }
             }
         }
+
         return $fields;
     }
 
@@ -193,7 +195,6 @@ class Layout implements Renderable
     /**
      * Get a Litepie/Form field by name from anywhere in the layout
      *
-     * @param string $name
      * @return mixed|null
      */
     public function getFormFieldByName(string $name)
@@ -203,12 +204,14 @@ class Layout implements Renderable
                 return $field;
             }
         }
+
         return null;
     }
 
     public function meta(array $meta): self
     {
         $this->meta = array_merge($this->meta, $meta);
+
         return $this;
     }
 
@@ -234,6 +237,7 @@ class Layout implements Renderable
                 $section->resolveAuthorization($user);
             }
         }
+
         return $this;
     }
 
@@ -303,8 +307,9 @@ class Layout implements Renderable
      */
     public function getAuthorizedSections(): array
     {
-        return array_filter($this->sections, fn($section) => 
-            !method_exists($section, 'isAuthorizedToSee') || $section->isAuthorizedToSee()
+        return array_filter(
+            $this->sections,
+            fn ($section) => ! method_exists($section, 'isAuthorizedToSee') || $section->isAuthorizedToSee()
         );
     }
 
@@ -337,7 +342,7 @@ class Layout implements Renderable
         return [
             'module' => $this->module,
             'context' => $this->context,
-            'sections' => array_map(fn($section) => $section->toArray(), $this->sections),
+            'sections' => array_map(fn ($section) => $section->toArray(), $this->sections),
             'meta' => $this->meta,
         ];
     }
@@ -371,25 +376,25 @@ class Layout implements Renderable
         $sections = [];
         foreach ($this->getAuthorizedSections() as $key => $section) {
             $sectionArray = $section->toArray();
-            
+
             // Filter authorized subsections
-            if (!empty($sectionArray['subsections'])) {
+            if (! empty($sectionArray['subsections'])) {
                 $sectionArray['subsections'] = array_filter(
                     $sectionArray['subsections'],
-                    fn($sub) => $sub['authorized_to_see'] ?? true
+                    fn ($sub) => $sub['authorized_to_see'] ?? true
                 );
-                
+
                 // Filter authorized fields within subsections
                 foreach ($sectionArray['subsections'] as &$subsection) {
-                    if (!empty($subsection['fields'])) {
+                    if (! empty($subsection['fields'])) {
                         $subsection['fields'] = array_filter(
                             $subsection['fields'],
-                            fn($field) => $field['authorized_to_see'] ?? true
+                            fn ($field) => $field['authorized_to_see'] ?? true
                         );
                     }
                 }
             }
-            
+
             $sections[$key] = $sectionArray;
         }
 

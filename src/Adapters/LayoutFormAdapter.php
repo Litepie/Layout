@@ -2,12 +2,12 @@
 
 namespace Litepie\Layout\Adapters;
 
-use Litepie\Layout\Subsection;
 use Litepie\Layout\Section;
+use Litepie\Layout\Subsection;
 
 /**
  * Adapter to bridge Layout structure with Litepie/Form fields
- * 
+ *
  * This adapter allows Layout package to work seamlessly with
  * Litepie/Form field instances while maintaining the layout
  * structure organization (sections → subsections → fields)
@@ -17,23 +17,18 @@ class LayoutFormAdapter
     /**
      * Create a Litepie/Form field and add it to a subsection
      *
-     * @param Subsection $subsection
-     * @param string $type
-     * @param string $name
      * @return \Litepie\Form\Field
      */
     public static function addField(Subsection $subsection, string $type, string $name)
     {
         $field = \Litepie\Form\Field::make($type, $name);
         $subsection->addFormField($field);
+
         return $field;
     }
 
     /**
      * Extract all Litepie/Form fields from a section
-     *
-     * @param Section $section
-     * @return array
      */
     public static function getFieldsFromSection(Section $section): array
     {
@@ -41,14 +36,14 @@ class LayoutFormAdapter
         foreach ($section->getSubsections() as $subsection) {
             $fields = array_merge($fields, $subsection->getFormFields());
         }
+
         return $fields;
     }
 
     /**
      * Extract validation rules from Litepie/Form fields
      *
-     * @param array $fields Array of Litepie\Form\Field instances
-     * @return array
+     * @param  array  $fields  Array of Litepie\Form\Field instances
      */
     public static function extractValidationRules(array $fields): array
     {
@@ -56,19 +51,19 @@ class LayoutFormAdapter
         foreach ($fields as $field) {
             if (method_exists($field, 'getRules')) {
                 $fieldRules = $field->getRules();
-                if (!empty($fieldRules)) {
+                if (! empty($fieldRules)) {
                     $rules[$field->getName()] = $fieldRules;
                 }
             }
         }
+
         return $rules;
     }
 
     /**
      * Extract field attributes for rendering
      *
-     * @param mixed $field Litepie\Form\Field instance
-     * @return array
+     * @param  mixed  $field  Litepie\Form\Field instance
      */
     public static function extractFieldAttributes($field): array
     {
@@ -84,8 +79,7 @@ class LayoutFormAdapter
     /**
      * Generate default data from fields
      *
-     * @param array $fields Array of Litepie\Form\Field instances
-     * @return array
+     * @param  array  $fields  Array of Litepie\Form\Field instances
      */
     public static function generateDefaultData(array $fields): array
     {
@@ -98,14 +92,14 @@ class LayoutFormAdapter
                 }
             }
         }
+
         return $data;
     }
 
     /**
      * Convert Layout structure to Form-compatible array
      *
-     * @param mixed $layout
-     * @return array
+     * @param  mixed  $layout
      */
     public static function toFormArray($layout): array
     {
