@@ -1,13 +1,14 @@
 <?php
+// phpcs:ignoreFile
 
 /**
  * Litepie Layout + Litepie/Form Integration Examples
  *
  * This file demonstrates how to use Litepie Layout with Litepie/Form
  * using the component-based structure (FormSection, TextSection, etc.)
- * 
+ *
  * FormSection is designed to hold Litepie Form Field objects.
- * Create fields using Field::make('name')->type('type')->options([])
+ * Create fields using Field::make('type', 'name', ['options'])
  * Then add them with addFormField() or addFormFields([])
  */
 
@@ -18,38 +19,32 @@ use Litepie\Layout\LayoutBuilder;
 // Example 0: Nested Sections - Form with List Inside
 // ============================================================================
 
+// phpcs:disable Generic.WhiteSpace.ScopeIndent.IncorrectExact
 $nestedLayout = LayoutBuilder::create('company', 'profile')
     ->sharedDataUrl('/api/companies/{id}')
-
     // Main company form section
     ->formSection('company_info')
         ->title('Company Information')
         ->description('Basic company details')
         ->columns(2)
         ->addFormFields([
-            Field::make('company_name')
-                ->type('text')
+            Field::make('text', 'company_name')
                 ->label('Company Name')
                 ->required()
                 ->placeholder('Acme Corporation'),
-            Field::make('registration_number')
-                ->type('text')
+            Field::make('text', 'registration_number')
                 ->label('Registration Number')
                 ->required(),
-            Field::make('contact_email')
-                ->type('email')
+            Field::make('email', 'contact_email')
                 ->label('Contact Email')
                 ->required(),
-            Field::make('phone')
-                ->type('tel')
+            Field::make('tel', 'phone')
                 ->label('Phone Number')
                 ->placeholder('+1 (555) 000-0000'),
-            Field::make('description')
-                ->type('textarea')
+            Field::make('textarea', 'description')
                 ->label('Company Description')
                 ->attribute('rows', 3),
         ])
-
         // Nested list section inside the form
         ->listSection('office_locations')
             ->title('Office Locations')
@@ -59,61 +54,57 @@ $nestedLayout = LayoutBuilder::create('company', 'profile')
             ->addItem('headquarters', 'New York, NY - Headquarters', [
                 'icon' => 'building',
                 'meta' => [
-                    'address' => '123 Main St, New York, NY 10001',
-                    'employees' => 150
-                ]
+                    'address'   => '123 Main St, New York, NY 10001',
+                    'employees' => 150,
+                ],
             ])
             ->addItem('branch_sf', 'San Francisco, CA - Branch Office', [
                 'icon' => 'map-pin',
                 'meta' => [
-                    'address' => '456 Market St, San Francisco, CA 94102',
-                    'employees' => 75
-                ]
+                    'address'   => '456 Market St, San Francisco, CA 94102',
+                    'employees' => 75,
+                ],
             ])
             ->addItem('branch_austin', 'Austin, TX - Branch Office', [
                 'icon' => 'map-pin',
                 'meta' => [
-                    'address' => '789 Congress Ave, Austin, TX 78701',
-                    'employees' => 50
-                ]
+                    'address'   => '789 Congress Ave, Austin, TX 78701',
+                    'employees' => 50,
+                ],
             ])
-        ->endSection() // End list section, return to form
-
+        ->endSection() // End list section, return to main form
         // Another nested form section for settings inside the main form
         ->formSection('company_settings')
             ->title('Company Settings')
             ->columns(1)
             ->addFormFields([
-                Field::make('timezone')
-                    ->type('select')
+                Field::make('select', 'timezone')
                     ->label('Timezone')
                     ->required()
                     ->options([
-                        'America/New_York' => 'Eastern Time (ET)',
-                        'America/Chicago' => 'Central Time (CT)',
+                        'America/New_York'    => 'Eastern Time (ET)',
+                        'America/Chicago'     => 'Central Time (CT)',
                         'America/Los_Angeles' => 'Pacific Time (PT)',
                     ])
                     ->value('America/New_York'),
-                Field::make('fiscal_year_start')
-                    ->type('select')
+                Field::make('select', 'fiscal_year_start')
                     ->label('Fiscal Year Start')
                     ->options([
                         'january' => 'January',
-                        'april' => 'April',
-                        'july' => 'July',
+                        'april'   => 'April',
+                        'july'    => 'July',
                         'october' => 'October',
                     ])
                     ->value('january'),
-                Field::make('public_profile')
-                    ->type('checkbox')
+                Field::make('checkbox', 'public_profile')
                     ->label('Make company profile public')
                     ->value(false)
                     ->help('Allow others to find your company'),
             ])
         ->endSection() // End settings form, return to main form
     ->endSection() // End main form, return to builder
-
     ->build();
+// phpcs:enable Generic.WhiteSpace.ScopeIndent.IncorrectExact
 
 // ============================================================================
 // Example 1: User Profile Form
@@ -128,23 +119,19 @@ $profileLayout->formSection('personal_info')
     ->description('Basic details about the user')
     ->columns(2) // Two-column form layout
     ->addFormFields([
-        Field::make('first_name')
-            ->type('text')
+        Field::make('text', 'first_name')
             ->label('First Name')
             ->required()
             ->placeholder('John'),
-        Field::make('last_name')
-            ->type('text')
+        Field::make('text', 'last_name')
             ->label('Last Name')
             ->required()
             ->placeholder('Doe'),
-        Field::make('email')
-            ->type('email')
+        Field::make('email', 'email')
             ->label('Email Address')
             ->required()
             ->help('We will never share your email'),
-        Field::make('phone')
-            ->type('tel')
+        Field::make('tel', 'phone')
             ->label('Phone Number')
             ->placeholder('+1 (555) 000-0000'),
     ]);
@@ -154,16 +141,13 @@ $profileLayout->formSection('address_info')
     ->title('Address Information')
     ->columns(2)
     ->addFormFields([
-        Field::make('street')
-            ->type('text')
+        Field::make('text', 'street')
             ->label('Street Address')
             ->required(),
-        Field::make('city')
-            ->type('text')
+        Field::make('text', 'city')
             ->label('City')
             ->required(),
-        Field::make('state')
-            ->type('select')
+        Field::make('select', 'state')
             ->label('State')
             ->required()
             ->options([
@@ -171,8 +155,7 @@ $profileLayout->formSection('address_info')
                 'NY' => 'New York',
                 'TX' => 'Texas',
             ]),
-        Field::make('zip')
-            ->type('text')
+        Field::make('text', 'zip')
             ->label('ZIP Code')
             ->required(),
     ]);
@@ -182,22 +165,19 @@ $profileLayout->formSection('preferences')
     ->title('User Preferences')
     ->columns(1)
     ->addFormFields([
-        Field::make('theme')
-            ->type('select')
+        Field::make('select', 'theme')
             ->label('Theme')
             ->options([
                 'light' => 'Light Mode',
-                'dark' => 'Dark Mode',
-                'auto' => 'Auto (System)',
+                'dark'  => 'Dark Mode',
+                'auto'  => 'Auto (System)',
             ])
             ->value('auto'),
-        Field::make('email_notifications')
-            ->type('checkbox')
+        Field::make('checkbox', 'email_notifications')
             ->label('Email Notifications')
             ->help('Receive updates via email')
             ->value(true),
-        Field::make('sms_notifications')
-            ->type('checkbox')
+        Field::make('checkbox', 'sms_notifications')
             ->label('SMS Notifications')
             ->help('Receive updates via SMS')
             ->value(false),
@@ -218,42 +198,36 @@ $productLayout->formSection('basic_info')
     ->description('Basic product information')
     ->columns(2)
     ->addFormFields([
-        Field::make('name')
-            ->type('text')
+        Field::make('text', 'name')
             ->label('Product Name')
             ->required(),
-        Field::make('sku')
-            ->type('text')
+        Field::make('text', 'sku')
             ->label('SKU')
             ->required()
             ->help('Stock Keeping Unit'),
-        Field::make('price')
-            ->type('number')
+        Field::make('number', 'price')
             ->label('Price')
             ->required()
             ->attribute('min', 0)
             ->attribute('step', 0.01),
-        Field::make('stock')
-            ->type('number')
+        Field::make('number', 'stock')
             ->label('Stock Quantity')
             ->required()
             ->attribute('min', 0),
-        Field::make('category')
-            ->type('select')
+        Field::make('select', 'category')
             ->label('Category')
             ->required()
             ->options([
                 'electronics' => 'Electronics',
-                'books' => 'Books',
-                'clothing' => 'Clothing',
-                'home' => 'Home & Garden',
+                'books'       => 'Books',
+                'clothing'    => 'Clothing',
+                'home'        => 'Home & Garden',
             ]),
-        Field::make('status')
-            ->type('select')
+        Field::make('select', 'status')
             ->label('Status')
             ->options([
-                'draft' => 'Draft',
-                'active' => 'Active',
+                'draft'    => 'Draft',
+                'active'   => 'Active',
                 'inactive' => 'Inactive',
             ])
             ->value('draft'),
@@ -264,13 +238,11 @@ $productLayout->formSection('description')
     ->title('Product Description')
     ->columns(1)
     ->addFormFields([
-        Field::make('short_description')
-            ->type('textarea')
+        Field::make('textarea', 'short_description')
             ->label('Short Description')
             ->attribute('rows', 3)
             ->attribute('maxlength', 255),
-        Field::make('full_description')
-            ->type('richtext')
+        Field::make('richtext', 'full_description')
             ->label('Full Description')
             ->help('Use the editor to format your description'),
     ]);
@@ -280,35 +252,30 @@ $productLayout->formSection('media')
     ->title('Product Media')
     ->columns(1)
     ->addFormFields([
-        Field::make('primary_image')
-            ->type('image')
+        Field::make('image', 'primary_image')
             ->label('Primary Image')
             ->required()
             ->attribute('accept', 'image/*'),
-        Field::make('additional_images')
-            ->type('gallery')
+        Field::make('gallery', 'additional_images')
             ->label('Additional Images')
             ->help('Upload up to 5 additional images'),
     ]);
 
-// SEO Settings  
+// SEO Settings
 $productLayout->formSection('seo')
     ->title('SEO Settings')
     ->description('Search engine optimization')
     ->columns(1)
     ->showWhen('user.role', '==', 'admin') // Conditional display
     ->addFormFields([
-        Field::make('meta_title')
-            ->type('text')
+        Field::make('text', 'meta_title')
             ->label('Meta Title')
             ->attribute('maxlength', 60),
-        Field::make('meta_description')
-            ->type('textarea')
+        Field::make('textarea', 'meta_description')
             ->label('Meta Description')
             ->attribute('rows', 3)
             ->attribute('maxlength', 160),
-        Field::make('keywords')
-            ->type('tags')
+        Field::make('tags', 'keywords')
             ->label('Keywords')
             ->help('Add relevant keywords for SEO'),
     ]);
@@ -326,20 +293,16 @@ $checkoutLayout->formSection('shipping')
     ->title('Shipping Information')
     ->columns(2)
     ->addFormFields([
-        Field::make('different_billing')
-            ->type('checkbox')
+        Field::make('checkbox', 'different_billing')
             ->label('Use different billing address')
             ->value(false),
-        Field::make('shipping_street')
-            ->type('text')
+        Field::make('text', 'shipping_street')
             ->label('Street Address')
             ->required(),
-        Field::make('shipping_city')
-            ->type('text')
+        Field::make('text', 'shipping_city')
             ->label('City')
             ->required(),
-        Field::make('shipping_state')
-            ->type('select')
+        Field::make('select', 'shipping_state')
             ->label('State')
             ->required()
             ->options([
@@ -347,8 +310,7 @@ $checkoutLayout->formSection('shipping')
                 'NY' => 'New York',
                 'TX' => 'Texas',
             ]),
-        Field::make('shipping_zip')
-            ->type('text')
+        Field::make('text', 'shipping_zip')
             ->label('ZIP Code')
             ->required(),
     ]);
@@ -359,16 +321,13 @@ $checkoutLayout->formSection('billing')
     ->columns(2)
     ->showWhen('different_billing', '==', true) // Only show if checkbox is checked
     ->addFormFields([
-        Field::make('billing_street')
-            ->type('text')
+        Field::make('text', 'billing_street')
             ->label('Street Address')
             ->required(),
-        Field::make('billing_city')
-            ->type('text')
+        Field::make('text', 'billing_city')
             ->label('City')
             ->required(),
-        Field::make('billing_state')
-            ->type('select')
+        Field::make('select', 'billing_state')
             ->label('State')
             ->required()
             ->options([
@@ -376,8 +335,7 @@ $checkoutLayout->formSection('billing')
                 'NY' => 'New York',
                 'TX' => 'Texas',
             ]),
-        Field::make('billing_zip')
-            ->type('text')
+        Field::make('text', 'billing_zip')
             ->label('ZIP Code')
             ->required(),
     ]);
@@ -387,14 +345,13 @@ $checkoutLayout->formSection('payment')
     ->title('Payment Details')
     ->columns(1)
     ->addFormFields([
-        Field::make('payment_method')
-            ->type('select')
+        Field::make('select', 'payment_method')
             ->label('Payment Method')
             ->required()
             ->options([
-                'credit_card' => 'Credit Card',
-                'paypal' => 'PayPal',
-                'bank_transfer' => 'Bank Transfer'
+                'credit_card'   => 'Credit Card',
+                'paypal'        => 'PayPal',
+                'bank_transfer' => 'Bank Transfer',
             ]),
     ]);
 
@@ -415,19 +372,19 @@ $dashboardLayout->statsSection('key_metrics')
     ->animated()
     ->useSharedData(true, 'metrics')
     ->addMetric('revenue', 'Total Revenue', [
-        'icon' => 'dollar-sign',
-        'format' => 'currency'
+        'icon'   => 'dollar-sign',
+        'format' => 'currency',
     ])
     ->addMetric('users', 'Active Users', [
-        'icon' => 'users',
-        'format' => 'number'
+        'icon'   => 'users',
+        'format' => 'number',
     ])
     ->addMetric('orders', 'Orders', [
-        'icon' => 'shopping-cart'
+        'icon' => 'shopping-cart',
     ])
     ->addMetric('satisfaction', 'Satisfaction', [
-        'icon' => 'smile',
-        'format' => 'percentage'
+        'icon'   => 'smile',
+        'format' => 'percentage',
     ]);
 
 // Chart Section
@@ -475,32 +432,27 @@ $postLayout->formSection('content')
     ->title('Post Content')
     ->columns(1)
     ->addFormFields([
-        Field::make('title')
-            ->type('text')
+        Field::make('text', 'title')
             ->label('Post Title')
             ->required()
             ->attribute('maxlength', 200),
-        Field::make('slug')
-            ->type('text')
+        Field::make('text', 'slug')
             ->label('URL Slug')
             ->required()
             ->help('Used in the post URL'),
-        Field::make('content')
-            ->type('richtext')
+        Field::make('richtext', 'content')
             ->label('Post Content')
             ->required()
             ->attribute('height', 500),
-        Field::make('category')
-            ->type('select')
+        Field::make('select', 'category')
             ->label('Category')
             ->required()
             ->options([
                 'technology' => 'Technology',
-                'business' => 'Business',
-                'lifestyle' => 'Lifestyle'
+                'business'   => 'Business',
+                'lifestyle'  => 'Lifestyle',
             ]),
-        Field::make('tags')
-            ->type('tags')
+        Field::make('tags', 'tags')
             ->label('Tags')
             ->help('Add relevant tags'),
     ]);
@@ -510,8 +462,7 @@ $postLayout->formSection('featured_image')
     ->title('Featured Image')
     ->columns(1)
     ->addFormFields([
-        Field::make('image')
-            ->type('image')
+        Field::make('image', 'image')
             ->label('Featured Image')
             ->attribute('accept', 'image/*')
             ->help('Recommended size: 1200x630px'),
@@ -522,25 +473,21 @@ $postLayout->formSection('publishing')
     ->title('Publishing Options')
     ->columns(2)
     ->addFormFields([
-        Field::make('status')
-            ->type('select')
+        Field::make('select', 'status')
             ->label('Status')
             ->options([
-                'draft' => 'Draft',
+                'draft'     => 'Draft',
                 'published' => 'Published',
-                'scheduled' => 'Scheduled'
+                'scheduled' => 'Scheduled',
             ])
             ->value('draft'),
-        Field::make('publish_at')
-            ->type('datetime-local')
+        Field::make('datetime-local', 'publish_at')
             ->label('Publish Date')
             ->help('Leave empty to publish immediately'),
-        Field::make('featured')
-            ->type('checkbox')
+        Field::make('checkbox', 'featured')
             ->label('Featured Post')
             ->value(false),
-        Field::make('allow_comments')
-            ->type('checkbox')
+        Field::make('checkbox', 'allow_comments')
             ->label('Allow Comments')
             ->value(true),
     ]);
@@ -567,26 +514,22 @@ $registrationLayout->formSection('account_form')
     ->title('Account Credentials')
     ->columns(2)
     ->addFormFields([
-        Field::make('username')
-            ->type('text')
+        Field::make('text', 'username')
             ->label('Username')
             ->required()
             ->attribute('minlength', 3)
             ->attribute('maxlength', 20)
             ->help('Choose a unique username'),
-        Field::make('email')
-            ->type('email')
+        Field::make('email', 'email')
             ->label('Email Address')
             ->required()
             ->help('We will send verification email'),
-        Field::make('password')
-            ->type('password')
+        Field::make('password', 'password')
             ->label('Password')
             ->required()
             ->attribute('minlength', 8)
             ->help('Use at least 8 characters with letters and numbers'),
-        Field::make('password_confirmation')
-            ->type('password')
+        Field::make('password', 'password_confirmation')
             ->label('Confirm Password')
             ->required(),
     ]);
@@ -596,23 +539,18 @@ $registrationLayout->formSection('profile_form')
     ->title('Profile Information')
     ->columns(2)
     ->addFormFields([
-        Field::make('first_name')
-            ->type('text')
+        Field::make('text', 'first_name')
             ->label('First Name')
             ->required(),
-        Field::make('last_name')
-            ->type('text')
+        Field::make('text', 'last_name')
             ->label('Last Name')
             ->required(),
-        Field::make('phone')
-            ->type('tel')
+        Field::make('tel', 'phone')
             ->label('Phone Number')
             ->placeholder('+1 (555) 000-0000'),
-        Field::make('birth_date')
-            ->type('date')
+        Field::make('date', 'birth_date')
             ->label('Date of Birth'),
-        Field::make('avatar')
-            ->type('image')
+        Field::make('image', 'avatar')
             ->label('Profile Picture')
             ->help('Upload a profile picture'),
     ]);
@@ -622,21 +560,18 @@ $registrationLayout->formSection('preferences_form')
     ->title('Preferences')
     ->columns(1)
     ->addFormFields([
-        Field::make('language')
-            ->type('select')
+        Field::make('select', 'language')
             ->label('Preferred Language')
             ->options([
                 'en' => 'English',
                 'es' => 'Spanish',
-                'fr' => 'French'
+                'fr' => 'French',
             ])
             ->value('en'),
-        Field::make('agree_terms')
-            ->type('checkbox')
+        Field::make('checkbox', 'agree_terms')
             ->label('I agree to the Terms of Service and Privacy Policy')
             ->required(),
-        Field::make('subscribe_newsletter')
-            ->type('checkbox')
+        Field::make('checkbox', 'subscribe_newsletter')
             ->label('Subscribe to newsletter')
             ->value(false),
     ]);
@@ -660,16 +595,13 @@ $settingsLayout->formSection('colors')
     ->title('Color Scheme')
     ->columns(3)
     ->addFormFields([
-        Field::make('primary_color')
-            ->type('color')
+        Field::make('color', 'primary_color')
             ->label('Primary Color')
             ->value('#3490dc'),
-        Field::make('secondary_color')
-            ->type('color')
+        Field::make('color', 'secondary_color')
             ->label('Secondary Color')
             ->value('#ffed4e'),
-        Field::make('accent_color')
-            ->type('color')
+        Field::make('color', 'accent_color')
             ->label('Accent Color')
             ->value('#38c172'),
     ]);
@@ -679,23 +611,21 @@ $settingsLayout->formSection('typography')
     ->title('Typography')
     ->columns(2)
     ->addFormFields([
-        Field::make('font_family')
-            ->type('select')
+        Field::make('select', 'font_family')
             ->label('Font Family')
             ->options([
-                'inter' => 'Inter',
-                'roboto' => 'Roboto',
+                'inter'    => 'Inter',
+                'roboto'   => 'Roboto',
                 'openSans' => 'Open Sans',
-                'lato' => 'Lato'
+                'lato'     => 'Lato',
             ])
             ->value('inter'),
-        Field::make('font_size')
-            ->type('select')
+        Field::make('select', 'font_size')
             ->label('Base Font Size')
             ->options([
-                'small' => 'Small',
+                'small'  => 'Small',
                 'medium' => 'Medium',
-                'large' => 'Large'
+                'large'  => 'Large',
             ])
             ->value('medium'),
     ]);
@@ -705,13 +635,12 @@ $settingsLayout->formSection('spacing')
     ->title('Layout Spacing')
     ->columns(1)
     ->addFormFields([
-        Field::make('spacing_scale')
-            ->type('select')
+        Field::make('select', 'spacing_scale')
             ->label('Spacing Scale')
             ->options([
-                'compact' => 'Compact',
-                'normal' => 'Normal',
-                'comfortable' => 'Comfortable'
+                'compact'     => 'Compact',
+                'normal'      => 'Normal',
+                'comfortable' => 'Comfortable',
             ])
             ->value('normal'),
     ]);
@@ -722,29 +651,25 @@ $settingsLayout->formSection('notifications')
     ->description('Manage how you receive notifications')
     ->columns(1)
     ->addFormFields([
-        Field::make('email_notifications')
-            ->type('checkbox')
+        Field::make('checkbox', 'email_notifications')
             ->label('Email Notifications')
             ->value(true)
             ->help('Receive notifications via email'),
-        Field::make('push_notifications')
-            ->type('checkbox')
+        Field::make('checkbox', 'push_notifications')
             ->label('Push Notifications')
             ->value(true)
             ->help('Receive browser push notifications'),
-        Field::make('sms_notifications')
-            ->type('checkbox')
+        Field::make('checkbox', 'sms_notifications')
             ->label('SMS Notifications')
             ->value(false)
             ->help('Receive notifications via SMS'),
-        Field::make('notification_frequency')
-            ->type('select')
+        Field::make('select', 'notification_frequency')
             ->label('Notification Frequency')
             ->options([
                 'realtime' => 'Real-time',
-                'hourly' => 'Hourly Digest',
-                'daily' => 'Daily Digest',
-                'weekly' => 'Weekly Digest'
+                'hourly'   => 'Hourly Digest',
+                'daily'    => 'Daily Digest',
+                'weekly'   => 'Weekly Digest',
             ])
             ->value('realtime'),
     ]);
@@ -789,28 +714,23 @@ $apiLayout->formSection('contact')
     ->description('We would love to hear from you')
     ->columns(2)
     ->addFormFields([
-        Field::make('name')
-            ->type('text')
+        Field::make('text', 'name')
             ->label('Full Name')
             ->required(),
-        Field::make('email')
-            ->type('email')
+        Field::make('email', 'email')
             ->label('Email Address')
             ->required(),
-        Field::make('phone')
-            ->type('tel')
+        Field::make('tel', 'phone')
             ->label('Phone Number'),
-        Field::make('subject')
-            ->type('select')
+        Field::make('select', 'subject')
             ->label('Subject')
             ->required()
             ->options([
                 'general' => 'General Inquiry',
                 'support' => 'Technical Support',
-                'sales' => 'Sales Question'
+                'sales'   => 'Sales Question',
             ]),
-        Field::make('message')
-            ->type('textarea')
+        Field::make('textarea', 'message')
             ->label('Message')
             ->required()
             ->attribute('rows', 5)
@@ -886,20 +806,20 @@ class UserController extends Controller
     {
         $layout = LayoutBuilder::create('user', 'edit')
             ->sharedDataUrl("/api/users/{$id}");
-            
+
         $layout->formSection('profile')
             ->title('Edit Profile')
             ->addFormFields([
-                Field::make('name')->type('text')->label('Name')->required(),
-                Field::make('email')->type('email')->label('Email')->required(),
+                Field::make('text', 'name')->label('Name')->required(),
+                Field::make('email', 'email')->label('Email')->required(),
             ]);
-            
+
         $layout = $layout->build();
-        
+
         // Return as JSON for API mode
         return response()->json($layout->toArray());
     }
-    
+
     public function update(Request $request, $id)
     {
         // Validate using form structure
@@ -907,9 +827,9 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
         ]);
-        
+
         // Update user...
-        
+
         return response()->json(['message' => 'Profile updated successfully']);
     }
 }

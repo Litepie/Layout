@@ -62,7 +62,7 @@ abstract class BaseComponent implements Component, Renderable
     protected array $sections = [];
 
     // Reference to parent builder for endSection() support
-    protected $parentBuilder = null;
+    public $parentBuilder = null;
 
     // Authorization
     protected array $permissions = [];

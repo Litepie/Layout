@@ -13,7 +13,7 @@ use Litepie\Layout\LayoutBuilder;
 // ============================================================================
 
 // Enable caching for improved performance
-$layout = LayoutBuilder::create('dashboard', 'view')
+$builder = LayoutBuilder::create('dashboard', 'view')
     ->cache(true, 3600) // Cache for 1 hour
     ->cacheKey('dashboard_user_'.auth()->id())
     ->sharedDataUrl('/api/dashboard')
@@ -21,9 +21,8 @@ $layout = LayoutBuilder::create('dashboard', 'view')
     ->statsSection('metrics')
     ->title('Key Metrics')
     ->dataKey('metrics')
-    ->useSharedData(true)
-
-    ->build();
+    ->useSharedData(true);
+$layout = $builder->build()->toArray();
 
 // Check if cached
 if ($layout->isCached()) {
@@ -41,7 +40,7 @@ $layout->invalidateCache();
 // PHASE 1: EVENTS & LIFECYCLE HOOKS
 // ============================================================================
 
-$layout = LayoutBuilder::create('user', 'profile')
+$builder = LayoutBuilder::create('user', 'profile')
     ->debug(true)
 
     ->formSection('profile_form')
@@ -72,15 +71,14 @@ $layout = LayoutBuilder::create('user', 'profile')
     ->onDataError(function ($exception, $section) {
         logger()->error('Failed to load data: '.$exception->getMessage());
         // Could notify admin, set fallback, etc.
-    })
-
-    ->build();
+    });
+$layout = $builder->build()->toArray();
 
 // ============================================================================
 // PHASE 1: VALIDATION
 // ============================================================================
 
-$layout = LayoutBuilder::create('settings', 'edit')
+$builder = LayoutBuilder::create('settings', 'edit')
 
     ->formSection('app_settings')
     ->title('Application Settings')
@@ -94,9 +92,8 @@ $layout = LayoutBuilder::create('settings', 'edit')
         'app_url' => 'required|url',
         'admin_email' => 'required|email',
         'maintenance_mode' => 'boolean',
-    ])
-
-    ->build();
+    ]);
+$layout = $builder->build()->toArray();
 
 // Validate configuration
 $validation = $layout->assertions()
@@ -108,7 +105,7 @@ $validation = $layout->assertions()
 // PHASE 1: INTERNATIONALIZATION (i18n)
 // ============================================================================
 
-$layout = LayoutBuilder::create('product', 'view')
+$builder = LayoutBuilder::create('product', 'view')
 
     ->textSection('description')
         // Use translation keys
@@ -123,9 +120,8 @@ $layout = LayoutBuilder::create('product', 'view')
 
     ->cardSection('specifications')
     ->title(__('product.specs.title'))
-    ->subtitle(__('product.specs.subtitle'))
-
-    ->build();
+    ->subtitle(__('product.specs.subtitle'));
+$layout = $builder->build()->toArray();
 
 // Multi-language support
 $languages = ['en', 'es', 'fr', 'de'];
@@ -142,7 +138,7 @@ foreach ($languages as $lang) {
 // PHASE 2: DEBUG MODE
 // ============================================================================
 
-$layout = LayoutBuilder::create('complex', 'dashboard')
+$builder = LayoutBuilder::create('complex', 'dashboard')
     ->debug(true) // Enable debug mode
     ->sharedDataUrl('/api/dashboard/data')
 
@@ -152,9 +148,8 @@ $layout = LayoutBuilder::create('complex', 'dashboard')
 
     ->chartSection('sales')
     ->title('Sales Chart')
-    ->dataUrl('/api/charts/sales')
-
-    ->build();
+    ->dataUrl('/api/charts/sales');
+$layout = $builder->build()->toArray();
 
 $output = $layout->toArray();
 
@@ -182,19 +177,19 @@ Array (
 // ============================================================================
 
 // In your PHPUnit tests
-use Litepie\Layout\LayoutBuilder;
+// use Litepie\Layout\LayoutBuilder; // Already imported at top
 
 class LayoutTest extends TestCase
 {
     public function test_user_dashboard_layout()
     {
-        $layout = LayoutBuilder::create('user', 'dashboard')
+        $builder = LayoutBuilder::create('user', 'dashboard')
             ->statsSection('metrics')
             ->title('Key Metrics')
             ->chartSection('activity')
             ->title('Activity Chart')
-            ->dataUrl('/api/activity')
-            ->build();
+            ->dataUrl('/api/activity');
+$layout = $builder->build()->toArray();
 
         // Use assertions
         $layout->assertions()
@@ -218,7 +213,7 @@ class LayoutTest extends TestCase
 // ============================================================================
 
 // Build a layout
-$layout = LayoutBuilder::create('user', 'profile')
+$builder = LayoutBuilder::create('user', 'profile')
     ->sharedDataUrl('/api/users/{id}')
 
     ->cardSection('header')
@@ -227,9 +222,8 @@ $layout = LayoutBuilder::create('user', 'profile')
 
     ->formSection('details')
     ->title('Profile Details')
-    ->dataUrl('/api/users/{id}/details')
-
-    ->build();
+    ->dataUrl('/api/users/{id}/details');
+$layout = $builder->build()->toArray();
 
 // Export to JSON
 $json = $layout->toJson(pretty: true);
@@ -273,7 +267,7 @@ $importedLayout = LayoutBuilder::importArray($config);
 // PHASE 2: CONDITIONAL LOGIC ENGINE
 // ============================================================================
 
-$layout = LayoutBuilder::create('order', 'view')
+$builder = LayoutBuilder::create('order', 'view')
     ->sharedDataUrl('/api/orders/{id}')
 
     // Show section only if order status is 'pending'
@@ -313,9 +307,8 @@ $layout = LayoutBuilder::create('order', 'view')
         'field' => 'user.permissions',
         'operator' => 'contains',
         'value' => 'view_history',
-    ])
-
-    ->build();
+    ]);
+$layout = $builder->build()->toArray();
 
 // Evaluate conditions with context
 $context = [
@@ -338,7 +331,7 @@ $output = $layout->toArray();
 // PHASE 3: RESPONSIVE LAYOUTS
 // ============================================================================
 
-$layout = LayoutBuilder::create('products', 'grid')
+$builder = LayoutBuilder::create('products', 'grid')
     ->sharedDataUrl('/api/products')
 
     // Responsive grid columns
@@ -395,15 +388,14 @@ $layout = LayoutBuilder::create('products', 'grid')
     ->cardSection('tablet_view')
     ->title('Tablet Optimized')
     ->forDevice('tablet')
-    ->tabletOnly()
-
-    ->build();
+    ->tabletOnly();
+$layout = $builder->build()->toArray();
 
 // ============================================================================
 // REAL-WORLD EXAMPLE: E-commerce with All Features
 // ============================================================================
 
-$layout = LayoutBuilder::create('shop', 'product_detail')
+$builder = LayoutBuilder::create('shop', 'product_detail')
     // Enable caching
     ->cache(true, 1800)
     ->cacheKey('product_'.request('id'))
@@ -481,9 +473,8 @@ $layout = LayoutBuilder::create('shop', 'product_detail')
     })
     ->onDataError(function ($e) {
         logger()->error('Failed to load reviews: '.$e->getMessage());
-    })
-
-    ->build();
+    });
+$layout = $builder->build()->toArray();
 
 // Export layout for version control
 file_put_contents(

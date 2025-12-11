@@ -21,7 +21,7 @@ use Litepie\Layout\LayoutBuilder;
 // ============================================================================
 // Use for: Bullet points, numbered lists, checklists, feature lists
 
-$listLayout = LayoutBuilder::create('features', 'view')
+$listBuilder = LayoutBuilder::create('features', 'view')
     ->listSection('feature_list')
     ->title('Premium Features')
     ->description('Everything you need to succeed')
@@ -30,7 +30,8 @@ $listLayout = LayoutBuilder::create('features', 'view')
     ->addItem('Fast Performance', 'Lightning-fast load times', ['icon' => 'zap', 'checked' => true])
     ->addItem('Secure', '256-bit encryption', ['icon' => 'shield', 'checked' => true])
     ->addItem('Scalable', 'Grows with your business', ['icon' => 'trending-up'])
-    ->build();
+    ->endSection();
+$listLayout = $listBuilder->build()->toArray();
 
 /* JSON OUTPUT:
 {
@@ -71,7 +72,7 @@ $listLayout = LayoutBuilder::create('features', 'view')
 // ============================================================================
 // Use for: Order tracking, activity feeds, project milestones
 
-$timelineLayout = LayoutBuilder::create('order', 'tracking')
+$timelineBuilder = LayoutBuilder::create('order', 'tracking')
     ->timelineSection('delivery_timeline')
     ->title('Order #12345 Timeline')
     ->vertical()
@@ -83,7 +84,8 @@ $timelineLayout = LayoutBuilder::create('order', 'tracking')
     ->addEvent('confirmed', ['icon' => 'check-circle', 'color' => 'green', 'timestamp' => '2025-12-10 10:05:00'])
     ->addEvent('shipped', ['icon' => 'truck', 'color' => 'orange', 'timestamp' => '2025-12-10 14:00:00'])
     ->addEvent('delivered', ['icon' => 'home', 'color' => 'green', 'timestamp' => '2025-12-11 09:30:00'])
-    ->build();
+    ->endSection();
+$timelineLayout = $timelineBuilder->build()->toArray();
 
 /* JSON OUTPUT:
 {
@@ -143,7 +145,7 @@ $timelineLayout = LayoutBuilder::create('order', 'tracking')
 // ============================================================================
 // Use for: System alerts, notifications, warnings, error messages
 
-$alertLayout = LayoutBuilder::create('dashboard', 'view')
+$alertBuilder = LayoutBuilder::create('dashboard', 'view')
     ->alertSection('maintenance_alert')
     ->warning() // Options: info(), success(), warning(), error()
     ->title('Scheduled Maintenance')
@@ -151,7 +153,8 @@ $alertLayout = LayoutBuilder::create('dashboard', 'view')
     ->icon('alert-triangle')
     ->dismissible()
     ->bordered()
-    ->build();
+    ->endSection();
+$alertLayout = $alertBuilder->build()->toArray();
 
 /* JSON OUTPUT:
 {
@@ -178,7 +181,7 @@ $alertLayout = LayoutBuilder::create('dashboard', 'view')
 // ============================================================================
 // Use for: Dialogs, popups, confirmation prompts
 
-$modalLayout = LayoutBuilder::create('user', 'profile')
+$modalBuilder = LayoutBuilder::create('user', 'profile')
     ->modalSection('edit_profile_modal')
     ->title('Edit Profile')
     ->subtitle('Update your personal information')
@@ -188,7 +191,8 @@ $modalLayout = LayoutBuilder::create('user', 'profile')
     ->trigger('#edit-profile-btn')
     ->addFooterButton('Save Changes', 'save', ['style' => 'primary'])
     ->addFooterButton('Cancel', 'cancel', ['style' => 'secondary'])
-    ->build();
+    ->endSection();
+$modalLayout = $modalBuilder->build()->toArray();
 
 /* JSON OUTPUT:
 {
@@ -220,7 +224,7 @@ $modalLayout = LayoutBuilder::create('user', 'profile')
 // ============================================================================
 // Use for: Multi-step forms, onboarding, checkout processes
 
-$wizardLayout = LayoutBuilder::create('registration', 'form')
+$wizardBuilder = LayoutBuilder::create('registration', 'form')
     ->wizardSection('signup_wizard')
     ->title('Account Registration')
     ->linear() // Must complete steps in order
@@ -231,7 +235,8 @@ $wizardLayout = LayoutBuilder::create('registration', 'form')
     ->addStep('preferences', 'Preferences', [], ['icon' => 'settings'])
     ->addStep('review', 'Review & Submit', [], ['icon' => 'check-circle'])
     ->currentStep(0)
-    ->build();
+    ->endSection();
+$wizardLayout = $wizardBuilder->build()->toArray();
 
 /* JSON OUTPUT:
 {
@@ -278,7 +283,7 @@ $wizardLayout = LayoutBuilder::create('registration', 'form')
 // ============================================================================
 // Use for: Data visualization, analytics, reports
 
-$chartLayout = LayoutBuilder::create('analytics', 'dashboard')
+$chartBuilder = LayoutBuilder::create('analytics', 'dashboard')
     ->chartSection('sales_chart')
     ->title('Monthly Sales Report')
     ->subtitle('Revenue and profit trends')
@@ -295,7 +300,8 @@ $chartLayout = LayoutBuilder::create('analytics', 'dashboard')
         'stroke' => ['curve' => 'smooth'],
         'dataLabels' => ['enabled' => false],
     ])
-    ->build();
+    ->endSection();
+$chartLayout = $chartBuilder->build()->toArray();
 
 /* JSON OUTPUT:
 {
@@ -332,7 +338,7 @@ $chartLayout = LayoutBuilder::create('analytics', 'dashboard')
 // ============================================================================
 // Use for: Image galleries, video players, audio files
 
-$mediaLayout = LayoutBuilder::create('product', 'view')
+$mediaBuilder = LayoutBuilder::create('product', 'view')
     ->mediaSection('product_gallery')
     ->title('Product Images')
     ->gallery()
@@ -345,7 +351,8 @@ $mediaLayout = LayoutBuilder::create('product', 'view')
     ->addItem('/images/product-1.jpg', ['alt' => 'Front view', 'caption' => 'Product front view'])
     ->addItem('/images/product-2.jpg', ['alt' => 'Side view', 'caption' => 'Product side view'])
     ->addItem('/images/product-3.jpg', ['alt' => 'Detail', 'caption' => 'Close-up detail'])
-    ->build();
+    ->endSection();
+$mediaLayout = $mediaBuilder->build()->toArray();
 
 /* JSON OUTPUT:
 {
@@ -387,7 +394,7 @@ $mediaLayout = LayoutBuilder::create('product', 'view')
 // ============================================================================
 // Use for: Blog comments, discussion forums, reviews
 
-$commentLayout = LayoutBuilder::create('blog', 'post')
+$commentBuilder = LayoutBuilder::create('blog', 'post')
     ->commentSection('post_comments')
     ->title('Comments')
     ->subtitle('Join the discussion')
@@ -401,7 +408,8 @@ $commentLayout = LayoutBuilder::create('blog', 'post')
     ->markdown()
     ->dataUrl('/api/posts/456/comments')
     ->loadOnMount(false) // Lazy load
-    ->build();
+    ->endSection();
+$commentLayout = $commentBuilder->build()->toArray();
 
 /* JSON OUTPUT:
 {
@@ -433,7 +441,7 @@ $commentLayout = LayoutBuilder::create('blog', 'post')
 // ============================================================================
 // Use for: Tags, labels, status indicators, chips
 
-$badgeLayout = LayoutBuilder::create('product', 'view')
+$badgeBuilder = LayoutBuilder::create('product', 'view')
     ->badgeSection('product_tags')
     ->title('Tags')
     ->pill()
@@ -444,7 +452,8 @@ $badgeLayout = LayoutBuilder::create('product', 'view')
     ->addBadge('New Arrival', ['color' => 'blue', 'icon' => 'star'])
     ->addBadge('Best Seller', ['color' => 'green', 'icon' => 'trending-up'])
     ->addBadge('Limited Edition', ['color' => 'purple', 'icon' => 'zap'])
-    ->build();
+    ->endSection();
+$badgeLayout = $badgeBuilder->build()->toArray();
 
 /* JSON OUTPUT:
 {
@@ -475,7 +484,7 @@ $badgeLayout = LayoutBuilder::create('product', 'view')
 // ============================================================================
 // Use for: Data tables, grids, listings
 
-$tableLayout = LayoutBuilder::create('users', 'list')
+$tableBuilder = LayoutBuilder::create('users', 'list')
     ->tableSection('users_table')
     ->title('User Management')
     ->striped()
@@ -494,7 +503,8 @@ $tableLayout = LayoutBuilder::create('users', 'list')
     ->addColumn('role', 'Role', ['filterable' => true])
     ->addColumn('status', 'Status', ['badge' => true])
     ->addColumn('actions', 'Actions', ['type' => 'actions'])
-    ->build();
+    ->endSection();
+$tableLayout = $tableBuilder->build()->toArray();
 
 /* JSON OUTPUT:
 {
@@ -533,7 +543,7 @@ $tableLayout = LayoutBuilder::create('users', 'list')
 // ============================================================================
 // Use for: Forms, data entry, user input
 
-$formLayout = LayoutBuilder::create('user', 'edit')
+$formBuilder = LayoutBuilder::create('user', 'edit')
     ->formSection('profile_form')
     ->title('Edit Profile')
     ->description('Update your personal information')
@@ -550,7 +560,8 @@ $formLayout = LayoutBuilder::create('user', 'edit')
     ->addField('select', 'role', 'Role', ['options' => ['admin', 'editor', 'viewer']])
     ->addSubmitButton('Save Changes', ['loading' => true])
     ->addResetButton('Reset')
-    ->build();
+    ->endSection();
+$formLayout = $formBuilder->build()->toArray();
 
 /* JSON OUTPUT:
 {
@@ -619,7 +630,7 @@ $formLayout = LayoutBuilder::create('user', 'edit')
 // ============================================================================
 // Use for: Card grids, product listings, portfolios
 
-$gridLayout = LayoutBuilder::create('products', 'catalog')
+$gridBuilder = LayoutBuilder::create('products', 'catalog')
     ->gridSection('product_grid')
     ->title('Featured Products')
     ->columns(3) // Columns
@@ -630,7 +641,8 @@ $gridLayout = LayoutBuilder::create('products', 'catalog')
     ->addItem('product_1', ['title' => 'Product 1', 'price' => '$99', 'image' => '/img/p1.jpg'])
     ->addItem('product_2', ['title' => 'Product 2', 'price' => '$149', 'image' => '/img/p2.jpg'])
     ->addItem('product_3', ['title' => 'Product 3', 'price' => '$199', 'image' => '/img/p3.jpg'])
-    ->build();
+    ->endSection();
+$gridLayout = $gridBuilder->build()->toArray();
 
 /* JSON OUTPUT:
 {
@@ -670,7 +682,7 @@ $gridLayout = LayoutBuilder::create('products', 'catalog')
 // ============================================================================
 // Use for: Metrics, KPIs, dashboards, statistics
 
-$statsLayout = LayoutBuilder::create('dashboard', 'overview')
+$statsBuilder = LayoutBuilder::create('dashboard', 'overview')
     ->statsSection('key_metrics')
     ->title('Business Overview')
     ->columns(4)
@@ -705,7 +717,8 @@ $statsLayout = LayoutBuilder::create('dashboard', 'overview')
         'trend' => 'up',
         'color' => 'purple'
     ])
-    ->build();
+    ->endSection();
+$statsLayout = $statsBuilder->build()->toArray();
 
 /* JSON OUTPUT:
 {
@@ -776,7 +789,7 @@ $statsLayout = LayoutBuilder::create('dashboard', 'overview')
 // ============================================================================
 // Use for: Content cards, info boxes, feature highlights
 
-$cardLayout = LayoutBuilder::create('homepage', 'view')
+$cardBuilder = LayoutBuilder::create('homepage', 'view')
     ->cardSection('welcome_card')
     ->title('Welcome Back!')
     ->subtitle('You have 5 new notifications')
@@ -788,7 +801,8 @@ $cardLayout = LayoutBuilder::create('homepage', 'view')
     ->clickable('/dashboard')
     ->addAction('View All', 'view_all', ['icon' => 'arrow-right'])
     ->addAction('Dismiss', 'dismiss', ['icon' => 'x', 'variant' => 'ghost'])
-    ->build();
+    ->endSection();
+$cardLayout = $cardBuilder->build()->toArray();
 
 /* JSON OUTPUT:
 {
@@ -820,7 +834,7 @@ $cardLayout = LayoutBuilder::create('homepage', 'view')
 // ============================================================================
 // Use for: Tabbed content, switching views
 
-$tabsLayout = LayoutBuilder::create('settings', 'view')
+$tabsBuilder = LayoutBuilder::create('settings', 'view')
     ->tabsSection('settings_tabs')
     ->title('Settings')
     ->variant('underline') // Options: underline, pills, bordered
@@ -831,7 +845,8 @@ $tabsLayout = LayoutBuilder::create('settings', 'view')
     ->addTab('security', 'Security', [], ['icon' => 'shield', 'badge' => '2'])
     ->addTab('notifications', 'Notifications', [], ['icon' => 'bell'])
     ->addTab('billing', 'Billing', [], ['icon' => 'credit-card'])
-    ->build();
+    ->endSection();
+$tabsLayout = $tabsBuilder->build()->toArray();
 
 /* JSON OUTPUT:
 {
@@ -862,7 +877,7 @@ $tabsLayout = LayoutBuilder::create('settings', 'view')
 // ============================================================================
 // Use for: FAQs, collapsible content
 
-$accordionLayout = LayoutBuilder::create('help', 'faq')
+$accordionBuilder = LayoutBuilder::create('help', 'faq')
     ->accordionSection('faq_accordion')
     ->title('Frequently Asked Questions')
     ->allowMultiple() // Multiple panels open
@@ -880,7 +895,8 @@ $accordionLayout = LayoutBuilder::create('help', 'faq')
         'icon' => 'shield'
     ])
     ->defaultOpen(['shipping'])
-    ->build();
+    ->endSection();
+$accordionLayout = $accordionBuilder->build()->toArray();
 
 /* JSON OUTPUT:
 {
@@ -930,7 +946,7 @@ $accordionLayout = LayoutBuilder::create('help', 'faq')
 // ============================================================================
 // Use for: Rich text, articles, documentation
 
-$textLayout = LayoutBuilder::create('blog', 'post')
+$textBuilder = LayoutBuilder::create('blog', 'post')
     ->textSection('article_content')
     ->title('Getting Started with Litepie Layout')
     ->subtitle('A comprehensive guide')
@@ -940,7 +956,8 @@ $textLayout = LayoutBuilder::create('blog', 'post')
     ->author('John Doe')
     ->publishedAt('2025-12-11')
     ->readingTime(5) // minutes
-    ->build();
+    ->endSection();
+$textLayout = $textBuilder->build()->toArray();
 
 /* JSON OUTPUT:
 {
@@ -968,7 +985,7 @@ $textLayout = LayoutBuilder::create('blog', 'post')
 // ============================================================================
 // Use for: Table of contents, navigation anchors
 
-$scrollSpyLayout = LayoutBuilder::create('docs', 'view')
+$scrollSpyBuilder = LayoutBuilder::create('docs', 'view')
     ->scrollSpySection('toc')
     ->title('Table of Contents')
     ->sticky()
@@ -980,7 +997,8 @@ $scrollSpyLayout = LayoutBuilder::create('docs', 'view')
     ->addAnchor('setup', 'Setup', ['level' => 2])
     ->addAnchor('usage', 'Usage', ['level' => 1])
     ->addAnchor('examples', 'Examples', ['level' => 2])
-    ->build();
+    ->endSection();
+$scrollSpyLayout = $scrollSpyBuilder->build()->toArray();
 
 /* JSON OUTPUT:
 {
@@ -1012,7 +1030,7 @@ $scrollSpyLayout = LayoutBuilder::create('docs', 'view')
 // ============================================================================
 // Use for: Custom components, special layouts
 
-$customLayout = LayoutBuilder::create('app', 'custom')
+$customBuilder = LayoutBuilder::create('app', 'custom')
     ->customSection('pricing_calculator')
     ->title('Pricing Calculator')
     ->component('PricingCalculator') // Custom Vue/React component
@@ -1027,7 +1045,8 @@ $customLayout = LayoutBuilder::create('app', 'custom')
         'onCalculate' => '/api/pricing/calculate',
         'onSave' => '/api/pricing/save'
     ])
-    ->build();
+    ->endSection();
+$customLayout = $customBuilder->build()->toArray();
 
 /* JSON OUTPUT:
 {
@@ -1136,8 +1155,9 @@ $completeProductPage = LayoutBuilder::create('product', 'detail')
         'required' => true
     ])
     ->addSubmitButton('Add to Cart', ['icon' => 'shopping-cart'])
+    ->endSection();
 
-    ->build();
+$completeProductPage = $completeProductPage->build()->toArray();
 
 /* COMPLETE JSON OUTPUT:
 {
@@ -1253,7 +1273,7 @@ $completeProductPage = LayoutBuilder::create('product', 'detail')
 // ============================================================================
 // Using Phase 1, 2, and 3 features (Caching, Events, Validation, i18n, etc.)
 
-$advancedLayout = LayoutBuilder::create('dashboard', 'admin')
+$advancedBuilder = LayoutBuilder::create('dashboard', 'admin')
     // Enable caching for better performance
     ->cache(3600) // Cache for 1 hour
     ->cacheKey('admin-dashboard-{user}')
@@ -1289,8 +1309,8 @@ $advancedLayout = LayoutBuilder::create('dashboard', 'admin')
         'columns' => 'required|array',
         'dataUrl' => 'required|url'
     ])
-    
-    ->build();
+    ->endSection();
+$advancedLayout = $advancedBuilder->build()->toArray();
 
 /* ADVANCED JSON OUTPUT WITH FEATURES:
 {
@@ -1386,54 +1406,11 @@ class ProductController extends Controller
 // All 19 component types demonstrated with complete JSON output examples!
 // ============================================================================
 
-    ->bullet()
-    ->useSharedData(true, 'features')
-
-    // Product tags/categories
-    ->badgeSection('tags')
-    ->title('Categories')
-    ->pill()
-    ->primary()
-    ->useSharedData(true, 'categories')
-
-    // Related products chart
-    ->chartSection('sales_trend')
-    ->title('Sales Trend')
-    ->line()
-    ->height(300)
-    ->dataUrl('/api/products/{id}/sales-trend')
-
-    // Customer reviews timeline
-    ->timelineSection('recent_reviews')
-    ->title('Recent Reviews')
-    ->vertical()
-    ->showDates()
-    ->dataUrl('/api/products/{id}/recent-reviews')
-    ->loadOnMount(false)
-
-    // Comments section
-    ->commentSection('comments')
-    ->title('Customer Questions')
-    ->threaded()
-    ->voting()
-    ->dataUrl('/api/products/{id}/comments')
-    ->loadOnMount(false)
-
-    // Purchase wizard modal
-    ->modalSection('purchase_modal')
-    ->title('Complete Purchase')
-    ->size('lg')
-    ->trigger('#buy-now-btn')
-    ->addFooterButton('Checkout', 'checkout', ['style' => 'primary'])
-    ->addFooterButton('Cancel', 'cancel')
-
-    ->build();
-
 // ============================================================================
 // REAL-WORLD EXAMPLE: Admin Dashboard
 // ============================================================================
 
-$dashboardLayout = LayoutBuilder::create('admin', 'dashboard')
+$dashboardBuilder = LayoutBuilder::create('admin', 'dashboard')
     ->sharedDataUrl('/api/admin/dashboard')
 
     // System alerts
@@ -1483,5 +1460,5 @@ $dashboardLayout = LayoutBuilder::create('admin', 'dashboard')
     ->doughnut()
     ->height(300)
     ->dataUrl('/api/admin/category-distribution')
-
-    ->build();
+    ->endSection();
+$dashboardLayout = $dashboardBuilder->build()->toArray();
