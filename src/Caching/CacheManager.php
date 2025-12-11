@@ -8,7 +8,9 @@ use Litepie\Layout\Layout;
 class CacheManager
 {
     protected string $driver;
+
     protected int $defaultTtl;
+
     protected string $prefix;
 
     public function __construct(string $driver = 'file', int $defaultTtl = 3600, string $prefix = 'litepie_layout')
@@ -24,6 +26,7 @@ class CacheManager
     public function get(string $key): ?array
     {
         $cacheKey = $this->getCacheKey($key);
+
         return Cache::store($this->driver)->get($cacheKey);
     }
 
@@ -55,6 +58,7 @@ class CacheManager
     public function forget(string $key): bool
     {
         $cacheKey = $this->getCacheKey($key);
+
         return Cache::store($this->driver)->forget($cacheKey);
     }
 
@@ -65,8 +69,8 @@ class CacheManager
     {
         // Get all cache keys with our prefix
         $tags = $this->getTags();
-        
-        if (!empty($tags)) {
+
+        if (! empty($tags)) {
             return Cache::store($this->driver)->tags($tags)->flush();
         }
 
@@ -80,6 +84,7 @@ class CacheManager
     public function has(string $key): bool
     {
         $cacheKey = $this->getCacheKey($key);
+
         return Cache::store($this->driver)->has($cacheKey);
     }
 
@@ -88,7 +93,7 @@ class CacheManager
      */
     protected function getCacheKey(string $key): string
     {
-        return $this->prefix . ':' . $key;
+        return $this->prefix.':'.$key;
     }
 
     /**
@@ -105,6 +110,7 @@ class CacheManager
     public function driver(string $driver): self
     {
         $this->driver = $driver;
+
         return $this;
     }
 
@@ -114,6 +120,7 @@ class CacheManager
     public function ttl(int $seconds): self
     {
         $this->defaultTtl = $seconds;
+
         return $this;
     }
 
@@ -123,6 +130,7 @@ class CacheManager
     public function prefix(string $prefix): self
     {
         $this->prefix = $prefix;
+
         return $this;
     }
 
@@ -132,9 +140,9 @@ class CacheManager
     public function generateKey(string $name, string $mode, ?array $params = null): string
     {
         $key = "{$name}:{$mode}";
-        
+
         if ($params) {
-            $key .= ':' . md5(json_encode($params));
+            $key .= ':'.md5(json_encode($params));
         }
 
         return $key;
@@ -152,7 +160,7 @@ class CacheManager
         if ($this->driver === 'redis') {
             $redis = Cache::store('redis')->getRedis();
             $keys = $redis->keys($fullPattern);
-            
+
             foreach ($keys as $key) {
                 Cache::store($this->driver)->forget($key);
                 $count++;

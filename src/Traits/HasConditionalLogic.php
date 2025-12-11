@@ -7,14 +7,18 @@ use Litepie\Layout\Conditional\ExpressionEvaluator;
 trait HasConditionalLogic
 {
     protected array $showWhenConditions = [];
+
     protected array $hideWhenConditions = [];
+
     protected array $enableWhenConditions = [];
+
     protected string $conditionLogic = 'AND'; // AND or OR
+
     protected bool $enabled = true;
 
     /**
      * Show component when condition is met
-     * 
+     *
      * Usage:
      * ->showWhen('user.role', '==', 'admin')
      * ->showWhen('user.role == admin') // string expression
@@ -23,6 +27,7 @@ trait HasConditionalLogic
     public function showWhen(string|array $field, ?string $operator = null, mixed $value = null): self
     {
         $this->showWhenConditions[] = $this->normalizeCondition($field, $operator, $value);
+
         return $this;
     }
 
@@ -32,6 +37,7 @@ trait HasConditionalLogic
     public function hideWhen(string|array $field, ?string $operator = null, mixed $value = null): self
     {
         $this->hideWhenConditions[] = $this->normalizeCondition($field, $operator, $value);
+
         return $this;
     }
 
@@ -41,6 +47,7 @@ trait HasConditionalLogic
     public function enableWhen(string|array $field, ?string $operator = null, mixed $value = null): self
     {
         $this->enableWhenConditions[] = $this->normalizeCondition($field, $operator, $value);
+
         return $this;
     }
 
@@ -50,6 +57,7 @@ trait HasConditionalLogic
     public function conditionLogic(string $logic): self
     {
         $this->conditionLogic = strtoupper($logic);
+
         return $this;
     }
 
@@ -58,10 +66,10 @@ trait HasConditionalLogic
      */
     public function evaluateConditions(array $context): void
     {
-        $evaluator = new ExpressionEvaluator();
+        $evaluator = new ExpressionEvaluator;
 
         // Evaluate show conditions
-        if (!empty($this->showWhenConditions)) {
+        if (! empty($this->showWhenConditions)) {
             $this->visible = $evaluator->evaluateMultiple(
                 $this->showWhenConditions,
                 $context,
@@ -70,20 +78,20 @@ trait HasConditionalLogic
         }
 
         // Evaluate hide conditions
-        if (!empty($this->hideWhenConditions)) {
+        if (! empty($this->hideWhenConditions)) {
             $shouldHide = $evaluator->evaluateMultiple(
                 $this->hideWhenConditions,
                 $context,
                 $this->conditionLogic
             );
-            
+
             if ($shouldHide) {
                 $this->visible = false;
             }
         }
 
         // Evaluate enable conditions
-        if (!empty($this->enableWhenConditions)) {
+        if (! empty($this->enableWhenConditions)) {
             $this->enabled = $evaluator->evaluateMultiple(
                 $this->enableWhenConditions,
                 $context,
@@ -104,9 +112,9 @@ trait HasConditionalLogic
 
         // If it's a string expression, parse it
         if ($operator === null && $value === null) {
-            $evaluator = new ExpressionEvaluator();
+            $evaluator = new ExpressionEvaluator;
             $parsed = $evaluator->parseExpression($field);
-            
+
             if ($parsed) {
                 return $parsed;
             }
@@ -125,19 +133,19 @@ trait HasConditionalLogic
      */
     protected function addConditionalToArray(array $array): array
     {
-        if (!empty($this->showWhenConditions)) {
+        if (! empty($this->showWhenConditions)) {
             $array['show_when'] = $this->showWhenConditions;
         }
 
-        if (!empty($this->hideWhenConditions)) {
+        if (! empty($this->hideWhenConditions)) {
             $array['hide_when'] = $this->hideWhenConditions;
         }
 
-        if (!empty($this->enableWhenConditions)) {
+        if (! empty($this->enableWhenConditions)) {
             $array['enable_when'] = $this->enableWhenConditions;
         }
 
-        if (!empty($this->showWhenConditions) || !empty($this->hideWhenConditions) || !empty($this->enableWhenConditions)) {
+        if (! empty($this->showWhenConditions) || ! empty($this->hideWhenConditions) || ! empty($this->enableWhenConditions)) {
             $array['condition_logic'] = $this->conditionLogic;
         }
 

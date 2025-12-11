@@ -5,10 +5,15 @@ namespace Litepie\Layout\Components;
 class ModalSection extends BaseComponent
 {
     protected string $size = 'md'; // xs, sm, md, lg, xl, full
+
     protected bool $closable = true;
+
     protected bool $closeOnBackdrop = true;
+
     protected bool $closeOnEscape = true;
+
     protected ?string $trigger = null; // Element ID or selector that opens modal
+
     protected array $footer = [];
 
     public function __construct(string $name)
@@ -24,6 +29,7 @@ class ModalSection extends BaseComponent
     public function size(string $size): self
     {
         $this->size = $size;
+
         return $this;
     }
 
@@ -45,24 +51,28 @@ class ModalSection extends BaseComponent
     public function closable(bool $closable = true): self
     {
         $this->closable = $closable;
+
         return $this;
     }
 
     public function closeOnBackdrop(bool $close = true): self
     {
         $this->closeOnBackdrop = $close;
+
         return $this;
     }
 
     public function closeOnEscape(bool $close = true): self
     {
         $this->closeOnEscape = $close;
+
         return $this;
     }
 
     public function trigger(string $trigger): self
     {
         $this->trigger = $trigger;
+
         return $this;
     }
 
@@ -72,6 +82,7 @@ class ModalSection extends BaseComponent
             'label' => $label,
             'action' => $action,
         ], $options);
+
         return $this;
     }
 
@@ -99,7 +110,7 @@ class ModalSection extends BaseComponent
             'data_key' => $this->dataKey,
             'actions' => $this->actions,
             'sections' => array_map(
-                fn($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
+                fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
                 $this->sections
             ),
             'order' => $this->order,

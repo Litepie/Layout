@@ -5,7 +5,9 @@ namespace Litepie\Layout\Components;
 class TextSection extends BaseComponent
 {
     protected ?string $content = null;
+
     protected string $size = 'md';
+
     protected string $align = 'left';
 
     public function __construct(string $name)
@@ -21,18 +23,21 @@ class TextSection extends BaseComponent
     public function content(string $content): self
     {
         $this->content = $content;
+
         return $this;
     }
 
     public function size(string $size): self
     {
         $this->size = $size;
+
         return $this;
     }
 
     public function align(string $align): self
     {
         $this->align = $align;
+
         return $this;
     }
 
@@ -49,7 +54,7 @@ class TextSection extends BaseComponent
             'align' => $this->align,
             'actions' => $this->actions,
             'sections' => array_map(
-                fn($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
+                fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
                 $this->sections
             ),
             'order' => $this->order,

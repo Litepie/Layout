@@ -7,8 +7,11 @@ use Litepie\Layout\Validation\LayoutValidator;
 trait Validatable
 {
     protected ?LayoutValidator $validator = null;
+
     protected bool $validationEnabled = false;
+
     protected array $validationRules = [];
+
     protected bool $strictValidation = false;
 
     /**
@@ -18,6 +21,7 @@ trait Validatable
     {
         $this->validationEnabled = $enabled;
         $this->strictValidation = $strict;
+
         return $this;
     }
 
@@ -27,6 +31,7 @@ trait Validatable
     public function validateData(array $rules): self
     {
         $this->validationRules = array_merge($this->validationRules, $rules);
+
         return $this;
     }
 
@@ -47,7 +52,7 @@ trait Validatable
      */
     protected function validateConfiguration(): array
     {
-        if (!$this->validationEnabled) {
+        if (! $this->validationEnabled) {
             return ['valid' => true];
         }
 
@@ -59,7 +64,7 @@ trait Validatable
      */
     protected function validateComponentData(array $data): array
     {
-        if (!$this->validationEnabled || empty($this->validationRules)) {
+        if (! $this->validationEnabled || empty($this->validationRules)) {
             return ['valid' => true, 'data' => $data];
         }
 

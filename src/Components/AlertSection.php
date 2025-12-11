@@ -5,9 +5,13 @@ namespace Litepie\Layout\Components;
 class AlertSection extends BaseComponent
 {
     protected string $variant = 'info'; // info, success, warning, error, default
+
     protected ?string $message = null;
+
     protected bool $dismissible = false;
+
     protected bool $bordered = false;
+
     protected bool $filled = false;
 
     public function __construct(string $name)
@@ -23,6 +27,7 @@ class AlertSection extends BaseComponent
     public function variant(string $variant): self
     {
         $this->variant = $variant;
+
         return $this;
     }
 
@@ -49,24 +54,28 @@ class AlertSection extends BaseComponent
     public function message(string $message): self
     {
         $this->message = $message;
+
         return $this;
     }
 
     public function dismissible(bool $dismissible = true): self
     {
         $this->dismissible = $dismissible;
+
         return $this;
     }
 
     public function bordered(bool $bordered = true): self
     {
         $this->bordered = $bordered;
+
         return $this;
     }
 
     public function filled(bool $filled = true): self
     {
         $this->filled = $filled;
+
         return $this;
     }
 
@@ -93,7 +102,7 @@ class AlertSection extends BaseComponent
             'data_key' => $this->dataKey,
             'actions' => $this->actions,
             'sections' => array_map(
-                fn($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
+                fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
                 $this->sections
             ),
             'order' => $this->order,

@@ -8,7 +8,9 @@ use Illuminate\Validation\ValidationException;
 class LayoutValidator
 {
     protected array $rules = [];
+
     protected array $messages = [];
+
     protected bool $strict = false;
 
     /**
@@ -60,16 +62,16 @@ class LayoutValidator
             if ($this->strict) {
                 throw new ValidationException($validator);
             }
-            
+
             return [
                 'valid' => false,
-                'errors' => $validator->errors()->toArray()
+                'errors' => $validator->errors()->toArray(),
             ];
         }
 
         return [
             'valid' => true,
-            'data' => $validator->validated()
+            'data' => $validator->validated(),
         ];
     }
 
@@ -87,13 +89,13 @@ class LayoutValidator
         if ($validator->fails()) {
             return [
                 'valid' => false,
-                'errors' => $validator->errors()->toArray()
+                'errors' => $validator->errors()->toArray(),
             ];
         }
 
         return [
             'valid' => true,
-            'data' => $validator->validated()
+            'data' => $validator->validated(),
         ];
     }
 
@@ -103,7 +105,7 @@ class LayoutValidator
     public function addRule(string $field, string|array $rule, ?string $message = null): self
     {
         $this->rules[$field] = $rule;
-        
+
         if ($message) {
             $this->messages["{$field}.required"] = $message;
         }
@@ -117,6 +119,7 @@ class LayoutValidator
     public function strict(bool $strict = true): self
     {
         $this->strict = $strict;
+
         return $this;
     }
 
@@ -126,9 +129,9 @@ class LayoutValidator
     public function validateSchema(array $section): bool
     {
         $requiredKeys = ['name', 'type'];
-        
+
         foreach ($requiredKeys as $key) {
-            if (!isset($section[$key])) {
+            if (! isset($section[$key])) {
                 return false;
             }
         }
@@ -145,15 +148,15 @@ class LayoutValidator
 
         foreach ($sections as $index => $section) {
             $result = $this->validate($section);
-            
-            if (!$result['valid']) {
+
+            if (! $result['valid']) {
                 $errors["section.{$index}"] = $result['errors'];
             }
 
             // Recursively validate nested sections
             if (isset($section['sections']) && is_array($section['sections'])) {
                 $nestedErrors = $this->validateNested($section['sections']);
-                if (!empty($nestedErrors)) {
+                if (! empty($nestedErrors)) {
                     $errors["section.{$index}.sections"] = $nestedErrors;
                 }
             }

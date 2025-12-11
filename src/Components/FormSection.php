@@ -5,11 +5,17 @@ namespace Litepie\Layout\Components;
 class FormSection extends BaseComponent
 {
     protected array $formFields = [];
+
     protected ?string $label = null;
+
     protected ?string $description = null;
+
     protected int $formColumns = 1;
+
     protected string $gap = 'md';
+
     protected bool $collapsible = false;
+
     protected bool $collapsed = false;
 
     public function __construct(string $name)
@@ -25,36 +31,42 @@ class FormSection extends BaseComponent
     public function label(string $label): self
     {
         $this->label = $label;
+
         return $this;
     }
 
     public function description(string $description): self
     {
         $this->description = $description;
+
         return $this;
     }
 
     public function columns(int $columns): self
     {
         $this->formColumns = $columns;
+
         return $this;
     }
 
     public function gap(string $gap): self
     {
         $this->gap = $gap;
+
         return $this;
     }
 
     public function collapsible(bool $collapsible = true): self
     {
         $this->collapsible = $collapsible;
+
         return $this;
     }
 
     public function collapsed(bool $collapsed = true): self
     {
         $this->collapsed = $collapsed;
+
         return $this;
     }
 
@@ -65,6 +77,7 @@ class FormSection extends BaseComponent
         } else {
             $this->formFields[] = $field;
         }
+
         return $this;
     }
 
@@ -73,6 +86,7 @@ class FormSection extends BaseComponent
         foreach ($fields as $field) {
             $this->addFormField($field);
         }
+
         return $this;
     }
 
@@ -96,14 +110,14 @@ class FormSection extends BaseComponent
             'icon' => $this->icon,
             'label' => $this->label,
             'description' => $this->description,
-            'fields' => array_map(fn($field) => method_exists($field, 'toArray') ? $field->toArray() : (array) $field, $this->formFields),
+            'fields' => array_map(fn ($field) => method_exists($field, 'toArray') ? $field->toArray() : (array) $field, $this->formFields),
             'columns' => $this->formColumns,
             'gap' => $this->gap,
             'collapsible' => $this->collapsible,
             'collapsed' => $this->collapsed,
             'actions' => $this->actions,
             'sections' => array_map(
-                fn($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
+                fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
                 $this->sections
             ),
             'order' => $this->order,

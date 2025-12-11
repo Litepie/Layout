@@ -4,50 +4,68 @@ namespace Litepie\Layout\Components;
 
 use Litepie\Layout\Contracts\Component;
 use Litepie\Layout\Contracts\Renderable;
-use Litepie\Layout\Traits\HasEvents;
-use Litepie\Layout\Traits\Validatable;
-use Litepie\Layout\Traits\Translatable;
 use Litepie\Layout\Traits\Debuggable;
 use Litepie\Layout\Traits\HasConditionalLogic;
+use Litepie\Layout\Traits\HasEvents;
 use Litepie\Layout\Traits\Responsive;
+use Litepie\Layout\Traits\Translatable;
+use Litepie\Layout\Traits\Validatable;
 
 abstract class BaseComponent implements Component, Renderable
 {
-    use HasEvents,
-        Validatable,
-        Translatable,
-        Debuggable,
+    use Debuggable,
         HasConditionalLogic,
-        Responsive;
+        HasEvents,
+        Responsive,
+        Translatable,
+        Validatable;
+
     protected string $name;
+
     protected string $type;
+
     protected ?int $order = null;
+
     protected bool $visible = true;
+
     protected array $meta = [];
-    
+
     // Section header properties
     protected ?string $title = null;
+
     protected ?string $subtitle = null;
+
     protected ?string $icon = null;
+
     protected array $actions = [];
-    
+
     // Data source configuration for frontend loading
     protected ?string $dataSource = null; // API endpoint or data source identifier
+
     protected ?string $dataUrl = null; // Full API URL
+
     protected array $dataParams = []; // Query parameters for data fetching
+
     protected ?string $dataTransform = null; // Optional transform function name
+
     protected bool $loadOnMount = true; // Auto-load data when component mounts
+
     protected bool $reloadOnChange = false; // Reload when parent context changes
+
     protected bool $useSharedData = false; // Use data from parent/shared data source
+
     protected ?string $dataKey = null; // Key to extract from shared data (supports dot notation: 'user.profile.header')
-    
+
     // Nested sections for infinite nesting
     protected array $sections = [];
-    
+
     // Authorization
     protected array $permissions = [];
+
     protected array $roles = [];
+
     protected ?\Closure $canSeeCallback = null;
+
     protected bool $authorizedToSee = true;
 
     public function __construct(string $name, string $type)
@@ -69,6 +87,7 @@ abstract class BaseComponent implements Component, Renderable
     public function order(int $order): self
     {
         $this->order = $order;
+
         return $this;
     }
 
@@ -80,6 +99,7 @@ abstract class BaseComponent implements Component, Renderable
     public function visible(bool $visible = true): self
     {
         $this->visible = $visible;
+
         return $this;
     }
 
@@ -96,6 +116,7 @@ abstract class BaseComponent implements Component, Renderable
     public function meta(array $meta): self
     {
         $this->meta = array_merge($this->meta, $meta);
+
         return $this;
     }
 
@@ -107,6 +128,7 @@ abstract class BaseComponent implements Component, Renderable
     public function title(string $title): self
     {
         $this->title = $title;
+
         return $this;
     }
 
@@ -118,6 +140,7 @@ abstract class BaseComponent implements Component, Renderable
     public function subtitle(string $subtitle): self
     {
         $this->subtitle = $subtitle;
+
         return $this;
     }
 
@@ -129,6 +152,7 @@ abstract class BaseComponent implements Component, Renderable
     public function icon(string $icon): self
     {
         $this->icon = $icon;
+
         return $this;
     }
 
@@ -143,12 +167,14 @@ abstract class BaseComponent implements Component, Renderable
             'label' => $label,
             'url' => $url,
         ], $options);
+
         return $this;
     }
 
     public function actions(array $actions): self
     {
         $this->actions = $actions;
+
         return $this;
     }
 
@@ -163,6 +189,7 @@ abstract class BaseComponent implements Component, Renderable
     public function dataSource(string $source): self
     {
         $this->dataSource = $source;
+
         return $this;
     }
 
@@ -172,6 +199,7 @@ abstract class BaseComponent implements Component, Renderable
     public function dataUrl(string $url): self
     {
         $this->dataUrl = $url;
+
         return $this;
     }
 
@@ -181,6 +209,7 @@ abstract class BaseComponent implements Component, Renderable
     public function dataParams(array $params): self
     {
         $this->dataParams = array_merge($this->dataParams, $params);
+
         return $this;
     }
 
@@ -190,6 +219,7 @@ abstract class BaseComponent implements Component, Renderable
     public function dataTransform(string $transform): self
     {
         $this->dataTransform = $transform;
+
         return $this;
     }
 
@@ -199,6 +229,7 @@ abstract class BaseComponent implements Component, Renderable
     public function loadOnMount(bool $load = true): self
     {
         $this->loadOnMount = $load;
+
         return $this;
     }
 
@@ -208,6 +239,7 @@ abstract class BaseComponent implements Component, Renderable
     public function reloadOnChange(bool $reload = true): self
     {
         $this->reloadOnChange = $reload;
+
         return $this;
     }
 
@@ -220,6 +252,7 @@ abstract class BaseComponent implements Component, Renderable
         if ($key !== null) {
             $this->dataKey = $key;
         }
+
         return $this;
     }
 
@@ -230,6 +263,7 @@ abstract class BaseComponent implements Component, Renderable
     public function dataKey(string $key): self
     {
         $this->dataKey = $key;
+
         return $this;
     }
 
@@ -258,6 +292,7 @@ abstract class BaseComponent implements Component, Renderable
         } else {
             $this->sections[] = $section;
         }
+
         return $this;
     }
 
@@ -269,6 +304,7 @@ abstract class BaseComponent implements Component, Renderable
         foreach ($sections as $section) {
             $this->addSection($section);
         }
+
         return $this;
     }
 
@@ -293,7 +329,7 @@ abstract class BaseComponent implements Component, Renderable
      */
     public function hasSections(): bool
     {
-        return !empty($this->sections);
+        return ! empty($this->sections);
     }
 
     /**
@@ -339,18 +375,21 @@ abstract class BaseComponent implements Component, Renderable
     public function permissions(array|string $permissions): self
     {
         $this->permissions = is_array($permissions) ? $permissions : [$permissions];
+
         return $this;
     }
 
     public function roles(array|string $roles): self
     {
         $this->roles = is_array($roles) ? $roles : [$roles];
+
         return $this;
     }
 
     public function canSee(\Closure $callback): self
     {
         $this->canSeeCallback = $callback;
+
         return $this;
     }
 
@@ -360,11 +399,11 @@ abstract class BaseComponent implements Component, Renderable
             $this->authorizedToSee = call_user_func($this->canSeeCallback, $user);
         }
 
-        if (!empty($this->permissions) && $user !== null) {
+        if (! empty($this->permissions) && $user !== null) {
             $this->authorizedToSee = $this->checkPermissions($user, $this->permissions);
         }
 
-        if (!empty($this->roles) && $user !== null) {
+        if (! empty($this->roles) && $user !== null) {
             $this->authorizedToSee = $this->checkRoles($user, $this->roles);
         }
 
@@ -390,6 +429,7 @@ abstract class BaseComponent implements Component, Renderable
                 }
             }
         }
+
         return false;
     }
 
@@ -408,6 +448,7 @@ abstract class BaseComponent implements Component, Renderable
         if (isset($user->role)) {
             return in_array($user->role, $roles);
         }
+
         return false;
     }
 

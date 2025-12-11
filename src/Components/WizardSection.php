@@ -5,10 +5,15 @@ namespace Litepie\Layout\Components;
 class WizardSection extends BaseComponent
 {
     protected array $steps = [];
+
     protected int $currentStep = 0;
+
     protected bool $linear = true; // Must complete steps in order
+
     protected bool $showStepNumbers = true;
+
     protected string $orientation = 'horizontal'; // horizontal, vertical
+
     protected bool $validateOnNext = true;
 
     public function __construct(string $name)
@@ -35,30 +40,35 @@ class WizardSection extends BaseComponent
             'optional' => $options['optional'] ?? false,
             'validation' => $options['validation'] ?? null,
         ];
+
         return $this;
     }
 
     public function currentStep(int $step): self
     {
         $this->currentStep = $step;
+
         return $this;
     }
 
     public function linear(bool $linear = true): self
     {
         $this->linear = $linear;
+
         return $this;
     }
 
     public function showStepNumbers(bool $show = true): self
     {
         $this->showStepNumbers = $show;
+
         return $this;
     }
 
     public function orientation(string $orientation): self
     {
         $this->orientation = $orientation;
+
         return $this;
     }
 
@@ -70,6 +80,7 @@ class WizardSection extends BaseComponent
     public function validateOnNext(bool $validate = true): self
     {
         $this->validateOnNext = $validate;
+
         return $this;
     }
 
@@ -97,7 +108,7 @@ class WizardSection extends BaseComponent
             'data_key' => $this->dataKey,
             'actions' => $this->actions,
             'sections' => array_map(
-                fn($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
+                fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
                 $this->sections
             ),
             'order' => $this->order,

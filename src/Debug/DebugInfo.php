@@ -5,8 +5,11 @@ namespace Litepie\Layout\Debug;
 class DebugInfo
 {
     protected array $data = [];
+
     protected float $startTime;
+
     protected array $queries = [];
+
     protected array $events = [];
 
     public function __construct()
@@ -20,6 +23,7 @@ class DebugInfo
     public function add(string $key, mixed $value): self
     {
         $this->data[$key] = $value;
+
         return $this;
     }
 
@@ -84,10 +88,10 @@ class DebugInfo
     public function getSummary(): array
     {
         return [
-            'execution_time' => $this->getExecutionTime() . 'ms',
+            'execution_time' => $this->getExecutionTime().'ms',
             'queries' => count($this->queries),
             'events' => count($this->events),
-            'memory' => round(memory_get_usage() / 1024 / 1024, 2) . 'MB',
+            'memory' => round(memory_get_usage() / 1024 / 1024, 2).'MB',
         ];
     }
 }

@@ -5,6 +5,7 @@ namespace Litepie\Layout\Responsive;
 class DeviceDetector
 {
     protected string $userAgent;
+
     protected array $breakpoints;
 
     public function __construct(?string $userAgent = null)
@@ -53,7 +54,7 @@ class DeviceDetector
      */
     public function isDesktop(): bool
     {
-        return !$this->isMobile() && !$this->isTablet();
+        return ! $this->isMobile() && ! $this->isTablet();
     }
 
     /**
@@ -88,7 +89,7 @@ class DeviceDetector
         if (function_exists('config')) {
             return config('litepie.layout.breakpoints', $this->getDefaultBreakpoints());
         }
-        
+
         return $this->getDefaultBreakpoints();
     }
 

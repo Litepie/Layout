@@ -5,12 +5,19 @@ namespace Litepie\Layout\Components;
 class CommentSection extends BaseComponent
 {
     protected bool $threaded = true; // Support nested replies
+
     protected int $maxDepth = 3; // Maximum nesting level
+
     protected bool $voting = true; // Upvote/downvote
+
     protected bool $editing = true;
+
     protected bool $deleting = true;
+
     protected string $sortOrder = 'newest'; // newest, oldest, popular, controversial
+
     protected bool $mentioning = true; // @username mentions
+
     protected bool $markdown = false;
 
     public function __construct(string $name)
@@ -26,48 +33,56 @@ class CommentSection extends BaseComponent
     public function threaded(bool $threaded = true): self
     {
         $this->threaded = $threaded;
+
         return $this;
     }
 
     public function maxDepth(int $depth): self
     {
         $this->maxDepth = $depth;
+
         return $this;
     }
 
     public function voting(bool $voting = true): self
     {
         $this->voting = $voting;
+
         return $this;
     }
 
     public function editing(bool $editing = true): self
     {
         $this->editing = $editing;
+
         return $this;
     }
 
     public function deleting(bool $deleting = true): self
     {
         $this->deleting = $deleting;
+
         return $this;
     }
 
     public function sortOrder(string $order): self
     {
         $this->sortOrder = $order;
+
         return $this;
     }
 
     public function mentioning(bool $mentioning = true): self
     {
         $this->mentioning = $mentioning;
+
         return $this;
     }
 
     public function markdown(bool $markdown = true): self
     {
         $this->markdown = $markdown;
+
         return $this;
     }
 
@@ -97,7 +112,7 @@ class CommentSection extends BaseComponent
             'data_key' => $this->dataKey,
             'actions' => $this->actions,
             'sections' => array_map(
-                fn($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
+                fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
                 $this->sections
             ),
             'order' => $this->order,

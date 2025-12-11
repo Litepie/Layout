@@ -12,7 +12,7 @@ trait Exportable
      */
     public function toJson(bool $pretty = true): string
     {
-        return (new LayoutExporter())->toJson($this, $pretty);
+        return (new LayoutExporter)->toJson($this, $pretty);
     }
 
     /**
@@ -20,7 +20,7 @@ trait Exportable
      */
     public function toYaml(): string
     {
-        return (new LayoutExporter())->toYaml($this);
+        return (new LayoutExporter)->toYaml($this);
     }
 
     /**
@@ -28,9 +28,9 @@ trait Exportable
      */
     public function export(string $format = 'json'): string
     {
-        $exporter = (new LayoutExporter())->format($format)->withMetadata(true);
+        $exporter = (new LayoutExporter)->format($format)->withMetadata(true);
 
-        return match($format) {
+        return match ($format) {
             'yaml' => $exporter->toYaml($this),
             'json' => $exporter->toJson($this, true),
             default => $exporter->toJson($this, true),
@@ -42,7 +42,7 @@ trait Exportable
      */
     public static function importJson(string $json): LayoutBuilder
     {
-        return (new LayoutImporter())->fromJson($json);
+        return (new LayoutImporter)->fromJson($json);
     }
 
     /**
@@ -50,7 +50,7 @@ trait Exportable
      */
     public static function importArray(array $data): LayoutBuilder
     {
-        return (new LayoutImporter())->fromArray($data);
+        return (new LayoutImporter)->fromArray($data);
     }
 
     /**
@@ -58,6 +58,6 @@ trait Exportable
      */
     public static function importYaml(string $yaml): LayoutBuilder
     {
-        return (new LayoutImporter())->fromYaml($yaml);
+        return (new LayoutImporter)->fromYaml($yaml);
     }
 }
