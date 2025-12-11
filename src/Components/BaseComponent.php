@@ -35,6 +35,8 @@ abstract class BaseComponent implements Component, Renderable
 
     protected ?string $subtitle = null;
 
+    protected ?string $description = null;
+
     protected ?string $icon = null;
 
     protected array $actions = [];
@@ -58,6 +60,9 @@ abstract class BaseComponent implements Component, Renderable
 
     // Nested sections for infinite nesting
     protected array $sections = [];
+
+    // Reference to parent builder for endSection() support
+    protected $parentBuilder = null;
 
     // Authorization
     protected array $permissions = [];
@@ -147,6 +152,18 @@ abstract class BaseComponent implements Component, Renderable
     public function getSubtitle(): ?string
     {
         return $this->subtitle;
+    }
+
+    public function description(string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
     }
 
     public function icon(string $icon): self
@@ -293,7 +310,53 @@ abstract class BaseComponent implements Component, Renderable
             $this->sections[] = $section;
         }
 
+        // Set parent reference for endSection() support
+        if (property_exists($section, 'parentBuilder')) {
+            $section->parentBuilder = $this;
+        }
+
         return $this;
+    }
+
+    /**
+     * Create and add a nested FormSection
+     */
+    public function formSection(string $name)
+    {
+        $section = \Litepie\Layout\Components\FormSection::make($name);
+        $this->addSection($section);
+
+        return $section;
+    }
+
+    /**
+     * Create and add a nested ListSection
+     */
+    public function listSection(string $name)
+    {
+        $section = \Litepie\Layout\Components\ListSection::make($name);
+        $this->addSection($section);
+
+        return $section;
+    }
+
+    /**
+     * Create and add a nested CardSection
+     */
+    public function cardSection(string $name)
+    {
+        $section = \Litepie\Layout\Components\CardSection::make($name);
+        $this->addSection($section);
+
+        return $section;
+    }
+
+    /**
+     * End current section and return to parent builder
+     */
+    public function endSection()
+    {
+        return $this->parentBuilder;
     }
 
     /**

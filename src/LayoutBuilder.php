@@ -93,6 +93,7 @@ class LayoutBuilder
     public function formSection(string $name): FormSection
     {
         $section = FormSection::make($name);
+        $section->parentBuilder = $this;
         $this->addComponent($section);
 
         return $section;
@@ -104,6 +105,7 @@ class LayoutBuilder
     public function textSection(string $name): TextSection
     {
         $section = TextSection::make($name);
+        $section->parentBuilder = $this;
         $this->addComponent($section);
 
         return $section;
@@ -115,6 +117,7 @@ class LayoutBuilder
     public function cardSection(string $name): CardSection
     {
         $section = CardSection::make($name);
+        $section->parentBuilder = $this;
         $this->addComponent($section);
 
         return $section;
@@ -126,6 +129,7 @@ class LayoutBuilder
     public function tableSection(string $name): TableSection
     {
         $section = TableSection::make($name);
+        $section->parentBuilder = $this;
         $this->addComponent($section);
 
         return $section;
@@ -137,6 +141,7 @@ class LayoutBuilder
     public function gridSection(string $name): GridSection
     {
         $section = GridSection::make($name);
+        $section->parentBuilder = $this;
         $this->addComponent($section);
 
         return $section;
@@ -148,6 +153,7 @@ class LayoutBuilder
     public function statsSection(string $name): StatsSection
     {
         $section = StatsSection::make($name);
+        $section->parentBuilder = $this;
         $this->addComponent($section);
 
         return $section;
@@ -159,6 +165,7 @@ class LayoutBuilder
     public function tabsSection(string $name): TabsSection
     {
         $section = TabsSection::make($name);
+        $section->parentBuilder = $this;
         $this->addComponent($section);
 
         return $section;
@@ -170,6 +177,7 @@ class LayoutBuilder
     public function accordionSection(string $name): AccordionSection
     {
         $section = AccordionSection::make($name);
+        $section->parentBuilder = $this;
         $this->addComponent($section);
 
         return $section;
@@ -181,6 +189,7 @@ class LayoutBuilder
     public function scrollSpySection(string $name): ScrollSpySection
     {
         $section = ScrollSpySection::make($name);
+        $section->parentBuilder = $this;
         $this->addComponent($section);
 
         return $section;
@@ -192,6 +201,7 @@ class LayoutBuilder
     public function customSection(string $name, string $type = 'custom'): CustomSection
     {
         $section = CustomSection::make($name, $type);
+        $section->parentBuilder = $this;
         $this->addComponent($section);
 
         return $section;
@@ -203,6 +213,7 @@ class LayoutBuilder
     public function listSection(string $name): ListSection
     {
         $section = ListSection::make($name);
+        $section->parentBuilder = $this;
         $this->addComponent($section);
 
         return $section;
@@ -214,6 +225,7 @@ class LayoutBuilder
     public function timelineSection(string $name): TimelineSection
     {
         $section = TimelineSection::make($name);
+        $section->parentBuilder = $this;
         $this->addComponent($section);
 
         return $section;
@@ -225,6 +237,7 @@ class LayoutBuilder
     public function alertSection(string $name): AlertSection
     {
         $section = AlertSection::make($name);
+        $section->parentBuilder = $this;
         $this->addComponent($section);
 
         return $section;
@@ -236,6 +249,7 @@ class LayoutBuilder
     public function modalSection(string $name): ModalSection
     {
         $section = ModalSection::make($name);
+        $section->parentBuilder = $this;
         $this->addComponent($section);
 
         return $section;
@@ -247,6 +261,7 @@ class LayoutBuilder
     public function wizardSection(string $name): WizardSection
     {
         $section = WizardSection::make($name);
+        $section->parentBuilder = $this;
         $this->addComponent($section);
 
         return $section;
@@ -258,6 +273,7 @@ class LayoutBuilder
     public function chartSection(string $name): ChartSection
     {
         $section = ChartSection::make($name);
+        $section->parentBuilder = $this;
         $this->addComponent($section);
 
         return $section;
@@ -269,6 +285,7 @@ class LayoutBuilder
     public function mediaSection(string $name): MediaSection
     {
         $section = MediaSection::make($name);
+        $section->parentBuilder = $this;
         $this->addComponent($section);
 
         return $section;
@@ -280,6 +297,7 @@ class LayoutBuilder
     public function commentSection(string $name): CommentSection
     {
         $section = CommentSection::make($name);
+        $section->parentBuilder = $this;
         $this->addComponent($section);
 
         return $section;
@@ -291,6 +309,7 @@ class LayoutBuilder
     public function badgeSection(string $name): BadgeSection
     {
         $section = BadgeSection::make($name);
+        $section->parentBuilder = $this;
         $this->addComponent($section);
 
         return $section;
@@ -369,7 +388,7 @@ class LayoutBuilder
 
     public function build(): Layout
     {
-        return new Layout($this->name, $this->mode, $this->sections);
+        return new Layout($this->name, $this->mode, $this->sections, $this->sharedDataUrl, $this->sharedDataParams);
     }
 
     public function toArray(): array
@@ -379,9 +398,9 @@ class LayoutBuilder
             'context' => $this->mode,
             'shared_data_url' => $this->sharedDataUrl,
             'shared_data_params' => $this->sharedDataParams,
-            'components' => array_map(
-                fn ($component) => method_exists($component, 'toArray') ? $component->toArray() : (array) $component,
-                $this->components
+            'sections' => array_map(
+                fn ($section) => method_exists($section, 'toArray') ? $section->toArray() : (array) $section,
+                $this->sections
             ),
         ];
     }

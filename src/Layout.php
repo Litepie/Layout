@@ -28,10 +28,16 @@ class Layout implements Renderable
 
     protected array $meta = [];
 
-    public function __construct(string $module, string $context, array $sectionsOrComponents = [])
+    protected ?string $sharedDataUrl = null;
+
+    protected array $sharedDataParams = [];
+
+    public function __construct(string $module, string $context, array $sectionsOrComponents = [], ?string $sharedDataUrl = null, array $sharedDataParams = [])
     {
         $this->module = $module;
         $this->context = $context;
+        $this->sharedDataUrl = $sharedDataUrl;
+        $this->sharedDataParams = $sharedDataParams;
 
         // Support both old sections and new components
         if (! empty($sectionsOrComponents) && reset($sectionsOrComponents) instanceof Component) {
@@ -335,6 +341,8 @@ class Layout implements Renderable
             return [
                 'module' => $this->module,
                 'context' => $this->context,
+                'shared_data_url' => $this->sharedDataUrl,
+                'shared_data_params' => $this->sharedDataParams,
                 'components' => array_map(
                     fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
                     $this->components
@@ -347,6 +355,8 @@ class Layout implements Renderable
         return [
             'module' => $this->module,
             'context' => $this->context,
+            'shared_data_url' => $this->sharedDataUrl,
+            'shared_data_params' => $this->sharedDataParams,
             'sections' => array_map(fn ($section) => $section->toArray(), $this->sections),
             'meta' => $this->meta,
         ];
@@ -372,6 +382,8 @@ class Layout implements Renderable
             return [
                 'module' => $this->module,
                 'context' => $this->context,
+                'shared_data_url' => $this->sharedDataUrl,
+                'shared_data_params' => $this->sharedDataParams,
                 'components' => $components,
                 'meta' => $this->meta,
             ];
@@ -406,6 +418,8 @@ class Layout implements Renderable
         return [
             'module' => $this->module,
             'context' => $this->context,
+            'shared_data_url' => $this->sharedDataUrl,
+            'shared_data_params' => $this->sharedDataParams,
             'sections' => $sections,
             'meta' => $this->meta,
         ];

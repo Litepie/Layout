@@ -8,8 +8,6 @@ class FormSection extends BaseComponent
 
     protected ?string $label = null;
 
-    protected ?string $description = null;
-
     protected int $formColumns = 1;
 
     protected string $gap = 'md';
@@ -31,13 +29,6 @@ class FormSection extends BaseComponent
     public function label(string $label): self
     {
         $this->label = $label;
-
-        return $this;
-    }
-
-    public function description(string $description): self
-    {
-        $this->description = $description;
 
         return $this;
     }
@@ -72,8 +63,10 @@ class FormSection extends BaseComponent
 
     public function addFormField($field): self
     {
-        if (method_exists($field, 'getName')) {
+        if (is_object($field) && method_exists($field, 'getName')) {
             $this->formFields[$field->getName()] = $field;
+        } elseif (is_array($field) && isset($field['name'])) {
+            $this->formFields[$field['name']] = $field;
         } else {
             $this->formFields[] = $field;
         }

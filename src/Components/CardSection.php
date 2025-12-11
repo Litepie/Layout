@@ -4,8 +4,6 @@ namespace Litepie\Layout\Components;
 
 class CardSection extends BaseComponent
 {
-    protected ?string $description = null;
-
     protected ?string $image = null;
 
     protected string $variant = 'default'; // default, outlined, elevated
@@ -18,13 +16,6 @@ class CardSection extends BaseComponent
     public static function make(string $name): self
     {
         return new static($name);
-    }
-
-    public function description(string $description): self
-    {
-        $this->description = $description;
-
-        return $this;
     }
 
     public function image(string $image): self
