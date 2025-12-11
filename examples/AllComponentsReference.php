@@ -5,7 +5,7 @@
  * ALL COMPONENTS REFERENCE WITH JSON OUTPUT
  * ============================================================================
  *
- * Complete reference for all 19 component types in Litepie Layout v3.0+
+ * Complete reference for all 20 component types in Litepie Layout v3.0+
  * Each example includes:
  * - PHP Builder Code
  * - Sample JSON Output for API Mode
@@ -21,7 +21,7 @@ use Litepie\Layout\LayoutBuilder;
 // Use for: Bullet points, numbered lists, checklists, feature lists
 
 $listBuilder = LayoutBuilder::create('features', 'view')
-    ->listSection('feature_list')
+    ->section('list', 'feature_list')
     ->title('Premium Features')
     ->description('Everything you need to succeed')
     ->bullet() // Options: bullet(), numbered(), definition(), checklist()
@@ -72,7 +72,7 @@ $listLayout = $listBuilder->build()->toArray();
 // Use for: Order tracking, activity feeds, project milestones
 
 $timelineBuilder = LayoutBuilder::create('order', 'tracking')
-    ->timelineSection('delivery_timeline')
+    ->section('timeline', 'delivery_timeline')
     ->title('Order #12345 Timeline')
     ->vertical()
     ->alternate()
@@ -145,7 +145,7 @@ $timelineLayout = $timelineBuilder->build()->toArray();
 // Use for: System alerts, notifications, warnings, error messages
 
 $alertBuilder = LayoutBuilder::create('dashboard', 'view')
-    ->alertSection('maintenance_alert')
+    ->section('alert', 'maintenance_alert')
     ->warning() // Options: info(), success(), warning(), error()
     ->title('Scheduled Maintenance')
     ->message('System will be down for maintenance on Dec 15, 2025 from 2-4 AM EST')
@@ -181,7 +181,7 @@ $alertLayout = $alertBuilder->build()->toArray();
 // Use for: Dialogs, popups, confirmation prompts
 
 $modalBuilder = LayoutBuilder::create('user', 'profile')
-    ->modalSection('edit_profile_modal')
+    ->section('modal', 'edit_profile_modal')
     ->title('Edit Profile')
     ->subtitle('Update your personal information')
     ->size('lg') // Options: xs, sm, md, lg, xl, full
@@ -222,7 +222,7 @@ $modalLayout = $modalBuilder->build()->toArray();
 // Use for: Multi-step forms, onboarding, checkout processes
 
 $wizardBuilder = LayoutBuilder::create('registration', 'form')
-    ->wizardSection('signup_wizard')
+    ->section('wizard', 'signup_wizard')
     ->title('Account Registration')
     ->linear() // Must complete steps in order
     ->showStepNumbers()
@@ -281,7 +281,7 @@ $wizardLayout = $wizardBuilder->build()->toArray();
 // Use for: Data visualization, analytics, reports
 
 $chartBuilder = LayoutBuilder::create('analytics', 'dashboard')
-    ->chartSection('sales_chart')
+    ->section('chart', 'sales_chart')
     ->title('Monthly Sales Report')
     ->subtitle('Revenue and profit trends')
     ->line() // Options: line(), bar(), pie(), doughnut(), area()
@@ -336,7 +336,7 @@ $chartLayout = $chartBuilder->build()->toArray();
 // Use for: Image galleries, video players, audio files
 
 $mediaBuilder = LayoutBuilder::create('product', 'view')
-    ->mediaSection('product_gallery')
+    ->section('media', 'product_gallery')
     ->title('Product Images')
     ->gallery()
     ->grid() // Options: grid(), masonry(), carousel()
@@ -392,7 +392,7 @@ $mediaLayout = $mediaBuilder->build()->toArray();
 // Use for: Blog comments, discussion forums, reviews
 
 $commentBuilder = LayoutBuilder::create('blog', 'post')
-    ->commentSection('post_comments')
+    ->section('comment', 'post_comments')
     ->title('Comments')
     ->subtitle('Join the discussion')
     ->threaded() // Nested replies
@@ -439,7 +439,7 @@ $commentLayout = $commentBuilder->build()->toArray();
 // Use for: Tags, labels, status indicators, chips
 
 $badgeBuilder = LayoutBuilder::create('product', 'view')
-    ->badgeSection('product_tags')
+    ->section('badge', 'product_tags')
     ->title('Tags')
     ->pill()
     ->small()
@@ -477,12 +477,59 @@ $badgeLayout = $badgeBuilder->build()->toArray();
 */
 
 // ============================================================================
-// EXAMPLE 10: TABLE SECTION
+// EXAMPLE 10: BREADCRUMB SECTION
+// ============================================================================
+// Use for: Navigation trails, page hierarchy, location indicators
+
+$breadcrumbBuilder = LayoutBuilder::create('product', 'view')
+    ->section('breadcrumb', 'page_breadcrumb')
+    ->title('Navigation')
+    ->chevron() // Options: chevron(), arrow(), slash(), dot()
+    ->showHome()
+    ->homeUrl('/')
+    ->homeLabel('Home')
+    ->homeIcon('home')
+    ->dataUrl('/api/breadcrumb')
+    ->addItem('Products', '/products', ['icon' => 'package'])
+    ->addItem('Electronics', '/products/electronics', ['icon' => 'cpu'])
+    ->addItem('Laptops', '/products/electronics/laptops', ['icon' => 'laptop'])
+    ->addItem('MacBook Pro', null, ['active' => true, 'icon' => 'apple'])
+    ->endSection();
+$breadcrumbLayout = $breadcrumbBuilder->build()->toArray();
+
+/* JSON OUTPUT:
+{
+  "id": "product",
+  "view": "view",
+  "sections": [
+    {
+      "type": "breadcrumb",
+      "name": "page_breadcrumb",
+      "title": "Navigation",
+      "separator": ">",
+      "showHome": true,
+      "homeUrl": "/",
+      "homeLabel": "Home",
+      "homeIcon": "home",
+      "dataUrl": "/api/breadcrumb",
+      "items": [
+        {"label": "Products", "url": "/products", "meta": {"icon": "package"}},
+        {"label": "Electronics", "url": "/products/electronics", "meta": {"icon": "cpu"}},
+        {"label": "Laptops", "url": "/products/electronics/laptops", "meta": {"icon": "laptop"}},
+        {"label": "MacBook Pro", "url": null, "meta": {"active": true, "icon": "apple"}}
+      ]
+    }
+  ]
+}
+*/
+
+// ============================================================================
+// EXAMPLE 11: TABLE SECTION
 // ============================================================================
 // Use for: Data tables, grids, listings
 
 $tableBuilder = LayoutBuilder::create('users', 'list')
-    ->tableSection('users_table')
+    ->section('table', 'users_table')
     ->title('User Management')
     ->striped()
     ->bordered()
@@ -536,12 +583,12 @@ $tableLayout = $tableBuilder->build()->toArray();
 */
 
 // ============================================================================
-// EXAMPLE 11: FORM SECTION
+// EXAMPLE 12: FORM SECTION
 // ============================================================================
 // Use for: Forms, data entry, user input
 
 $formBuilder = LayoutBuilder::create('user', 'edit')
-    ->formSection('profile_form')
+    ->section('form', 'profile_form')
     ->title('Edit Profile')
     ->description('Update your personal information')
     ->columns(2) // Form layout
@@ -623,7 +670,7 @@ $formLayout = $formBuilder->build()->toArray();
 */
 
 // ============================================================================
-// EXAMPLE 12: GRID SECTION
+// EXAMPLE 13: GRID SECTION
 // ============================================================================
 // Use for: Card grids, product listings, portfolios
 
@@ -675,7 +722,7 @@ $gridLayout = $gridBuilder->build()->toArray();
 */
 
 // ============================================================================
-// EXAMPLE 13: STATS SECTION
+// EXAMPLE 14: STATS SECTION
 // ============================================================================
 // Use for: Metrics, KPIs, dashboards, statistics
 
@@ -782,7 +829,7 @@ $statsLayout = $statsBuilder->build()->toArray();
 */
 
 // ============================================================================
-// EXAMPLE 14: CARD SECTION
+// EXAMPLE 15: CARD SECTION
 // ============================================================================
 // Use for: Content cards, info boxes, feature highlights
 
@@ -827,7 +874,7 @@ $cardLayout = $cardBuilder->build()->toArray();
 */
 
 // ============================================================================
-// EXAMPLE 15: TABS SECTION
+// EXAMPLE 16: TABS SECTION
 // ============================================================================
 // Use for: Tabbed content, switching views
 
@@ -870,7 +917,7 @@ $tabsLayout = $tabsBuilder->build()->toArray();
 */
 
 // ============================================================================
-// EXAMPLE 16: ACCORDION SECTION
+// EXAMPLE 17: ACCORDION SECTION
 // ============================================================================
 // Use for: FAQs, collapsible content
 
@@ -939,7 +986,7 @@ $accordionLayout = $accordionBuilder->build()->toArray();
 */
 
 // ============================================================================
-// EXAMPLE 17: TEXT SECTION
+// EXAMPLE 18: TEXT SECTION
 // ============================================================================
 // Use for: Rich text, articles, documentation
 
@@ -978,12 +1025,12 @@ $textLayout = $textBuilder->build()->toArray();
 */
 
 // ============================================================================
-// EXAMPLE 18: SCROLL SPY SECTION
+// EXAMPLE 19: SCROLL SPY SECTION
 // ============================================================================
 // Use for: Table of contents, navigation anchors
 
 $scrollSpyBuilder = LayoutBuilder::create('docs', 'view')
-    ->scrollSpySection('toc')
+    ->section('scrollSpy', 'toc')
     ->title('Table of Contents')
     ->sticky()
     ->offset(100)
@@ -1023,7 +1070,7 @@ $scrollSpyLayout = $scrollSpyBuilder->build()->toArray();
 */
 
 // ============================================================================
-// EXAMPLE 19: CUSTOM SECTION
+// EXAMPLE 20: CUSTOM SECTION
 // ============================================================================
 // Use for: Custom components, special layouts
 

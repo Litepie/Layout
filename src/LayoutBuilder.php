@@ -1,26 +1,7 @@
 <?php
-
 namespace Litepie\Layout;
 
-use Litepie\Layout\Components\AccordionSection;
-use Litepie\Layout\Components\AlertSection;
-use Litepie\Layout\Components\BadgeSection;
-use Litepie\Layout\Components\CardSection;
-use Litepie\Layout\Components\ChartSection;
-use Litepie\Layout\Components\CommentSection;
 use Litepie\Layout\Components\CustomSection;
-use Litepie\Layout\Components\FormSection;
-use Litepie\Layout\Components\GridSection;
-use Litepie\Layout\Components\ListSection;
-use Litepie\Layout\Components\MediaSection;
-use Litepie\Layout\Components\ModalSection;
-use Litepie\Layout\Components\ScrollSpySection;
-use Litepie\Layout\Components\StatsSection;
-use Litepie\Layout\Components\TableSection;
-use Litepie\Layout\Components\TabsSection;
-use Litepie\Layout\Components\TextSection;
-use Litepie\Layout\Components\TimelineSection;
-use Litepie\Layout\Components\WizardSection;
 use Litepie\Layout\Contracts\Component;
 use Litepie\Layout\Traits\Cacheable;
 use Litepie\Layout\Traits\Debuggable;
@@ -88,227 +69,23 @@ class LayoutBuilder
     }
 
     /**
-     * Create and add a FormSection
+     * Create and add any section type dynamically
+     *
+     * @param string $type Section type (alert, modal, card, table, etc.)
+     * @param string $name Section name/identifier
+     * @return Component
      */
-    public function formSection(string $name): FormSection
+    public function section(string $type, string $name): Component
     {
-        $section = FormSection::make($name);
-        $section->parentBuilder = $this;
-        $this->addComponent($section);
+        $className = 'Litepie\\Layout\\Components\\' . ucfirst($type) . 'Section';
 
-        return $section;
-    }
+        if (! class_exists($className)) {
+            // Fallback to CustomSection if type not found
+            $section = CustomSection::make($name, $type);
+        } else {
+            $section = $className::make($name);
+        }
 
-    /**
-     * Create and add a TextSection
-     */
-    public function textSection(string $name): TextSection
-    {
-        $section = TextSection::make($name);
-        $section->parentBuilder = $this;
-        $this->addComponent($section);
-
-        return $section;
-    }
-
-    /**
-     * Create and add a CardSection
-     */
-    public function cardSection(string $name): CardSection
-    {
-        $section = CardSection::make($name);
-        $section->parentBuilder = $this;
-        $this->addComponent($section);
-
-        return $section;
-    }
-
-    /**
-     * Create and add a TableSection
-     */
-    public function tableSection(string $name): TableSection
-    {
-        $section = TableSection::make($name);
-        $section->parentBuilder = $this;
-        $this->addComponent($section);
-
-        return $section;
-    }
-
-    /**
-     * Create and add a GridSection
-     */
-    public function gridSection(string $name): GridSection
-    {
-        $section = GridSection::make($name);
-        $section->parentBuilder = $this;
-        $this->addComponent($section);
-
-        return $section;
-    }
-
-    /**
-     * Create and add a StatsSection
-     */
-    public function statsSection(string $name): StatsSection
-    {
-        $section = StatsSection::make($name);
-        $section->parentBuilder = $this;
-        $this->addComponent($section);
-
-        return $section;
-    }
-
-    /**
-     * Create and add a TabsSection
-     */
-    public function tabsSection(string $name): TabsSection
-    {
-        $section = TabsSection::make($name);
-        $section->parentBuilder = $this;
-        $this->addComponent($section);
-
-        return $section;
-    }
-
-    /**
-     * Create and add an AccordionSection
-     */
-    public function accordionSection(string $name): AccordionSection
-    {
-        $section = AccordionSection::make($name);
-        $section->parentBuilder = $this;
-        $this->addComponent($section);
-
-        return $section;
-    }
-
-    /**
-     * Create and add a ScrollSpySection
-     */
-    public function scrollSpySection(string $name): ScrollSpySection
-    {
-        $section = ScrollSpySection::make($name);
-        $section->parentBuilder = $this;
-        $this->addComponent($section);
-
-        return $section;
-    }
-
-    /**
-     * Create and add a CustomSection
-     */
-    public function customSection(string $name, string $type = 'custom'): CustomSection
-    {
-        $section = CustomSection::make($name, $type);
-        $section->parentBuilder = $this;
-        $this->addComponent($section);
-
-        return $section;
-    }
-
-    /**
-     * Create and add a ListSection
-     */
-    public function listSection(string $name): ListSection
-    {
-        $section = ListSection::make($name);
-        $section->parentBuilder = $this;
-        $this->addComponent($section);
-
-        return $section;
-    }
-
-    /**
-     * Create and add a TimelineSection
-     */
-    public function timelineSection(string $name): TimelineSection
-    {
-        $section = TimelineSection::make($name);
-        $section->parentBuilder = $this;
-        $this->addComponent($section);
-
-        return $section;
-    }
-
-    /**
-     * Create and add an AlertSection
-     */
-    public function alertSection(string $name): AlertSection
-    {
-        $section = AlertSection::make($name);
-        $section->parentBuilder = $this;
-        $this->addComponent($section);
-
-        return $section;
-    }
-
-    /**
-     * Create and add a ModalSection
-     */
-    public function modalSection(string $name): ModalSection
-    {
-        $section = ModalSection::make($name);
-        $section->parentBuilder = $this;
-        $this->addComponent($section);
-
-        return $section;
-    }
-
-    /**
-     * Create and add a WizardSection
-     */
-    public function wizardSection(string $name): WizardSection
-    {
-        $section = WizardSection::make($name);
-        $section->parentBuilder = $this;
-        $this->addComponent($section);
-
-        return $section;
-    }
-
-    /**
-     * Create and add a ChartSection
-     */
-    public function chartSection(string $name): ChartSection
-    {
-        $section = ChartSection::make($name);
-        $section->parentBuilder = $this;
-        $this->addComponent($section);
-
-        return $section;
-    }
-
-    /**
-     * Create and add a MediaSection
-     */
-    public function mediaSection(string $name): MediaSection
-    {
-        $section = MediaSection::make($name);
-        $section->parentBuilder = $this;
-        $this->addComponent($section);
-
-        return $section;
-    }
-
-    /**
-     * Create and add a CommentSection
-     */
-    public function commentSection(string $name): CommentSection
-    {
-        $section = CommentSection::make($name);
-        $section->parentBuilder = $this;
-        $this->addComponent($section);
-
-        return $section;
-    }
-
-    /**
-     * Create and add a BadgeSection
-     */
-    public function badgeSection(string $name): BadgeSection
-    {
-        $section = BadgeSection::make($name);
         $section->parentBuilder = $this;
         $this->addComponent($section);
 
@@ -318,11 +95,11 @@ class LayoutBuilder
     /**
      * Legacy support: Create a Section (old structure)
      *
-     * @deprecated Use formSection() or other specific section types
+     * @deprecated Use section($type, $name) instead
      */
-    public function section(string $name): Section
+    public function legacySection(string $name): Section
     {
-        $section = new Section($name, $this);
+        $section               = new Section($name, $this);
         $this->sections[$name] = $section;
 
         return $section;
@@ -394,12 +171,12 @@ class LayoutBuilder
     public function toArray(): array
     {
         return [
-            'module' => $this->name,
-            'context' => $this->mode,
-            'shared_data_url' => $this->sharedDataUrl,
+            'module'             => $this->name,
+            'context'            => $this->mode,
+            'shared_data_url'    => $this->sharedDataUrl,
             'shared_data_params' => $this->sharedDataParams,
-            'sections' => array_map(
-                fn ($section) => method_exists($section, 'toArray') ? $section->toArray() : (array) $section,
+            'sections'           => array_map(
+                fn($section) => method_exists($section, 'toArray') ? $section->toArray() : (array) $section,
                 $this->sections
             ),
         ];
