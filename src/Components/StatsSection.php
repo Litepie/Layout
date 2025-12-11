@@ -5,10 +5,15 @@ namespace Litepie\Layout\Components;
 class StatsSection extends BaseComponent
 {
     protected array $metrics = []; // Array of metric configurations
+
     protected string $layout = 'grid'; // grid, list, inline
+
     protected int $statsColumns = 4;
+
     protected string $size = 'md'; // sm, md, lg
+
     protected bool $showTrend = true;
+
     protected bool $showChange = true;
 
     public function __construct(string $name)
@@ -37,36 +42,42 @@ class StatsSection extends BaseComponent
             'show_trend' => $options['show_trend'] ?? $this->showTrend,
             'show_change' => $options['show_change'] ?? $this->showChange,
         ];
+
         return $this;
     }
 
     public function layout(string $layout): self
     {
         $this->layout = $layout;
+
         return $this;
     }
 
     public function columns(int $columns): self
     {
         $this->statsColumns = $columns;
+
         return $this;
     }
 
     public function size(string $size): self
     {
         $this->size = $size;
+
         return $this;
     }
 
     public function showTrend(bool $show = true): self
     {
         $this->showTrend = $show;
+
         return $this;
     }
 
     public function showChange(bool $show = true): self
     {
         $this->showChange = $show;
+
         return $this;
     }
 
@@ -94,7 +105,7 @@ class StatsSection extends BaseComponent
             'data_key' => $this->dataKey,
             'actions' => $this->actions,
             'sections' => array_map(
-                fn($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
+                fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
                 $this->sections
             ),
             'order' => $this->order,

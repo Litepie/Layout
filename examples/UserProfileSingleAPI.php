@@ -2,10 +2,10 @@
 
 /**
  * Example 1: User Profile with Single Shared API
- * 
+ *
  * Scenario: Simple user profile view where all data is lightweight and related.
  * One API call loads everything: stats, profile info, recent activity.
- * 
+ *
  * Benefits:
  * - Single API call reduces latency
  * - All data loaded together (good for related data)
@@ -13,11 +13,9 @@
  * - Faster initial page load
  */
 
-use Litepie\Layout\LayoutBuilder;
-use Litepie\Form\Fields\Text;
 use Litepie\Form\Fields\Email;
-use Litepie\Form\Fields\Textarea;
 use Litepie\Form\Fields\Select;
+use Litepie\Layout\LayoutBuilder;
 
 class UserProfileController
 {
@@ -31,107 +29,107 @@ class UserProfileController
             ->sharedDataUrl('/api/users/{id}/profile-data')
             ->sharedDataParams([
                 'include' => 'stats,profile,recent_activity,preferences',
-                'with_trends' => true
+                'with_trends' => true,
             ])
-            
+
             // Stats Section - uses nested 'data.stats' from shared response
             ->statsSection('user_stats')
-                ->title('Account Overview')
-                ->subtitle('Your performance metrics')
-                ->icon('chart-line')
-                ->useSharedData(true, 'data.stats') // Nested: data.stats
-                ->columns(4)
-                ->addMetric('total_posts', 'Total Posts', [
-                    'icon' => 'file-text',
-                    'format' => 'number',
-                    'show_trend' => true,
-                    'color' => 'blue'
-                ])
-                ->addMetric('followers', 'Followers', [
-                    'icon' => 'users',
-                    'format' => 'number',
-                    'show_trend' => true,
-                    'color' => 'green'
-                ])
-                ->addMetric('engagement_rate', 'Engagement', [
-                    'icon' => 'heart',
-                    'format' => 'percentage',
-                    'show_trend' => true,
-                    'color' => 'pink'
-                ])
-                ->addMetric('avg_response_time', 'Avg Response', [
-                    'icon' => 'clock',
-                    'format' => 'number',
-                    'suffix' => 'hrs',
-                    'show_trend' => false,
-                    'color' => 'purple'
-                ])
-                ->addAction('View Analytics', '/analytics', ['icon' => 'bar-chart'])
-            
+            ->title('Account Overview')
+            ->subtitle('Your performance metrics')
+            ->icon('chart-line')
+            ->useSharedData(true, 'data.stats') // Nested: data.stats
+            ->columns(4)
+            ->addMetric('total_posts', 'Total Posts', [
+                'icon' => 'file-text',
+                'format' => 'number',
+                'show_trend' => true,
+                'color' => 'blue',
+            ])
+            ->addMetric('followers', 'Followers', [
+                'icon' => 'users',
+                'format' => 'number',
+                'show_trend' => true,
+                'color' => 'green',
+            ])
+            ->addMetric('engagement_rate', 'Engagement', [
+                'icon' => 'heart',
+                'format' => 'percentage',
+                'show_trend' => true,
+                'color' => 'pink',
+            ])
+            ->addMetric('avg_response_time', 'Avg Response', [
+                'icon' => 'clock',
+                'format' => 'number',
+                'suffix' => 'hrs',
+                'show_trend' => false,
+                'color' => 'purple',
+            ])
+            ->addAction('View Analytics', '/analytics', ['icon' => 'bar-chart'])
+
             // Profile Card - uses nested 'data.profile.info' from shared response
             ->cardSection('profile_card')
-                ->title('Profile Information')
-                ->subtitle('Your account details')
-                ->icon('user-circle')
-                ->useSharedData(true, 'data.profile.info') // Nested: data.profile.info
-                ->variant('elevated')
-                ->description('Manage your personal information and account settings')
-                ->addAction('Edit Profile', '/profile/edit', ['style' => 'primary', 'icon' => 'edit'])
-                ->addAction('Change Avatar', '/profile/avatar', ['style' => 'secondary', 'icon' => 'camera'])
-            
+            ->title('Profile Information')
+            ->subtitle('Your account details')
+            ->icon('user-circle')
+            ->useSharedData(true, 'data.profile.info') // Nested: data.profile.info
+            ->variant('elevated')
+            ->description('Manage your personal information and account settings')
+            ->addAction('Edit Profile', '/profile/edit', ['style' => 'primary', 'icon' => 'edit'])
+            ->addAction('Change Avatar', '/profile/avatar', ['style' => 'secondary', 'icon' => 'camera'])
+
             // Recent Activity Table - uses nested 'data.activity.recent' from shared response
             ->tableSection('recent_activity')
-                ->title('Recent Activity')
-                ->subtitle('Your last 10 actions')
-                ->icon('activity')
-                ->useSharedData(true, 'data.activity.recent') // Nested: data.activity.recent
-                ->columns([
-                    ['key' => 'action', 'label' => 'Action', 'sortable' => false],
-                    ['key' => 'description', 'label' => 'Description', 'sortable' => false],
-                    ['key' => 'created_at', 'label' => 'Date', 'sortable' => false],
-                    ['key' => 'status', 'label' => 'Status', 'sortable' => false],
-                ])
-                ->searchable(false)
-                ->sortable(false)
-                ->paginated(false) // Small dataset, no pagination needed
-            
+            ->title('Recent Activity')
+            ->subtitle('Your last 10 actions')
+            ->icon('activity')
+            ->useSharedData(true, 'data.activity.recent') // Nested: data.activity.recent
+            ->columns([
+                ['key' => 'action', 'label' => 'Action', 'sortable' => false],
+                ['key' => 'description', 'label' => 'Description', 'sortable' => false],
+                ['key' => 'created_at', 'label' => 'Date', 'sortable' => false],
+                ['key' => 'status', 'label' => 'Status', 'sortable' => false],
+            ])
+            ->searchable(false)
+            ->sortable(false)
+            ->paginated(false) // Small dataset, no pagination needed
+
             // Settings Form - uses nested 'data.settings.preferences' from shared response
             ->formSection('preferences')
-                ->label('Preferences')
-                ->description('Customize your account settings')
-                ->icon('settings')
-                ->useSharedData(true, 'data.settings.preferences') // Nested: data.settings.preferences
-                ->columns(2)
-                ->addFormFields([
-                    Select::make('theme')
-                        ->label('Theme')
-                        ->options(['light' => 'Light', 'dark' => 'Dark', 'auto' => 'Auto']),
-                    
-                    Select::make('language')
-                        ->label('Language')
-                        ->options(['en' => 'English', 'es' => 'Spanish', 'fr' => 'French']),
-                    
-                    Select::make('timezone')
-                        ->label('Timezone')
-                        ->options([
-                            'UTC' => 'UTC',
-                            'America/New_York' => 'Eastern Time',
-                            'America/Los_Angeles' => 'Pacific Time',
-                            'Europe/London' => 'London',
-                        ]),
-                    
-                    Select::make('notification_frequency')
-                        ->label('Email Notifications')
-                        ->options([
-                            'realtime' => 'Real-time',
-                            'daily' => 'Daily Digest',
-                            'weekly' => 'Weekly Summary',
-                            'never' => 'Never'
-                        ]),
-                ])
-                ->addAction('Save Changes', '/profile/preferences', ['style' => 'primary'])
-                ->addAction('Reset', '/profile/preferences/reset', ['style' => 'secondary'])
-            
+            ->label('Preferences')
+            ->description('Customize your account settings')
+            ->icon('settings')
+            ->useSharedData(true, 'data.settings.preferences') // Nested: data.settings.preferences
+            ->columns(2)
+            ->addFormFields([
+                Select::make('theme')
+                    ->label('Theme')
+                    ->options(['light' => 'Light', 'dark' => 'Dark', 'auto' => 'Auto']),
+
+                Select::make('language')
+                    ->label('Language')
+                    ->options(['en' => 'English', 'es' => 'Spanish', 'fr' => 'French']),
+
+                Select::make('timezone')
+                    ->label('Timezone')
+                    ->options([
+                        'UTC' => 'UTC',
+                        'America/New_York' => 'Eastern Time',
+                        'America/Los_Angeles' => 'Pacific Time',
+                        'Europe/London' => 'London',
+                    ]),
+
+                Select::make('notification_frequency')
+                    ->label('Email Notifications')
+                    ->options([
+                        'realtime' => 'Real-time',
+                        'daily' => 'Daily Digest',
+                        'weekly' => 'Weekly Summary',
+                        'never' => 'Never',
+                    ]),
+            ])
+            ->addAction('Save Changes', '/profile/preferences', ['style' => 'primary'])
+            ->addAction('Reset', '/profile/preferences/reset', ['style' => 'secondary'])
+
             ->build();
 
         return response()->json($layout);
@@ -139,7 +137,7 @@ class UserProfileController
 
     /**
      * Get all profile data in ONE API call (used by frontend)
-     * 
+     *
      * This endpoint returns ALL data needed for the entire page
      * Data is organized in nested structure
      */
@@ -160,7 +158,7 @@ class UserProfileController
                     'avg_response_time' => $user->averageResponseTime(),
                     'avg_response_time_trend' => null, // No trend
                 ],
-                
+
                 'profile' => [
                     'info' => [
                         'name' => $user->name,
@@ -174,20 +172,20 @@ class UserProfileController
                         'status' => $user->status,
                     ],
                 ],
-                
+
                 'activity' => [
                     'recent' => $user->activities()
                         ->latest()
                         ->limit(10)
                         ->get()
-                        ->map(fn($activity) => [
+                        ->map(fn ($activity) => [
                             'action' => $activity->action,
                             'description' => $activity->description,
                             'created_at' => $activity->created_at->diffForHumans(),
                             'status' => $activity->status,
                         ]),
                 ],
-                
+
                 'settings' => [
                     'preferences' => [
                         'theme' => $user->preferences['theme'] ?? 'light',

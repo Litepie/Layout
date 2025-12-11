@@ -7,6 +7,7 @@ use Litepie\Layout\Debug\DebugInfo;
 trait Debuggable
 {
     protected ?DebugInfo $debugInfo = null;
+
     protected bool $debugEnabled = false;
 
     /**
@@ -15,9 +16,9 @@ trait Debuggable
     public function debug(bool $enabled = true): self
     {
         $this->debugEnabled = $enabled;
-        
+
         if ($enabled && $this->debugInfo === null) {
-            $this->debugInfo = new DebugInfo();
+            $this->debugInfo = new DebugInfo;
         }
 
         return $this;
@@ -66,7 +67,7 @@ trait Debuggable
      */
     public function getDebugOutput(): ?array
     {
-        if (!$this->debugEnabled || !$this->debugInfo) {
+        if (! $this->debugEnabled || ! $this->debugInfo) {
             return null;
         }
 

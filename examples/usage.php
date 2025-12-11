@@ -121,9 +121,9 @@ $customLayout = Layout::build('settings', 'preferences', function ($builder) {
         ->section('display')
         ->subsection('appearance')
         ->field('theme')->type('select')->options([
-                    'light' => 'Light',
-                    'dark' => 'Dark',
-                ])->end()
+            'light' => 'Light',
+            'dark' => 'Dark',
+        ])->end()
         ->endSubsection()
         ->endSection();
 }, $userId);

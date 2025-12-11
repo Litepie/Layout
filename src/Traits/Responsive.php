@@ -7,25 +7,29 @@ use Litepie\Layout\Responsive\DeviceDetector;
 trait Responsive
 {
     protected array $responsiveColumns = [];
+
     protected array $responsiveVisibility = [];
+
     protected array $responsiveOrder = [];
+
     protected ?string $targetDevice = null;
 
     /**
      * Set columns per breakpoint
-     * 
+     *
      * Usage:
      * ->responsiveColumns(['xs' => 1, 'sm' => 2, 'md' => 3, 'lg' => 4])
      */
     public function responsiveColumns(array $columns): self
     {
         $this->responsiveColumns = $columns;
+
         return $this;
     }
 
     /**
      * Set visibility per breakpoint
-     * 
+     *
      * Usage:
      * ->visibleOn(['md', 'lg', 'xl'])
      * ->hiddenOn(['xs', 'sm'])
@@ -33,7 +37,7 @@ trait Responsive
     public function visibleOn(array|string $breakpoints): self
     {
         $breakpoints = is_array($breakpoints) ? $breakpoints : [$breakpoints];
-        
+
         foreach ($breakpoints as $breakpoint) {
             $this->responsiveVisibility[$breakpoint] = true;
         }
@@ -47,7 +51,7 @@ trait Responsive
     public function hiddenOn(array|string $breakpoints): self
     {
         $breakpoints = is_array($breakpoints) ? $breakpoints : [$breakpoints];
-        
+
         foreach ($breakpoints as $breakpoint) {
             $this->responsiveVisibility[$breakpoint] = false;
         }
@@ -57,13 +61,14 @@ trait Responsive
 
     /**
      * Set order per breakpoint
-     * 
+     *
      * Usage:
      * ->responsiveOrder(['xs' => 2, 'md' => 1])
      */
     public function responsiveOrder(array $order): self
     {
         $this->responsiveOrder = $order;
+
         return $this;
     }
 
@@ -73,6 +78,7 @@ trait Responsive
     public function forDevice(string $device): self
     {
         $this->targetDevice = $device;
+
         return $this;
     }
 
@@ -144,7 +150,7 @@ trait Responsive
      */
     protected function detectDevice(): string
     {
-        return (new DeviceDetector())->getDeviceType();
+        return (new DeviceDetector)->getDeviceType();
     }
 
     /**
@@ -152,7 +158,7 @@ trait Responsive
      */
     protected function getBreakpointForDevice(string $device): string
     {
-        return match($device) {
+        return match ($device) {
             'mobile' => 'xs',
             'tablet' => 'md',
             'desktop' => 'xl',
@@ -165,15 +171,15 @@ trait Responsive
      */
     protected function addResponsiveToArray(array $array): array
     {
-        if (!empty($this->responsiveColumns)) {
+        if (! empty($this->responsiveColumns)) {
             $array['responsive_columns'] = $this->responsiveColumns;
         }
 
-        if (!empty($this->responsiveVisibility)) {
+        if (! empty($this->responsiveVisibility)) {
             $array['responsive_visibility'] = $this->responsiveVisibility;
         }
 
-        if (!empty($this->responsiveOrder)) {
+        if (! empty($this->responsiveOrder)) {
             $array['responsive_order'] = $this->responsiveOrder;
         }
 

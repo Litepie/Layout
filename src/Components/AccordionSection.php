@@ -5,8 +5,11 @@ namespace Litepie\Layout\Components;
 class AccordionSection extends BaseComponent
 {
     protected array $items = [];
+
     protected bool $multiple = false;
+
     protected bool $collapsible = true;
+
     protected ?string $expanded = null;
 
     public function __construct(string $name)
@@ -36,12 +39,12 @@ class AccordionSection extends BaseComponent
             'roles' => $options['roles'] ?? [],
             'description' => $options['description'] ?? null,
         ];
-        
+
         // Set first item as expanded if none set
         if ($this->expanded === null) {
             $this->expanded = $id;
         }
-        
+
         return $this;
     }
 
@@ -51,6 +54,7 @@ class AccordionSection extends BaseComponent
     public function multiple(bool $multiple = true): self
     {
         $this->multiple = $multiple;
+
         return $this;
     }
 
@@ -60,6 +64,7 @@ class AccordionSection extends BaseComponent
     public function collapsible(bool $collapsible = true): self
     {
         $this->collapsible = $collapsible;
+
         return $this;
     }
 
@@ -69,6 +74,7 @@ class AccordionSection extends BaseComponent
     public function expanded(string $itemId): self
     {
         $this->expanded = $itemId;
+
         return $this;
     }
 
@@ -94,19 +100,19 @@ class AccordionSection extends BaseComponent
     public function resolveAuthorization($user = null): self
     {
         parent::resolveAuthorization($user);
-        
+
         foreach ($this->items as &$item) {
             // Check item-level permissions
-            if (!empty($item['permissions'])) {
+            if (! empty($item['permissions'])) {
                 $item['authorized'] = $this->checkPermissions($user, $item['permissions']);
-            } elseif (!empty($item['roles'])) {
+            } elseif (! empty($item['roles'])) {
                 $item['authorized'] = $this->checkRoles($user, $item['roles']);
             } else {
                 $item['authorized'] = true;
             }
-            
+
             // Resolve authorization for components in the item
-            if (!empty($item['components'])) {
+            if (! empty($item['components'])) {
                 foreach ($item['components'] as $component) {
                     if (method_exists($component, 'resolveAuthorization')) {
                         $component->resolveAuthorization($user);
@@ -114,7 +120,7 @@ class AccordionSection extends BaseComponent
                 }
             }
         }
-        
+
         return $this;
     }
 
@@ -132,7 +138,7 @@ class AccordionSection extends BaseComponent
                 'authorized' => $item['authorized'] ?? true,
                 'description' => $item['description'],
                 'components' => array_map(
-                    fn($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
+                    fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
                     $item['components']
                 ),
                 'permissions' => $item['permissions'],

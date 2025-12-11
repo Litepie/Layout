@@ -2,11 +2,11 @@
 
 /**
  * Example 2: E-commerce Order Management with Separate APIs per Section
- * 
+ *
  * Scenario: Complex admin view with heavy, independent datasets.
  * Each section loads from its own API endpoint with different loading strategies.
  * Also demonstrates nested data keys for shared data.
- * 
+ *
  * Benefits:
  * - Light data loads immediately
  * - Heavy data loads on-demand (lazy loading)
@@ -15,10 +15,10 @@
  * - Supports real-time updates per section
  */
 
-use Litepie\Layout\LayoutBuilder;
-use Litepie\Form\Fields\Text;
-use Litepie\Form\Fields\Select;
 use Litepie\Form\Fields\Date;
+use Litepie\Form\Fields\Select;
+use Litepie\Form\Fields\Text;
+use Litepie\Layout\LayoutBuilder;
 
 class OrderManagementController
 {
@@ -28,228 +28,227 @@ class OrderManagementController
     public function getLayout()
     {
         $layout = LayoutBuilder::create('order', 'management')
-            
+
             // Quick Stats - Load immediately on mount
             ->statsSection('order_stats')
-                ->title('Order Statistics')
-                ->subtitle('Real-time order metrics')
-                ->icon('shopping-cart')
-                ->dataUrl('/api/orders/stats') // Separate, light endpoint
-                ->dataParams(['period' => 'today'])
-                ->loadOnMount(true) // Load immediately
-                ->reloadOnChange(false)
-                ->columns(4)
-                ->addMetric('total_orders', 'Total Orders', [
-                    'icon' => 'shopping-bag',
-                    'format' => 'number',
-                    'show_trend' => true,
-                    'color' => 'blue'
-                ])
-                ->addMetric('pending_orders', 'Pending', [
-                    'icon' => 'clock',
-                    'format' => 'number',
-                    'show_change' => true,
-                    'color' => 'orange'
-                ])
-                ->addMetric('revenue', 'Revenue', [
-                    'icon' => 'dollar-sign',
-                    'format' => 'currency',
-                    'prefix' => '$',
-                    'show_trend' => true,
-                    'color' => 'green'
-                ])
-                ->addMetric('avg_order_value', 'Avg Order', [
-                    'icon' => 'trending-up',
-                    'format' => 'currency',
-                    'prefix' => '$',
-                    'show_trend' => true,
-                    'color' => 'purple'
-                ])
-                ->addAction('Refresh', '#', ['icon' => 'refresh', 'action' => 'reload'])
-            
+            ->title('Order Statistics')
+            ->subtitle('Real-time order metrics')
+            ->icon('shopping-cart')
+            ->dataUrl('/api/orders/stats') // Separate, light endpoint
+            ->dataParams(['period' => 'today'])
+            ->loadOnMount(true) // Load immediately
+            ->reloadOnChange(false)
+            ->columns(4)
+            ->addMetric('total_orders', 'Total Orders', [
+                'icon' => 'shopping-bag',
+                'format' => 'number',
+                'show_trend' => true,
+                'color' => 'blue',
+            ])
+            ->addMetric('pending_orders', 'Pending', [
+                'icon' => 'clock',
+                'format' => 'number',
+                'show_change' => true,
+                'color' => 'orange',
+            ])
+            ->addMetric('revenue', 'Revenue', [
+                'icon' => 'dollar-sign',
+                'format' => 'currency',
+                'prefix' => '$',
+                'show_trend' => true,
+                'color' => 'green',
+            ])
+            ->addMetric('avg_order_value', 'Avg Order', [
+                'icon' => 'trending-up',
+                'format' => 'currency',
+                'prefix' => '$',
+                'show_trend' => true,
+                'color' => 'purple',
+            ])
+            ->addAction('Refresh', '#', ['icon' => 'refresh', 'action' => 'reload'])
+
             // Order Search/Filter Form - Static form, no data loading
             ->formSection('order_filters')
-                ->label('Search & Filter Orders')
-                ->icon('filter')
-                ->columns(4)
-                ->collapsible(true)
-                ->addFormFields([
-                    Text::make('search')
-                        ->label('Search')
-                        ->placeholder('Order ID, Customer name, Email...'),
-                    
-                    Select::make('status')
-                        ->label('Status')
-                        ->options([
-                            '' => 'All',
-                            'pending' => 'Pending',
-                            'processing' => 'Processing',
-                            'shipped' => 'Shipped',
-                            'delivered' => 'Delivered',
-                            'cancelled' => 'Cancelled',
-                        ]),
-                    
-                    Date::make('date_from')
-                        ->label('Date From'),
-                    
-                    Date::make('date_to')
-                        ->label('Date To'),
-                ])
-                ->addAction('Search', '#', ['style' => 'primary', 'action' => 'filter'])
-                ->addAction('Reset', '#', ['style' => 'secondary', 'action' => 'reset'])
-            
+            ->label('Search & Filter Orders')
+            ->icon('filter')
+            ->columns(4)
+            ->collapsible(true)
+            ->addFormFields([
+                Text::make('search')
+                    ->label('Search')
+                    ->placeholder('Order ID, Customer name, Email...'),
+
+                Select::make('status')
+                    ->label('Status')
+                    ->options([
+                        '' => 'All',
+                        'pending' => 'Pending',
+                        'processing' => 'Processing',
+                        'shipped' => 'Shipped',
+                        'delivered' => 'Delivered',
+                        'cancelled' => 'Cancelled',
+                    ]),
+
+                Date::make('date_from')
+                    ->label('Date From'),
+
+                Date::make('date_to')
+                    ->label('Date To'),
+            ])
+            ->addAction('Search', '#', ['style' => 'primary', 'action' => 'filter'])
+            ->addAction('Reset', '#', ['style' => 'secondary', 'action' => 'reset'])
+
             // Main Orders Table - Heavy data, load immediately with pagination
             ->tableSection('orders_list')
-                ->title('Orders')
-                ->subtitle('Manage customer orders')
-                ->icon('list')
-                ->dataUrl('/api/orders') // Separate, heavy endpoint
-                ->dataParams([
-                    'per_page' => 25,
-                    'sort' => '-created_at',
-                    'include' => 'customer,items_count'
-                ])
-                ->loadOnMount(true) // Load immediately
-                ->reloadOnChange(true) // Reload when filters change
-                ->columns([
-                    ['key' => 'order_number', 'label' => 'Order #', 'sortable' => true],
-                    ['key' => 'customer_name', 'label' => 'Customer', 'sortable' => true],
-                    ['key' => 'items_count', 'label' => 'Items', 'sortable' => true],
-                    ['key' => 'total', 'label' => 'Total', 'sortable' => true],
-                    ['key' => 'status', 'label' => 'Status', 'sortable' => true],
-                    ['key' => 'created_at', 'label' => 'Date', 'sortable' => true],
-                    ['key' => 'actions', 'label' => 'Actions', 'sortable' => false],
-                ])
-                ->searchable(true)
-                ->sortable(true)
-                ->paginated(true)
-                ->perPage(25)
-                ->defaultSort('created_at', 'desc')
-            
+            ->title('Orders')
+            ->subtitle('Manage customer orders')
+            ->icon('list')
+            ->dataUrl('/api/orders') // Separate, heavy endpoint
+            ->dataParams([
+                'per_page' => 25,
+                'sort' => '-created_at',
+                'include' => 'customer,items_count',
+            ])
+            ->loadOnMount(true) // Load immediately
+            ->reloadOnChange(true) // Reload when filters change
+            ->columns([
+                ['key' => 'order_number', 'label' => 'Order #', 'sortable' => true],
+                ['key' => 'customer_name', 'label' => 'Customer', 'sortable' => true],
+                ['key' => 'items_count', 'label' => 'Items', 'sortable' => true],
+                ['key' => 'total', 'label' => 'Total', 'sortable' => true],
+                ['key' => 'status', 'label' => 'Status', 'sortable' => true],
+                ['key' => 'created_at', 'label' => 'Date', 'sortable' => true],
+                ['key' => 'actions', 'label' => 'Actions', 'sortable' => false],
+            ])
+            ->searchable(true)
+            ->sortable(true)
+            ->paginated(true)
+            ->perPage(25)
+            ->defaultSort('created_at', 'desc')
+
             // Tabs for detailed views - Each tab loads separately
             ->tabsSection('order_details_tabs')
-                ->title('Order Details')
-                ->position('top')
-                
+            ->title('Order Details')
+            ->position('top')
+
                 // Tab 1: Order Items - Load when tab is viewed
-                ->addTab('items', 'Items', [], [
-                    'icon' => 'package',
-                    'component' => 'order-items-table'
-                ])
-                
+            ->addTab('items', 'Items', [], [
+                'icon' => 'package',
+                'component' => 'order-items-table',
+            ])
+
                 // Tab 2: Customer Info - Load when tab is viewed
-                ->addTab('customer', 'Customer', [], [
-                    'icon' => 'user',
-                    'component' => 'customer-info-card'
-                ])
-                
+            ->addTab('customer', 'Customer', [], [
+                'icon' => 'user',
+                'component' => 'customer-info-card',
+            ])
+
                 // Tab 3: Payment History - Load when tab is viewed
-                ->addTab('payments', 'Payments', [], [
-                    'icon' => 'credit-card',
-                    'component' => 'payment-history-table'
-                ])
-                
+            ->addTab('payments', 'Payments', [], [
+                'icon' => 'credit-card',
+                'component' => 'payment-history-table',
+            ])
+
                 // Tab 4: Shipping - Load when tab is viewed
-                ->addTab('shipping', 'Shipping', [], [
-                    'icon' => 'truck',
-                    'component' => 'shipping-tracking'
-                ])
-                
+            ->addTab('shipping', 'Shipping', [], [
+                'icon' => 'truck',
+                'component' => 'shipping-tracking',
+            ])
+
                 // Tab 5: Activity Log - Heavy, lazy load
-                ->addTab('activity', 'Activity Log', [], [
-                    'icon' => 'activity',
-                    'component' => 'activity-log-table'
-                ])
-                
-                ->activeTab('items')
-            
+            ->addTab('activity', 'Activity Log', [], [
+                'icon' => 'activity',
+                'component' => 'activity-log-table',
+            ])
+            ->activeTab('items')
+
             // Order Items Table (inside tab) - Lazy load when tab opens
             ->tableSection('order_items')
-                ->title('Order Items')
-                ->dataUrl('/api/orders/{order_id}/items') // Separate endpoint
-                ->loadOnMount(false) // Don't load initially
-                ->reloadOnChange(true) // Reload when order selection changes
-                ->columns([
-                    ['key' => 'product_name', 'label' => 'Product'],
-                    ['key' => 'sku', 'label' => 'SKU'],
-                    ['key' => 'quantity', 'label' => 'Qty'],
-                    ['key' => 'price', 'label' => 'Price'],
-                    ['key' => 'total', 'label' => 'Total'],
-                ])
-                ->searchable(false)
-                ->paginated(false)
-            
+            ->title('Order Items')
+            ->dataUrl('/api/orders/{order_id}/items') // Separate endpoint
+            ->loadOnMount(false) // Don't load initially
+            ->reloadOnChange(true) // Reload when order selection changes
+            ->columns([
+                ['key' => 'product_name', 'label' => 'Product'],
+                ['key' => 'sku', 'label' => 'SKU'],
+                ['key' => 'quantity', 'label' => 'Qty'],
+                ['key' => 'price', 'label' => 'Price'],
+                ['key' => 'total', 'label' => 'Total'],
+            ])
+            ->searchable(false)
+            ->paginated(false)
+
             // Customer Info Card (inside tab) - Lazy load
             ->cardSection('customer_info')
-                ->title('Customer Information')
-                ->dataUrl('/api/orders/{order_id}/customer') // Separate endpoint
-                ->loadOnMount(false) // Lazy load
-                ->reloadOnChange(true)
-                ->variant('outlined')
-            
+            ->title('Customer Information')
+            ->dataUrl('/api/orders/{order_id}/customer') // Separate endpoint
+            ->loadOnMount(false) // Lazy load
+            ->reloadOnChange(true)
+            ->variant('outlined')
+
             // Payment History Table (inside tab) - Lazy load
             ->tableSection('payment_history')
-                ->title('Payment History')
-                ->dataUrl('/api/orders/{order_id}/payments') // Separate endpoint
-                ->loadOnMount(false)
-                ->reloadOnChange(true)
-                ->columns([
-                    ['key' => 'payment_id', 'label' => 'Payment ID'],
-                    ['key' => 'method', 'label' => 'Method'],
-                    ['key' => 'amount', 'label' => 'Amount'],
-                    ['key' => 'status', 'label' => 'Status'],
-                    ['key' => 'date', 'label' => 'Date'],
-                ])
-                ->paginated(false)
-            
+            ->title('Payment History')
+            ->dataUrl('/api/orders/{order_id}/payments') // Separate endpoint
+            ->loadOnMount(false)
+            ->reloadOnChange(true)
+            ->columns([
+                ['key' => 'payment_id', 'label' => 'Payment ID'],
+                ['key' => 'method', 'label' => 'Method'],
+                ['key' => 'amount', 'label' => 'Amount'],
+                ['key' => 'status', 'label' => 'Status'],
+                ['key' => 'date', 'label' => 'Date'],
+            ])
+            ->paginated(false)
+
             // Shipping Tracking Card (inside tab) - Lazy load
             ->cardSection('shipping_tracking')
-                ->title('Shipping Tracking')
-                ->dataUrl('/api/orders/{order_id}/shipping') // Separate endpoint
-                ->loadOnMount(false)
-                ->reloadOnChange(true)
-            
+            ->title('Shipping Tracking')
+            ->dataUrl('/api/orders/{order_id}/shipping') // Separate endpoint
+            ->loadOnMount(false)
+            ->reloadOnChange(true)
+
             // Activity Log Table (inside tab) - Very heavy, lazy load
             ->tableSection('activity_log')
-                ->title('Activity Log')
-                ->subtitle('Complete order history')
-                ->dataUrl('/api/orders/{order_id}/activity') // Separate, heavy endpoint
-                ->dataParams(['per_page' => 50])
-                ->loadOnMount(false) // Definitely lazy load this
-                ->reloadOnChange(true)
-                ->columns([
-                    ['key' => 'timestamp', 'label' => 'Time', 'sortable' => true],
-                    ['key' => 'user', 'label' => 'User'],
-                    ['key' => 'action', 'label' => 'Action'],
-                    ['key' => 'description', 'label' => 'Description'],
-                    ['key' => 'ip_address', 'label' => 'IP Address'],
-                ])
-                ->searchable(true)
-                ->paginated(true)
-                ->perPage(50)
-            
+            ->title('Activity Log')
+            ->subtitle('Complete order history')
+            ->dataUrl('/api/orders/{order_id}/activity') // Separate, heavy endpoint
+            ->dataParams(['per_page' => 50])
+            ->loadOnMount(false) // Definitely lazy load this
+            ->reloadOnChange(true)
+            ->columns([
+                ['key' => 'timestamp', 'label' => 'Time', 'sortable' => true],
+                ['key' => 'user', 'label' => 'User'],
+                ['key' => 'action', 'label' => 'Action'],
+                ['key' => 'description', 'label' => 'Description'],
+                ['key' => 'ip_address', 'label' => 'IP Address'],
+            ])
+            ->searchable(true)
+            ->paginated(true)
+            ->perPage(50)
+
             // Recent Customer Orders (accordion) - Load when expanded
             ->accordionSection('customer_orders')
-                ->title('Customer\'s Other Orders')
-                ->multiple(false)
-                ->addItem('other_orders', 'View All Orders', [], [
-                    'icon' => 'shopping-bag',
-                    'description' => 'All orders from this customer'
-                ])
-            
+            ->title('Customer\'s Other Orders')
+            ->multiple(false)
+            ->addItem('other_orders', 'View All Orders', [], [
+                'icon' => 'shopping-bag',
+                'description' => 'All orders from this customer',
+            ])
+
             // Customer Orders Table (inside accordion) - Load when expanded
             ->tableSection('customer_all_orders')
-                ->dataUrl('/api/customers/{customer_id}/orders')
-                ->loadOnMount(false) // Load when accordion expands
-                ->columns([
-                    ['key' => 'order_number', 'label' => 'Order #'],
-                    ['key' => 'date', 'label' => 'Date'],
-                    ['key' => 'total', 'label' => 'Total'],
-                    ['key' => 'status', 'label' => 'Status'],
-                ])
-                ->paginated(true)
-                ->perPage(10)
-            
+            ->dataUrl('/api/customers/{customer_id}/orders')
+            ->loadOnMount(false) // Load when accordion expands
+            ->columns([
+                ['key' => 'order_number', 'label' => 'Order #'],
+                ['key' => 'date', 'label' => 'Date'],
+                ['key' => 'total', 'label' => 'Total'],
+                ['key' => 'status', 'label' => 'Status'],
+            ])
+            ->paginated(true)
+            ->perPage(10)
+
             ->build();
 
         return response()->json($layout);
@@ -261,7 +260,7 @@ class OrderManagementController
     public function getOrderStats(Request $request)
     {
         $period = $request->input('period', 'today');
-        
+
         return response()->json([
             'total_orders' => Order::wherePeriod($period)->count(),
             'total_orders_trend' => 15.3,
@@ -284,12 +283,13 @@ class OrderManagementController
 
         // Apply filters from form
         if ($search = $request->input('search')) {
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('order_number', 'like', "%{$search}%")
-                  ->orWhereHas('customer', fn($q) => 
-                      $q->where('name', 'like', "%{$search}%")
-                        ->orWhere('email', 'like', "%{$search}%")
-                  );
+                    ->orWhereHas(
+                        'customer',
+                        fn ($q) => $q->where('name', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%")
+                    );
             });
         }
 
@@ -322,7 +322,7 @@ class OrderManagementController
         return OrderItem::where('order_id', $orderId)
             ->with('product')
             ->get()
-            ->map(fn($item) => [
+            ->map(fn ($item) => [
                 'product_name' => $item->product->name,
                 'sku' => $item->product->sku,
                 'quantity' => $item->quantity,
@@ -337,7 +337,7 @@ class OrderManagementController
     public function getOrderCustomer($orderId)
     {
         $order = Order::with('customer')->findOrFail($orderId);
-        
+
         return [
             'name' => $order->customer->name,
             'email' => $order->customer->email,
@@ -356,7 +356,7 @@ class OrderManagementController
     {
         return Payment::where('order_id', $orderId)
             ->get()
-            ->map(fn($payment) => [
+            ->map(fn ($payment) => [
                 'payment_id' => $payment->id,
                 'method' => $payment->method,
                 'amount' => $payment->amount,
@@ -371,7 +371,7 @@ class OrderManagementController
     public function getOrderShipping($orderId)
     {
         $order = Order::with('shipment')->findOrFail($orderId);
-        
+
         return [
             'tracking_number' => $order->shipment->tracking_number,
             'carrier' => $order->shipment->carrier,
@@ -389,9 +389,9 @@ class OrderManagementController
     public function getOrderActivity($orderId, Request $request)
     {
         return ActivityLog::where('order_id', $orderId)
-            ->when($request->input('search'), function($q, $search) {
+            ->when($request->input('search'), function ($q, $search) {
                 $q->where('action', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+                    ->orWhere('description', 'like', "%{$search}%");
             })
             ->orderBy('created_at', 'desc')
             ->paginate($request->input('per_page', 50));
@@ -417,19 +417,19 @@ const layout = await fetch('/api/layouts/order/management').then(r => r.json());
 
 // 2. Component load behavior
 layout.components.forEach(component => {
-  
+
   // Stats: Load immediately
   if (component.name === 'order_stats' && component.load_on_mount) {
     loadComponentData(component.data_url, component.data_params);
     // GET /api/orders/stats?period=today
   }
-  
+
   // Orders table: Load immediately
   if (component.name === 'orders_list' && component.load_on_mount) {
     loadComponentData(component.data_url, component.data_params);
     // GET /api/orders?per_page=25&sort=-created_at&include=customer,items_count
   }
-  
+
   // Order items: Load when order is selected
   if (component.name === 'order_items' && !component.load_on_mount) {
     onOrderSelected((orderId) => {
@@ -438,7 +438,7 @@ layout.components.forEach(component => {
       // GET /api/orders/123/items
     });
   }
-  
+
   // Tab content: Load when tab is opened
   if (component.name === 'payment_history' && !component.load_on_mount) {
     onTabOpen('payments', (orderId) => {
@@ -447,7 +447,7 @@ layout.components.forEach(component => {
       // GET /api/orders/123/payments
     });
   }
-  
+
   // Activity log: Load when tab is opened (heavy)
   if (component.name === 'activity_log' && !component.load_on_mount) {
     onTabOpen('activity', (orderId) => {
@@ -456,7 +456,7 @@ layout.components.forEach(component => {
       // GET /api/orders/123/activity?per_page=50
     });
   }
-  
+
   // Reload on filter change
   if (component.reload_on_change) {
     onFilterChange((filters) => {

@@ -12,6 +12,7 @@ class LayoutImporter
     public function fromJson(string $json): LayoutBuilder
     {
         $data = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+
         return $this->fromArray($data);
     }
 
@@ -50,11 +51,12 @@ class LayoutImporter
      */
     public function fromYaml(string $yaml): LayoutBuilder
     {
-        if (!class_exists('Symfony\Component\Yaml\Yaml')) {
+        if (! class_exists('Symfony\Component\Yaml\Yaml')) {
             throw new \RuntimeException('symfony/yaml package is required for YAML import');
         }
 
         $data = \Symfony\Component\Yaml\Yaml::parse($yaml);
+
         return $this->fromArray($data);
     }
 
@@ -65,17 +67,17 @@ class LayoutImporter
     {
         foreach ($sections as $sectionData) {
             $type = $sectionData['type'] ?? 'custom';
-            $name = $sectionData['name'] ?? 'section_' . uniqid();
-            
+            $name = $sectionData['name'] ?? 'section_'.uniqid();
+
             // Call appropriate section method
-            $method = $type . 'Section';
-            
+            $method = $type.'Section';
+
             if (method_exists($layout, $method)) {
                 $section = $layout->$method($name);
-                
+
                 // Apply properties
                 $this->applySectionProperties($section, $sectionData);
-                
+
                 // Import nested sections if present
                 if (isset($sectionData['sections']) && is_array($sectionData['sections'])) {
                     foreach ($sectionData['sections'] as $nestedData) {
@@ -92,12 +94,12 @@ class LayoutImporter
     protected function importNestedSection($parentSection, array $sectionData): void
     {
         $type = $sectionData['type'] ?? 'custom';
-        $method = $type . 'Section';
-        
+        $method = $type.'Section';
+
         if (method_exists($parentSection, $method)) {
-            $section = $parentSection->$method($sectionData['name'] ?? 'nested_' . uniqid());
+            $section = $parentSection->$method($sectionData['name'] ?? 'nested_'.uniqid());
             $this->applySectionProperties($section, $sectionData);
-            
+
             if (isset($sectionData['sections'])) {
                 foreach ($sectionData['sections'] as $nested) {
                     $this->importNestedSection($section, $nested);

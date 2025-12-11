@@ -7,7 +7,9 @@ use Litepie\Layout\I18n\Translator;
 trait Translatable
 {
     protected ?Translator $translator = null;
+
     protected ?string $locale = null;
+
     protected bool $autoTranslate = false;
 
     /**
@@ -16,6 +18,7 @@ trait Translatable
     public function locale(string $locale): self
     {
         $this->locale = $locale;
+
         return $this;
     }
 
@@ -25,6 +28,7 @@ trait Translatable
     public function autoTranslate(bool $enabled = true): self
     {
         $this->autoTranslate = $enabled;
+
         return $this;
     }
 
@@ -61,7 +65,7 @@ trait Translatable
      */
     protected function translateProperties(): void
     {
-        if (!$this->autoTranslate) {
+        if (! $this->autoTranslate) {
             return;
         }
 

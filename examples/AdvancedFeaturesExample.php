@@ -2,7 +2,7 @@
 
 /**
  * Advanced Features Usage Examples
- * 
+ *
  * Demonstrates Phase 1, 2 features and Responsive Layouts
  */
 
@@ -15,14 +15,14 @@ use Litepie\Layout\LayoutBuilder;
 // Enable caching for improved performance
 $layout = LayoutBuilder::create('dashboard', 'view')
     ->cache(true, 3600) // Cache for 1 hour
-    ->cacheKey('dashboard_user_' . auth()->id())
+    ->cacheKey('dashboard_user_'.auth()->id())
     ->sharedDataUrl('/api/dashboard')
-    
+
     ->statsSection('metrics')
-        ->title('Key Metrics')
-        ->dataKey('metrics')
-        ->useSharedData(true)
-    
+    ->title('Key Metrics')
+    ->dataKey('metrics')
+    ->useSharedData(true)
+
     ->build();
 
 // Check if cached
@@ -43,34 +43,37 @@ $layout->invalidateCache();
 
 $layout = LayoutBuilder::create('user', 'profile')
     ->debug(true)
-    
+
     ->formSection('profile_form')
-        ->title('Edit Profile')
-        
+    ->title('Edit Profile')
+
         // Before render hook - transform data
-        ->onBeforeRender(function($data, $section) {
-            logger()->info('Rendering section: ' . $section->getName());
-            return $data;
-        })
-        
+    ->onBeforeRender(function ($data, $section) {
+        logger()->info('Rendering section: '.$section->getName());
+
+        return $data;
+    })
+
         // After render hook - post-process
-        ->onAfterRender(function($rendered, $section) {
-            $rendered['_rendered_at'] = now()->toIso8601String();
-            return $rendered;
-        })
-        
+    ->onAfterRender(function ($rendered, $section) {
+        $rendered['_rendered_at'] = now()->toIso8601String();
+
+        return $rendered;
+    })
+
         // Data loaded hook - transform API response
-        ->onDataLoaded(function($data, $section) {
-            logger()->info('Data loaded for: ' . $section->getName());
-            return array_map('strtoupper', $data); // Example transform
-        })
-        
+    ->onDataLoaded(function ($data, $section) {
+        logger()->info('Data loaded for: '.$section->getName());
+
+        return array_map('strtoupper', $data); // Example transform
+    })
+
         // Data error hook - error handling
-        ->onDataError(function($exception, $section) {
-            logger()->error('Failed to load data: ' . $exception->getMessage());
-            // Could notify admin, set fallback, etc.
-        })
-        
+    ->onDataError(function ($exception, $section) {
+        logger()->error('Failed to load data: '.$exception->getMessage());
+        // Could notify admin, set fallback, etc.
+    })
+
     ->build();
 
 // ============================================================================
@@ -78,21 +81,21 @@ $layout = LayoutBuilder::create('user', 'profile')
 // ============================================================================
 
 $layout = LayoutBuilder::create('settings', 'edit')
-    
+
     ->formSection('app_settings')
-        ->title('Application Settings')
-        
+    ->title('Application Settings')
+
         // Enable validation
-        ->validate(true, strict: false)
-        
+    ->validate(true, strict: false)
+
         // Add data validation rules
-        ->validateData([
-            'app_name' => 'required|string|max:255',
-            'app_url' => 'required|url',
-            'admin_email' => 'required|email',
-            'maintenance_mode' => 'boolean',
-        ])
-        
+    ->validateData([
+        'app_name' => 'required|string|max:255',
+        'app_url' => 'required|url',
+        'admin_email' => 'required|email',
+        'maintenance_mode' => 'boolean',
+    ])
+
     ->build();
 
 // Validate configuration
@@ -106,22 +109,22 @@ $validation = $layout->assertions()
 // ============================================================================
 
 $layout = LayoutBuilder::create('product', 'view')
-    
+
     ->textSection('description')
         // Use translation keys
-        ->title('product.details.title')
-        ->subtitle('product.details.subtitle')
-        
+    ->title('product.details.title')
+    ->subtitle('product.details.subtitle')
+
         // Set locale
-        ->locale('es')
-        
+    ->locale('es')
+
         // Enable auto-translation
-        ->autoTranslate(true)
-        
+    ->autoTranslate(true)
+
     ->cardSection('specifications')
-        ->title(__('product.specs.title'))
-        ->subtitle(__('product.specs.subtitle'))
-        
+    ->title(__('product.specs.title'))
+    ->subtitle(__('product.specs.subtitle'))
+
     ->build();
 
 // Multi-language support
@@ -129,9 +132,9 @@ $languages = ['en', 'es', 'fr', 'de'];
 foreach ($languages as $lang) {
     $localizedLayout = LayoutBuilder::create('product', 'view')
         ->textSection('info')
-            ->title("product.title")
-            ->locale($lang)
-            ->autoTranslate(true)
+        ->title('product.title')
+        ->locale($lang)
+        ->autoTranslate(true)
         ->build();
 }
 
@@ -142,15 +145,15 @@ foreach ($languages as $lang) {
 $layout = LayoutBuilder::create('complex', 'dashboard')
     ->debug(true) // Enable debug mode
     ->sharedDataUrl('/api/dashboard/data')
-    
+
     ->statsSection('metrics')
-        ->title('Metrics')
-        ->useSharedData(true, 'stats')
-    
+    ->title('Metrics')
+    ->useSharedData(true, 'stats')
+
     ->chartSection('sales')
-        ->title('Sales Chart')
-        ->dataUrl('/api/charts/sales')
-    
+    ->title('Sales Chart')
+    ->dataUrl('/api/charts/sales')
+
     ->build();
 
 $output = $layout->toArray();
@@ -187,10 +190,10 @@ class LayoutTest extends TestCase
     {
         $layout = LayoutBuilder::create('user', 'dashboard')
             ->statsSection('metrics')
-                ->title('Key Metrics')
+            ->title('Key Metrics')
             ->chartSection('activity')
-                ->title('Activity Chart')
-                ->dataUrl('/api/activity')
+            ->title('Activity Chart')
+            ->dataUrl('/api/activity')
             ->build();
 
         // Use assertions
@@ -217,15 +220,15 @@ class LayoutTest extends TestCase
 // Build a layout
 $layout = LayoutBuilder::create('user', 'profile')
     ->sharedDataUrl('/api/users/{id}')
-    
+
     ->cardSection('header')
-        ->title('Profile Header')
-        ->useSharedData(true, 'profile.header')
-    
+    ->title('Profile Header')
+    ->useSharedData(true, 'profile.header')
+
     ->formSection('details')
-        ->title('Profile Details')
-        ->dataUrl('/api/users/{id}/details')
-    
+    ->title('Profile Details')
+    ->dataUrl('/api/users/{id}/details')
+
     ->build();
 
 // Export to JSON
@@ -272,46 +275,46 @@ $importedLayout = LayoutBuilder::importArray($config);
 
 $layout = LayoutBuilder::create('order', 'view')
     ->sharedDataUrl('/api/orders/{id}')
-    
+
     // Show section only if order status is 'pending'
     ->alertSection('pending_alert')
-        ->warning()
-        ->message('Order is pending approval')
-        ->showWhen('order.status', '==', 'pending')
-    
+    ->warning()
+    ->message('Order is pending approval')
+    ->showWhen('order.status', '==', 'pending')
+
     // Hide section when order is cancelled
     ->cardSection('shipping_info')
-        ->title('Shipping Information')
-        ->hideWhen('order.status', '==', 'cancelled')
-        ->hideWhen('order.status', '==', 'refunded')
-    
+    ->title('Shipping Information')
+    ->hideWhen('order.status', '==', 'cancelled')
+    ->hideWhen('order.status', '==', 'refunded')
+
     // Enable payment button only when order is confirmed
     ->formSection('payment')
-        ->title('Payment')
-        ->enableWhen('order.status', '==', 'confirmed')
-        ->enableWhen('order.payment_method', 'not_null', null)
-    
+    ->title('Payment')
+    ->enableWhen('order.status', '==', 'confirmed')
+    ->enableWhen('order.payment_method', 'not_null', null)
+
     // Multiple conditions with OR logic
     ->alertSection('urgent')
-        ->error()
-        ->showWhen('order.priority', '==', 'urgent')
-        ->conditionLogic('OR')
-        ->showWhen('order.amount', '>', 1000)
-    
+    ->error()
+    ->showWhen('order.priority', '==', 'urgent')
+    ->conditionLogic('OR')
+    ->showWhen('order.amount', '>', 1000)
+
     // String expression syntax
     ->cardSection('admin_actions')
-        ->title('Admin Actions')
-        ->showWhen('user.role == admin')
-    
+    ->title('Admin Actions')
+    ->showWhen('user.role == admin')
+
     // Complex conditions
     ->tableSection('history')
-        ->title('Order History')
-        ->showWhen([
-            'field' => 'user.permissions',
-            'operator' => 'contains',
-            'value' => 'view_history'
-        ])
-    
+    ->title('Order History')
+    ->showWhen([
+        'field' => 'user.permissions',
+        'operator' => 'contains',
+        'value' => 'view_history',
+    ])
+
     ->build();
 
 // Evaluate conditions with context
@@ -337,63 +340,63 @@ $output = $layout->toArray();
 
 $layout = LayoutBuilder::create('products', 'grid')
     ->sharedDataUrl('/api/products')
-    
+
     // Responsive grid columns
     ->gridSection('product_grid')
-        ->title('Products')
-        ->columns([
-            'xs' => 1,    // 1 column on mobile
-            'sm' => 2,    // 2 columns on small tablets
-            'md' => 3,    // 3 columns on tablets
-            'lg' => 4,    // 4 columns on desktop
-            'xl' => 6,    // 6 columns on large screens
-        ])
-        ->useSharedData(true, 'products')
-    
+    ->title('Products')
+    ->columns([
+        'xs' => 1,    // 1 column on mobile
+        'sm' => 2,    // 2 columns on small tablets
+        'md' => 3,    // 3 columns on tablets
+        'lg' => 4,    // 4 columns on desktop
+        'xl' => 6,    // 6 columns on large screens
+    ])
+    ->useSharedData(true, 'products')
+
     // Responsive visibility
     ->textSection('mobile_banner')
-        ->title('Mobile Special Offer')
-        ->visibleOn(['xs', 'sm']) // Only show on mobile
-    
+    ->title('Mobile Special Offer')
+    ->visibleOn(['xs', 'sm']) // Only show on mobile
+
     ->cardSection('desktop_sidebar')
-        ->title('Filters')
-        ->hiddenOn(['xs', 'sm']) // Hide on mobile
-        ->visibleOn(['md', 'lg', 'xl'])
-    
+    ->title('Filters')
+    ->hiddenOn(['xs', 'sm']) // Hide on mobile
+    ->visibleOn(['md', 'lg', 'xl'])
+
     // Helper methods
     ->alertSection('desktop_notice')
-        ->info()
-        ->desktopOnly()
-    
+    ->info()
+    ->desktopOnly()
+
     ->statsSection('mobile_stats')
-        ->title('Quick Stats')
-        ->mobileOnly()
-    
+    ->title('Quick Stats')
+    ->mobileOnly()
+
     ->tableSection('data_table')
-        ->title('Product List')
-        ->hiddenMobile() // Alternative to desktopOnly
-    
+    ->title('Product List')
+    ->hiddenMobile() // Alternative to desktopOnly
+
     // Responsive order
     ->cardSection('primary_content')
-        ->title('Main Content')
-        ->responsiveOrder([
-            'xs' => 2,  // Second on mobile
-            'md' => 1,  // First on tablet+
-        ])
-    
+    ->title('Main Content')
+    ->responsiveOrder([
+        'xs' => 2,  // Second on mobile
+        'md' => 1,  // First on tablet+
+    ])
+
     ->cardSection('sidebar')
-        ->title('Sidebar')
-        ->responsiveOrder([
-            'xs' => 1,  // First on mobile
-            'md' => 2,  // Second on tablet+
-        ])
-    
+    ->title('Sidebar')
+    ->responsiveOrder([
+        'xs' => 1,  // First on mobile
+        'md' => 2,  // Second on tablet+
+    ])
+
     // Target specific device
     ->cardSection('tablet_view')
-        ->title('Tablet Optimized')
-        ->forDevice('tablet')
-        ->tabletOnly()
-    
+    ->title('Tablet Optimized')
+    ->forDevice('tablet')
+    ->tabletOnly()
+
     ->build();
 
 // ============================================================================
@@ -403,82 +406,83 @@ $layout = LayoutBuilder::create('products', 'grid')
 $layout = LayoutBuilder::create('shop', 'product_detail')
     // Enable caching
     ->cache(true, 1800)
-    ->cacheKey('product_' . request('id'))
-    
+    ->cacheKey('product_'.request('id'))
+
     // Enable debug in development
     ->debug(config('app.debug'))
-    
+
     // Shared data source
     ->sharedDataUrl('/api/products/{id}')
-    
+
     // Alerts with conditions
     ->alertSection('low_stock')
-        ->warning()
-        ->title('Low Stock')
-        ->message('Only few items left!')
-        ->showWhen('product.stock', '<', 5)
-        ->showWhen('product.stock', '>', 0)
-        ->conditionLogic('AND')
-        ->mobileOnly()
-    
+    ->warning()
+    ->title('Low Stock')
+    ->message('Only few items left!')
+    ->showWhen('product.stock', '<', 5)
+    ->showWhen('product.stock', '>', 0)
+    ->conditionLogic('AND')
+    ->mobileOnly()
+
     // Responsive product gallery
     ->mediaSection('gallery')
-        ->title('product.gallery.title')
-        ->locale(app()->getLocale())
-        ->autoTranslate(true)
-        ->gallery()
-        ->columns([
-            'xs' => 1,
-            'sm' => 2,
-            'md' => 3,
-            'lg' => 4,
-        ])
-        ->useSharedData(true, 'product.images')
-        ->onDataLoaded(function($images) {
-            return array_map(fn($img) => $img + ['optimized' => true], $images);
-        })
-    
+    ->title('product.gallery.title')
+    ->locale(app()->getLocale())
+    ->autoTranslate(true)
+    ->gallery()
+    ->columns([
+        'xs' => 1,
+        'sm' => 2,
+        'md' => 3,
+        'lg' => 4,
+    ])
+    ->useSharedData(true, 'product.images')
+    ->onDataLoaded(function ($images) {
+        return array_map(fn ($img) => $img + ['optimized' => true], $images);
+    })
+
     // Mobile-only quick actions
     ->badgeSection('mobile_actions')
-        ->title('Quick Actions')
-        ->mobileOnly()
-        ->useSharedData(true, 'product.tags')
-    
+    ->title('Quick Actions')
+    ->mobileOnly()
+    ->useSharedData(true, 'product.tags')
+
     // Desktop-only detailed specs
     ->tableSection('specifications')
-        ->title('product.specs.title')
-        ->desktopOnly()
-        ->useSharedData(true, 'product.specifications')
-        ->validate(true)
-        ->validateData([
-            '*.name' => 'required|string',
-            '*.value' => 'required',
-        ])
-    
+    ->title('product.specs.title')
+    ->desktopOnly()
+    ->useSharedData(true, 'product.specifications')
+    ->validate(true)
+    ->validateData([
+        '*.name' => 'required|string',
+        '*.value' => 'required',
+    ])
+
     // Conditional admin panel
     ->cardSection('admin_panel')
-        ->title('Admin Controls')
-        ->showWhen('user.role', 'in', ['admin', 'manager'])
-        ->hiddenMobile()
-        ->dataUrl('/api/products/{id}/admin')
-        ->onBeforeRender(function($data) {
-            audit_log('admin_panel_accessed', ['product_id' => request('id')]);
-            return $data;
-        })
-    
+    ->title('Admin Controls')
+    ->showWhen('user.role', 'in', ['admin', 'manager'])
+    ->hiddenMobile()
+    ->dataUrl('/api/products/{id}/admin')
+    ->onBeforeRender(function ($data) {
+        audit_log('admin_panel_accessed', ['product_id' => request('id')]);
+
+        return $data;
+    })
+
     // Review section with events
     ->commentSection('reviews')
-        ->title('Customer Reviews')
-        ->threaded()
-        ->voting()
-        ->dataUrl('/api/products/{id}/reviews')
-        ->onDataLoaded(function($reviews) {
-            return array_filter($reviews, fn($r) => $r['approved']);
-        })
-        ->onDataError(function($e) {
-            logger()->error('Failed to load reviews: ' . $e->getMessage());
-        })
-    
+    ->title('Customer Reviews')
+    ->threaded()
+    ->voting()
+    ->dataUrl('/api/products/{id}/reviews')
+    ->onDataLoaded(function ($reviews) {
+        return array_filter($reviews, fn ($r) => $r['approved']);
+    })
+    ->onDataError(function ($e) {
+        logger()->error('Failed to load reviews: '.$e->getMessage());
+    })
+
     ->build();
 
 // Export layout for version control

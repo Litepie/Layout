@@ -5,8 +5,11 @@ namespace Litepie\Layout\Components;
 class TabsSection extends BaseComponent
 {
     protected array $tabs = [];
+
     protected ?string $activeTab = null;
+
     protected string $position = 'top'; // top, left, right, bottom
+
     protected bool $lazy = false;
 
     public function __construct(string $name)
@@ -35,12 +38,12 @@ class TabsSection extends BaseComponent
             'permissions' => $options['permissions'] ?? [],
             'roles' => $options['roles'] ?? [],
         ];
-        
+
         // Set first tab as active if none set
         if ($this->activeTab === null) {
             $this->activeTab = $id;
         }
-        
+
         return $this;
     }
 
@@ -50,6 +53,7 @@ class TabsSection extends BaseComponent
     public function activeTab(string $tabId): self
     {
         $this->activeTab = $tabId;
+
         return $this;
     }
 
@@ -59,6 +63,7 @@ class TabsSection extends BaseComponent
     public function position(string $position): self
     {
         $this->position = $position;
+
         return $this;
     }
 
@@ -68,6 +73,7 @@ class TabsSection extends BaseComponent
     public function lazy(bool $lazy = true): self
     {
         $this->lazy = $lazy;
+
         return $this;
     }
 
@@ -93,19 +99,19 @@ class TabsSection extends BaseComponent
     public function resolveAuthorization($user = null): self
     {
         parent::resolveAuthorization($user);
-        
+
         foreach ($this->tabs as &$tab) {
             // Check tab-level permissions
-            if (!empty($tab['permissions'])) {
+            if (! empty($tab['permissions'])) {
                 $tab['authorized'] = $this->checkPermissions($user, $tab['permissions']);
-            } elseif (!empty($tab['roles'])) {
+            } elseif (! empty($tab['roles'])) {
                 $tab['authorized'] = $this->checkRoles($user, $tab['roles']);
             } else {
                 $tab['authorized'] = true;
             }
-            
+
             // Resolve authorization for components in the tab
-            if (!empty($tab['components'])) {
+            if (! empty($tab['components'])) {
                 foreach ($tab['components'] as $component) {
                     if (method_exists($component, 'resolveAuthorization')) {
                         $component->resolveAuthorization($user);
@@ -113,7 +119,7 @@ class TabsSection extends BaseComponent
                 }
             }
         }
-        
+
         return $this;
     }
 
@@ -130,7 +136,7 @@ class TabsSection extends BaseComponent
                 'visible' => $tab['visible'],
                 'authorized' => $tab['authorized'] ?? true,
                 'components' => array_map(
-                    fn($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
+                    fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
                     $tab['components']
                 ),
                 'permissions' => $tab['permissions'],
