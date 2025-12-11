@@ -1,6 +1,5 @@
 {
     "name": "litepie/layout",
-    "version": "3.0.0",
     "description": "A flexible, component-based layout organizer for Laravel with infinite composition of different section types",
     "keywords": [
         "laravel",
