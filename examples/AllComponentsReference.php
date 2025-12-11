@@ -213,7 +213,7 @@ $modalLayout = LayoutBuilder::create('user', 'profile')
 }
 */
 
-*/
+
 
 // ============================================================================
 // EXAMPLE 5: WIZARD SECTION
