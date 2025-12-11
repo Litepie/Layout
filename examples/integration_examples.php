@@ -1,4 +1,5 @@
 <?php
+
 // phpcs:ignoreFile
 
 /**
@@ -24,84 +25,84 @@ $nestedLayout = LayoutBuilder::create('company', 'profile')
     ->sharedDataUrl('/api/companies/{id}')
     // Main company form section
     ->formSection('company_info')
-        ->title('Company Information')
-        ->description('Basic company details')
-        ->columns(2)
-        ->addFormFields([
-            Field::make('text', 'company_name')
-                ->label('Company Name')
-                ->required()
-                ->placeholder('Acme Corporation'),
-            Field::make('text', 'registration_number')
-                ->label('Registration Number')
-                ->required(),
-            Field::make('email', 'contact_email')
-                ->label('Contact Email')
-                ->required(),
-            Field::make('tel', 'phone')
-                ->label('Phone Number')
-                ->placeholder('+1 (555) 000-0000'),
-            Field::make('textarea', 'description')
-                ->label('Company Description')
-                ->attribute('rows', 3),
-        ])
+    ->title('Company Information')
+    ->description('Basic company details')
+    ->columns(2)
+    ->addFormFields([
+        Field::make('text', 'company_name')
+            ->label('Company Name')
+            ->required()
+            ->placeholder('Acme Corporation'),
+        Field::make('text', 'registration_number')
+            ->label('Registration Number')
+            ->required(),
+        Field::make('email', 'contact_email')
+            ->label('Contact Email')
+            ->required(),
+        Field::make('tel', 'phone')
+            ->label('Phone Number')
+            ->placeholder('+1 (555) 000-0000'),
+        Field::make('textarea', 'description')
+            ->label('Company Description')
+            ->attribute('rows', 3),
+    ])
         // Nested list section inside the form
-        ->listSection('office_locations')
-            ->title('Office Locations')
-            ->description('All company office locations')
-            ->numbered()
-            ->dataUrl('/api/companies/{id}/locations')
-            ->addItem('headquarters', 'New York, NY - Headquarters', [
-                'icon' => 'building',
-                'meta' => [
-                    'address'   => '123 Main St, New York, NY 10001',
-                    'employees' => 150,
-                ],
-            ])
-            ->addItem('branch_sf', 'San Francisco, CA - Branch Office', [
-                'icon' => 'map-pin',
-                'meta' => [
-                    'address'   => '456 Market St, San Francisco, CA 94102',
-                    'employees' => 75,
-                ],
-            ])
-            ->addItem('branch_austin', 'Austin, TX - Branch Office', [
-                'icon' => 'map-pin',
-                'meta' => [
-                    'address'   => '789 Congress Ave, Austin, TX 78701',
-                    'employees' => 50,
-                ],
-            ])
-        ->endSection() // End list section, return to main form
+    ->listSection('office_locations')
+    ->title('Office Locations')
+    ->description('All company office locations')
+    ->numbered()
+    ->dataUrl('/api/companies/{id}/locations')
+    ->addItem('headquarters', 'New York, NY - Headquarters', [
+        'icon' => 'building',
+        'meta' => [
+            'address' => '123 Main St, New York, NY 10001',
+            'employees' => 150,
+        ],
+    ])
+    ->addItem('branch_sf', 'San Francisco, CA - Branch Office', [
+        'icon' => 'map-pin',
+        'meta' => [
+            'address' => '456 Market St, San Francisco, CA 94102',
+            'employees' => 75,
+        ],
+    ])
+    ->addItem('branch_austin', 'Austin, TX - Branch Office', [
+        'icon' => 'map-pin',
+        'meta' => [
+            'address' => '789 Congress Ave, Austin, TX 78701',
+            'employees' => 50,
+        ],
+    ])
+    ->endSection() // End list section, return to main form
         // Another nested form section for settings inside the main form
-        ->formSection('company_settings')
-            ->title('Company Settings')
-            ->columns(1)
-            ->addFormFields([
-                Field::make('select', 'timezone')
-                    ->label('Timezone')
-                    ->required()
-                    ->options([
-                        'America/New_York'    => 'Eastern Time (ET)',
-                        'America/Chicago'     => 'Central Time (CT)',
-                        'America/Los_Angeles' => 'Pacific Time (PT)',
-                    ])
-                    ->value('America/New_York'),
-                Field::make('select', 'fiscal_year_start')
-                    ->label('Fiscal Year Start')
-                    ->options([
-                        'january' => 'January',
-                        'april'   => 'April',
-                        'july'    => 'July',
-                        'october' => 'October',
-                    ])
-                    ->value('january'),
-                Field::make('checkbox', 'public_profile')
-                    ->label('Make company profile public')
-                    ->value(false)
-                    ->help('Allow others to find your company'),
+    ->formSection('company_settings')
+    ->title('Company Settings')
+    ->columns(1)
+    ->addFormFields([
+        Field::make('select', 'timezone')
+            ->label('Timezone')
+            ->required()
+            ->options([
+                'America/New_York' => 'Eastern Time (ET)',
+                'America/Chicago' => 'Central Time (CT)',
+                'America/Los_Angeles' => 'Pacific Time (PT)',
             ])
-        ->endSection() // End settings form, return to main form
+            ->value('America/New_York'),
+        Field::make('select', 'fiscal_year_start')
+            ->label('Fiscal Year Start')
+            ->options([
+                'january' => 'January',
+                'april' => 'April',
+                'july' => 'July',
+                'october' => 'October',
+            ])
+            ->value('january'),
+        Field::make('checkbox', 'public_profile')
+            ->label('Make company profile public')
+            ->value(false)
+            ->help('Allow others to find your company'),
+    ])
+    ->endSection() // End settings form, return to main form
     ->endSection() // End main form, return to builder
     ->build();
 // phpcs:enable Generic.WhiteSpace.ScopeIndent.IncorrectExact
@@ -169,8 +170,8 @@ $profileLayout->formSection('preferences')
             ->label('Theme')
             ->options([
                 'light' => 'Light Mode',
-                'dark'  => 'Dark Mode',
-                'auto'  => 'Auto (System)',
+                'dark' => 'Dark Mode',
+                'auto' => 'Auto (System)',
             ])
             ->value('auto'),
         Field::make('checkbox', 'email_notifications')
@@ -219,15 +220,15 @@ $productLayout->formSection('basic_info')
             ->required()
             ->options([
                 'electronics' => 'Electronics',
-                'books'       => 'Books',
-                'clothing'    => 'Clothing',
-                'home'        => 'Home & Garden',
+                'books' => 'Books',
+                'clothing' => 'Clothing',
+                'home' => 'Home & Garden',
             ]),
         Field::make('select', 'status')
             ->label('Status')
             ->options([
-                'draft'    => 'Draft',
-                'active'   => 'Active',
+                'draft' => 'Draft',
+                'active' => 'Active',
                 'inactive' => 'Inactive',
             ])
             ->value('draft'),
@@ -349,8 +350,8 @@ $checkoutLayout->formSection('payment')
             ->label('Payment Method')
             ->required()
             ->options([
-                'credit_card'   => 'Credit Card',
-                'paypal'        => 'PayPal',
+                'credit_card' => 'Credit Card',
+                'paypal' => 'PayPal',
                 'bank_transfer' => 'Bank Transfer',
             ]),
     ]);
@@ -372,18 +373,18 @@ $dashboardLayout->statsSection('key_metrics')
     ->animated()
     ->useSharedData(true, 'metrics')
     ->addMetric('revenue', 'Total Revenue', [
-        'icon'   => 'dollar-sign',
+        'icon' => 'dollar-sign',
         'format' => 'currency',
     ])
     ->addMetric('users', 'Active Users', [
-        'icon'   => 'users',
+        'icon' => 'users',
         'format' => 'number',
     ])
     ->addMetric('orders', 'Orders', [
         'icon' => 'shopping-cart',
     ])
     ->addMetric('satisfaction', 'Satisfaction', [
-        'icon'   => 'smile',
+        'icon' => 'smile',
         'format' => 'percentage',
     ]);
 
@@ -449,8 +450,8 @@ $postLayout->formSection('content')
             ->required()
             ->options([
                 'technology' => 'Technology',
-                'business'   => 'Business',
-                'lifestyle'  => 'Lifestyle',
+                'business' => 'Business',
+                'lifestyle' => 'Lifestyle',
             ]),
         Field::make('tags', 'tags')
             ->label('Tags')
@@ -476,7 +477,7 @@ $postLayout->formSection('publishing')
         Field::make('select', 'status')
             ->label('Status')
             ->options([
-                'draft'     => 'Draft',
+                'draft' => 'Draft',
                 'published' => 'Published',
                 'scheduled' => 'Scheduled',
             ])
@@ -614,18 +615,18 @@ $settingsLayout->formSection('typography')
         Field::make('select', 'font_family')
             ->label('Font Family')
             ->options([
-                'inter'    => 'Inter',
-                'roboto'   => 'Roboto',
+                'inter' => 'Inter',
+                'roboto' => 'Roboto',
                 'openSans' => 'Open Sans',
-                'lato'     => 'Lato',
+                'lato' => 'Lato',
             ])
             ->value('inter'),
         Field::make('select', 'font_size')
             ->label('Base Font Size')
             ->options([
-                'small'  => 'Small',
+                'small' => 'Small',
                 'medium' => 'Medium',
-                'large'  => 'Large',
+                'large' => 'Large',
             ])
             ->value('medium'),
     ]);
@@ -638,8 +639,8 @@ $settingsLayout->formSection('spacing')
         Field::make('select', 'spacing_scale')
             ->label('Spacing Scale')
             ->options([
-                'compact'     => 'Compact',
-                'normal'      => 'Normal',
+                'compact' => 'Compact',
+                'normal' => 'Normal',
                 'comfortable' => 'Comfortable',
             ])
             ->value('normal'),
@@ -667,9 +668,9 @@ $settingsLayout->formSection('notifications')
             ->label('Notification Frequency')
             ->options([
                 'realtime' => 'Real-time',
-                'hourly'   => 'Hourly Digest',
-                'daily'    => 'Daily Digest',
-                'weekly'   => 'Weekly Digest',
+                'hourly' => 'Hourly Digest',
+                'daily' => 'Daily Digest',
+                'weekly' => 'Weekly Digest',
             ])
             ->value('realtime'),
     ]);
@@ -728,7 +729,7 @@ $apiLayout->formSection('contact')
             ->options([
                 'general' => 'General Inquiry',
                 'support' => 'Technical Support',
-                'sales'   => 'Sales Question',
+                'sales' => 'Sales Question',
             ]),
         Field::make('textarea', 'message')
             ->label('Message')

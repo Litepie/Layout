@@ -189,7 +189,7 @@ class LayoutTest extends TestCase
             ->chartSection('activity')
             ->title('Activity Chart')
             ->dataUrl('/api/activity');
-$layout = $builder->build()->toArray();
+        $layout = $builder->build()->toArray();
 
         // Use assertions
         $layout->assertions()

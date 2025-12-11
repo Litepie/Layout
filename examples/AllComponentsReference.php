@@ -4,13 +4,12 @@
  * ============================================================================
  * ALL COMPONENTS REFERENCE WITH JSON OUTPUT
  * ============================================================================
- * 
+ *
  * Complete reference for all 19 component types in Litepie Layout v3.0+
  * Each example includes:
  * - PHP Builder Code
  * - Sample JSON Output for API Mode
- * 
- * @package Litepie\Layout
+ *
  * @version 3.0.0
  */
 
@@ -216,8 +215,6 @@ $modalLayout = $modalBuilder->build()->toArray();
   ]
 }
 */
-
-
 
 // ============================================================================
 // EXAMPLE 5: WIZARD SECTION
@@ -694,28 +691,28 @@ $statsBuilder = LayoutBuilder::create('dashboard', 'overview')
         'value' => '$124,500',
         'change' => '+12.5%',
         'trend' => 'up',
-        'color' => 'green'
+        'color' => 'green',
     ])
     ->addMetric('users', 'Active Users', [
         'icon' => 'users',
         'value' => '8,429',
         'change' => '+5.2%',
         'trend' => 'up',
-        'color' => 'blue'
+        'color' => 'blue',
     ])
     ->addMetric('orders', 'Orders', [
         'icon' => 'shopping-cart',
         'value' => '1,234',
         'change' => '-2.4%',
         'trend' => 'down',
-        'color' => 'orange'
+        'color' => 'orange',
     ])
     ->addMetric('satisfaction', 'Satisfaction', [
         'icon' => 'smile',
         'value' => '98.5%',
         'change' => '+0.8%',
         'trend' => 'up',
-        'color' => 'purple'
+        'color' => 'purple',
     ])
     ->endSection();
 $statsLayout = $statsBuilder->build()->toArray();
@@ -884,15 +881,15 @@ $accordionBuilder = LayoutBuilder::create('help', 'faq')
     ->bordered()
     ->addPanel('shipping', 'What are the shipping options?', [], [
         'content' => 'We offer standard, express, and overnight shipping.',
-        'icon' => 'truck'
+        'icon' => 'truck',
     ])
     ->addPanel('returns', 'What is your return policy?', [], [
         'content' => '30-day money-back guarantee on all products.',
-        'icon' => 'rotate-ccw'
+        'icon' => 'rotate-ccw',
     ])
     ->addPanel('warranty', 'Do products come with a warranty?', [], [
         'content' => 'All products include a 1-year manufacturer warranty.',
-        'icon' => 'shield'
+        'icon' => 'shield',
     ])
     ->defaultOpen(['shipping'])
     ->endSection();
@@ -1039,11 +1036,11 @@ $customBuilder = LayoutBuilder::create('app', 'custom')
         'currency' => 'USD',
         'basePrice' => 99,
         'features' => ['feature1', 'feature2', 'feature3'],
-        'discount' => 10
+        'discount' => 10,
     ])
     ->events([
         'onCalculate' => '/api/pricing/calculate',
-        'onSave' => '/api/pricing/save'
+        'onSave' => '/api/pricing/save',
     ])
     ->endSection();
 $customLayout = $customBuilder->build()->toArray();
@@ -1144,15 +1141,15 @@ $completeProductPage = LayoutBuilder::create('product', 'detail')
     ->action('/api/cart/add')
     ->addField('select', 'quantity', 'Quantity', [
         'options' => [1, 2, 3, 4, 5],
-        'default' => 1
+        'default' => 1,
     ])
     ->addField('select', 'size', 'Size', [
         'options' => ['S', 'M', 'L', 'XL'],
-        'required' => true
+        'required' => true,
     ])
     ->addField('select', 'color', 'Color', [
         'options' => ['Black', 'White', 'Blue'],
-        'required' => true
+        'required' => true,
     ])
     ->addSubmitButton('Add to Cart', ['icon' => 'shopping-cart'])
     ->endSection();
@@ -1277,7 +1274,7 @@ $advancedBuilder = LayoutBuilder::create('dashboard', 'admin')
     // Enable caching for better performance
     ->cache(3600) // Cache for 1 hour
     ->cacheKey('admin-dashboard-{user}')
-    
+
     // Add event listeners
     ->on('beforeRender', function ($layout) {
         // Log page view
@@ -1285,7 +1282,7 @@ $advancedBuilder = LayoutBuilder::create('dashboard', 'admin')
     ->on('afterRender', function ($layout) {
         // Track performance
     })
-    
+
     // Stats with responsive columns
     ->statsSection('kpi_metrics')
     ->title('Key Performance Indicators')
@@ -1293,21 +1290,21 @@ $advancedBuilder = LayoutBuilder::create('dashboard', 'admin')
     ->responsiveColumns(['sm' => 1, 'md' => 2, 'lg' => 4]) // Auto-adjust
     ->visibleOn(['md', 'lg', 'xl']) // Hide on small screens
     ->dataUrl('/api/dashboard/kpis')
-    
+
     // Chart with conditional display
     ->chartSection('revenue_chart')
     ->title('Revenue Chart')
     ->line()
     ->showWhen('user.role', '==', 'admin') // Only for admins
     ->dataUrl('/api/dashboard/revenue')
-    
+
     // Table with validation and export
     ->tableSection('recent_orders')
     ->title('Recent Orders')
     ->dataUrl('/api/orders/recent')
     ->validate([
         'columns' => 'required|array',
-        'dataUrl' => 'required|url'
+        'dataUrl' => 'required|url',
     ])
     ->endSection();
 $advancedLayout = $advancedBuilder->build()->toArray();
@@ -1384,10 +1381,10 @@ class ProductController extends Controller
             ->statsSection('metrics')
                 ->useSharedData(true, 'metrics')
             ->build();
-        
+
         // Return as JSON for API mode
         return response()->json($layout->toArray());
-        
+
         // Or return as view for traditional mode
         // return view('layouts.product', compact('layout'));
     }
@@ -1397,7 +1394,7 @@ class ProductController extends Controller
 // ============================================================================
 // END OF ALL COMPONENTS REFERENCE
 // ============================================================================
-// 
+//
 // For more information:
 // - Documentation: /docs/GUIDE.md
 // - Advanced Features: /docs/ADVANCED_FEATURES.md

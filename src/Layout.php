@@ -99,6 +99,7 @@ class Layout implements Renderable
     {
         $fields = [];
         $this->collectFormFieldsRecursive($this->sections, $fields);
+
         return $fields;
     }
 
@@ -178,6 +179,7 @@ class Layout implements Renderable
     public function resolveAuthorization($user = null): self
     {
         $this->resolveSectionAuthorization($this->sections, $user);
+
         return $this;
     }
 
@@ -346,6 +348,7 @@ class Layout implements Renderable
 
         return $data;
     }
+
     /**
      * Get layout for a specific user with authorization resolved
      */
@@ -362,7 +365,7 @@ class Layout implements Renderable
     public function getFormFieldByName(string $name)
     {
         foreach ($this->getAllFormFields() as $field) {
-            if (method_exists($field, "getName") && $field->getName() === $name) {
+            if (method_exists($field, 'getName') && $field->getName() === $name) {
                 return $field;
             }
         }
