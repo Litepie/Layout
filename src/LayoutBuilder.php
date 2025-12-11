@@ -1,4 +1,5 @@
 <?php
+
 namespace Litepie\Layout;
 
 use Litepie\Layout\Components\CustomSection;
@@ -71,13 +72,12 @@ class LayoutBuilder
     /**
      * Create and add any section type dynamically
      *
-     * @param string $type Section type (alert, modal, card, table, etc.)
-     * @param string $name Section name/identifier
-     * @return Component
+     * @param  string  $type  Section type (alert, modal, card, table, etc.)
+     * @param  string  $name  Section name/identifier
      */
     public function section(string $type, string $name): Component
     {
-        $className = 'Litepie\\Layout\\Components\\' . ucfirst($type) . 'Section';
+        $className = 'Litepie\\Layout\\Components\\'.ucfirst($type).'Section';
 
         if (! class_exists($className)) {
             // Fallback to CustomSection if type not found
@@ -99,7 +99,7 @@ class LayoutBuilder
      */
     public function legacySection(string $name): Section
     {
-        $section               = new Section($name, $this);
+        $section = new Section($name, $this);
         $this->sections[$name] = $section;
 
         return $section;
@@ -171,12 +171,12 @@ class LayoutBuilder
     public function toArray(): array
     {
         return [
-            'module'             => $this->name,
-            'context'            => $this->mode,
-            'shared_data_url'    => $this->sharedDataUrl,
+            'module' => $this->name,
+            'context' => $this->mode,
+            'shared_data_url' => $this->sharedDataUrl,
             'shared_data_params' => $this->sharedDataParams,
-            'sections'           => array_map(
-                fn($section) => method_exists($section, 'toArray') ? $section->toArray() : (array) $section,
+            'sections' => array_map(
+                fn ($section) => method_exists($section, 'toArray') ? $section->toArray() : (array) $section,
                 $this->sections
             ),
         ];
