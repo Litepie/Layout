@@ -2,7 +2,7 @@
 
 namespace Litepie\Layout;
 
-use Litepie\Layout\Components\CustomSection;
+use Litepie\Layout\Components\CustomComponent;
 use Litepie\Layout\Contracts\Component;
 use Litepie\Layout\Traits\Cacheable;
 use Litepie\Layout\Traits\Debuggable;
@@ -70,26 +70,49 @@ class LayoutBuilder
     }
 
     /**
-     * Create and add any section type dynamically
+     * Create and add any component type dynamically
+     * Supports both Sections (containers) and Components (content)
+     *
+     * @param  string  $type  Component type (header, layout, grid, form, card, table, etc.)
+     * @param  string  $name  Component name/identifier
+     */
+    public function component(string $type, string $name): Component
+    {
+        // Try Section suffix first (containers: Header, Layout, Grid, Tabs, Accordion)
+        $sectionClass = 'Litepie\\Layout\\Sections\\'.ucfirst($type).'Section';
+        if (class_exists($sectionClass)) {
+            $component = $sectionClass::make($name);
+            $component->parentBuilder = $this;
+            $this->addComponent($component);
+            return $component;
+        }
+
+        // Try Component suffix (content: Form, Card, Table, List, etc.)
+        $componentClass = 'Litepie\\Layout\\Components\\'.ucfirst($type).'Component';
+        if (class_exists($componentClass)) {
+            $component = $componentClass::make($name);
+            $component->parentBuilder = $this;
+            $this->addComponent($component);
+            return $component;
+        }
+
+        // Fallback to CustomComponent for unknown types
+        $component = \Litepie\Layout\Components\CustomComponent::make($name, $type);
+        $component->parentBuilder = $this;
+        $this->addComponent($component);
+        return $component;
+    }
+
+    /**
+     * Alias for component() method
+     * Legacy support for existing code
      *
      * @param  string  $type  Section type (alert, modal, card, table, etc.)
      * @param  string  $name  Section name/identifier
      */
     public function section(string $type, string $name): Component
     {
-        $className = 'Litepie\\Layout\\Components\\'.ucfirst($type).'Section';
-
-        if (! class_exists($className)) {
-            // Fallback to CustomSection if type not found
-            $section = CustomSection::make($name, $type);
-        } else {
-            $section = $className::make($name);
-        }
-
-        $section->parentBuilder = $this;
-        $this->addComponent($section);
-
-        return $section;
+        return $this->component($type, $name);
     }
 
     /**

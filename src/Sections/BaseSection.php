@@ -1,6 +1,6 @@
 <?php
 
-namespace Litepie\Layout\Components;
+namespace Litepie\Layout\Sections;
 
 use Litepie\Layout\Contracts\Component;
 use Litepie\Layout\Contracts\Renderable;
@@ -12,17 +12,17 @@ use Litepie\Layout\Traits\Translatable;
 use Litepie\Layout\Traits\Validatable;
 
 /**
- * BaseComponent
+ * BaseSection
  * 
- * Base class for simple content components without section slots.
- * Use this for components that render actual content like forms, cards, tables, lists, alerts, etc.
+ * Base class for container/layout sections that have named section slots.
+ * Use this for components that define AREAS where other components can be placed.
  * 
- * Components are leaf nodes - they cannot contain other sections or components.
- * Examples: FormComponent, CardComponent, TableComponent, ListComponent, AlertComponent
+ * These are containers that hold other components in named slots.
+ * Examples: HeaderSection, LayoutSection, GridSection, TabsSection, AccordionSection
  * 
- * For container components that have named section slots, use BaseSection instead.
+ * For simple content components without section slots, use BaseComponent instead.
  */
-abstract class BaseComponent implements Component, Renderable
+abstract class BaseSection implements Component, Renderable
 {
     use Debuggable,
         HasConditionalLogic,
@@ -68,6 +68,15 @@ abstract class BaseComponent implements Component, Renderable
     protected bool $useSharedData = false;
 
     protected ?string $dataKey = null;
+
+    // Named section slots (for container sections like Header, Layout, Grid, Tabs)
+    protected array $sectionSlots = [];
+
+    // Allowed section names for this component (empty = allow all)
+    protected array $allowedSections = [];
+
+    // Nested sections for infinite nesting (legacy support)
+    protected array $sections = [];
 
     // Reference to parent builder for endSection() support
     public $parentBuilder = null;
@@ -306,6 +315,137 @@ abstract class BaseComponent implements Component, Renderable
         return $this->dataParams;
     }
 
+    // ========================================================================
+    // Named Section Slots (for container sections)
+    // ========================================================================
+
+    /**
+     * Create or get a named section slot
+     * This is the primary method for container sections where they
+     * have named areas that hold multiple components
+     *
+     * Example: $header->section('left')->add($logo)->add($menu)
+     */
+    public function section(string $name): \Litepie\Layout\SectionContainer
+    {
+        // Validate section name if allowed sections are defined
+        if (!empty($this->allowedSections) && !in_array($name, $this->allowedSections)) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    "Section '%s' is not allowed in %s. Allowed sections: %s",
+                    $name,
+                    get_class($this),
+                    implode(', ', $this->allowedSections)
+                )
+            );
+        }
+
+        // Create section container if it doesn't exist
+        if (!isset($this->sectionSlots[$name])) {
+            $this->sectionSlots[$name] = new \Litepie\Layout\SectionContainer($name, $this);
+        }
+
+        return $this->sectionSlots[$name];
+    }
+
+    /**
+     * Get all section slots
+     */
+    public function getSectionSlots(): array
+    {
+        return $this->sectionSlots;
+    }
+
+    /**
+     * Check if section has a specific section slot
+     */
+    public function hasSection(string $name): bool
+    {
+        return isset($this->sectionSlots[$name]);
+    }
+
+    /**
+     * Get allowed section names for this section
+     */
+    public function getAllowedSections(): array
+    {
+        return $this->allowedSections;
+    }
+
+    /**
+     * Check if this section uses named section slots
+     */
+    public function hasNamedSections(): bool
+    {
+        return !empty($this->sectionSlots);
+    }
+
+    // ========================================================================
+    // Legacy Section Support (Deprecated)
+    // ========================================================================
+
+    /**
+     * Add a nested section (enables infinite nesting)
+     */
+    public function addSection(Component $section): self
+    {
+        if (method_exists($section, 'getName')) {
+            $this->sections[$section->getName()] = $section;
+        } else {
+            $this->sections[] = $section;
+        }
+
+        if (property_exists($section, 'parentBuilder')) {
+            $section->parentBuilder = $this;
+        }
+
+        return $this;
+    }
+
+    /**
+     * End current section and return to parent builder
+     */
+    public function endSection()
+    {
+        return $this->parentBuilder;
+    }
+
+    /**
+     * Add multiple nested sections
+     */
+    public function addSections(array $sections): self
+    {
+        foreach ($sections as $section) {
+            $this->addSection($section);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get all nested sections
+     */
+    public function getSections(): array
+    {
+        return $this->sections;
+    }
+
+    /**
+     * Get a specific nested section by name
+     */
+    public function getSection(string $name): ?Component
+    {
+        return $this->sections[$name] ?? null;
+    }
+
+    /**
+     * Check if component has nested sections
+     */
+    public function hasSections(): bool
+    {
+        return ! empty($this->sections);
+    }
+
     public function permissions(array|string $permissions): self
     {
         $this->permissions = is_array($permissions) ? $permissions : [$permissions];
@@ -339,6 +479,12 @@ abstract class BaseComponent implements Component, Renderable
 
         if (! empty($this->roles) && $user !== null) {
             $this->authorizedToSee = $this->checkRoles($user, $this->roles);
+        }
+
+        foreach ($this->sections as $section) {
+            if (method_exists($section, 'resolveAuthorization')) {
+                $section->resolveAuthorization($user);
+            }
         }
 
         return $this;
@@ -395,6 +541,17 @@ abstract class BaseComponent implements Component, Renderable
     }
 
     /**
+     * Helper method to serialize legacy sections for toArray()
+     */
+    protected function serializeLegacySections(): array
+    {
+        return array_map(
+            fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
+            $this->sections
+        );
+    }
+
+    /**
      * Helper method to get common properties for toArray()
      */
     protected function getCommonProperties(): array
@@ -423,7 +580,31 @@ abstract class BaseComponent implements Component, Renderable
             'meta' => $this->meta,
         ];
 
+        // Add section slots if using named sections
+        if ($this->hasNamedSections()) {
+            $properties['section_slots'] = $this->serializeSectionSlots();
+        }
+
+        // Add legacy sections for backward compatibility
+        if (!empty($this->sections)) {
+            $properties['sections'] = $this->serializeLegacySections();
+        }
+
         return $properties;
+    }
+
+    /**
+     * Helper method to serialize section slots for toArray()
+     */
+    protected function serializeSectionSlots(): array
+    {
+        $serialized = [];
+        
+        foreach ($this->sectionSlots as $name => $container) {
+            $serialized[$name] = $container->toArray();
+        }
+        
+        return $serialized;
     }
 
     abstract public function toArray(): array;

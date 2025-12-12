@@ -2,11 +2,11 @@
 
 namespace Litepie\Layout;
 
-use Litepie\Layout\Components\AccordionSection;
-use Litepie\Layout\Components\FormSection;
-use Litepie\Layout\Components\GridSection;
-use Litepie\Layout\Components\ScrollSpySection;
-use Litepie\Layout\Components\TabsSection;
+use Litepie\Layout\Sections\AccordionSection;
+use Litepie\Layout\Sections\GridSection;
+use Litepie\Layout\Sections\ScrollSpySection;
+use Litepie\Layout\Sections\TabsSection;
+use Litepie\Layout\Components\FormComponent;
 use Litepie\Layout\Contracts\Component;
 use Litepie\Layout\Contracts\Renderable;
 use Litepie\Layout\Traits\Cacheable;
@@ -109,8 +109,8 @@ class Layout implements Renderable
     protected function collectFormFieldsRecursive(array $sections, array &$fields): void
     {
         foreach ($sections as $section) {
-            // If it's a FormSection, get its form fields
-            if ($section instanceof FormSection) {
+            // If it's a FormComponent, get its form fields
+            if ($section instanceof FormComponent) {
                 foreach ($section->getFormFields() as $field) {
                     $fields[] = $field;
                 }
