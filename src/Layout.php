@@ -2,13 +2,13 @@
 
 namespace Litepie\Layout;
 
+use Litepie\Layout\Components\FormComponent;
+use Litepie\Layout\Contracts\Component;
+use Litepie\Layout\Contracts\Renderable;
 use Litepie\Layout\Sections\AccordionSection;
 use Litepie\Layout\Sections\GridSection;
 use Litepie\Layout\Sections\ScrollSpySection;
 use Litepie\Layout\Sections\TabsSection;
-use Litepie\Layout\Components\FormComponent;
-use Litepie\Layout\Contracts\Component;
-use Litepie\Layout\Contracts\Renderable;
 use Litepie\Layout\Traits\Cacheable;
 use Litepie\Layout\Traits\Debuggable;
 use Litepie\Layout\Traits\Exportable;

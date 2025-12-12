@@ -2,7 +2,7 @@
 
 /**
  * Wizard Example
- * 
+ *
  * Demonstrates creating a multi-step wizard for user onboarding.
  */
 
@@ -15,24 +15,24 @@ $layout = Layout::create('user-onboarding-wizard')
         'user_id' => auth()->id(),
         'wizard_data' => session('wizard_data', []),
     ])
-    
+
     // Header section
     ->section('header', function ($section) {
         $section->text('title')
             ->content('# Welcome! Let\'s get you set up')
             ->format('markdown')
             ->align('center');
-        
+
         $section->text('subtitle')
             ->content('Complete the steps below to finish setting up your account')
             ->align('center')
             ->meta(['color' => 'muted']);
     })
-    
+
     // Main wizard section
     ->section('main', function ($section) {
         $section->wizard('onboarding-wizard')
-            
+
             // ====================
             // STEP 1: Account Setup
             // ====================
@@ -41,39 +41,39 @@ $layout = Layout::create('user-onboarding-wizard')
                     ->content('Set up your account credentials')
                     ->variant('info')
                     ->icon('user');
-                
+
                 $step->form('account-form')
                     ->action('/onboarding/account')
                     ->method('POST')
-                    
+
                     // Username
                     ->addField('username', 'text', 'Username', [
                         'placeholder' => 'Choose a unique username',
                         'required' => true,
                         'help' => 'This will be your public display name',
                     ])
-                    
+
                     // Email
                     ->addField('email', 'email', 'Email Address', [
                         'placeholder' => 'your@email.com',
                         'required' => true,
                         'help' => 'We\'ll send a verification email',
                     ])
-                    
+
                     // Password
                     ->addField('password', 'password', 'Password', [
                         'required' => true,
                         'help' => 'Must be at least 8 characters',
                     ])
-                    
+
                     // Confirm password
                     ->addField('password_confirmation', 'password', 'Confirm Password', [
                         'required' => true,
                     ])
-                    
+
                     // Buttons
                     ->addButton('next', 'Continue to Profile →', 'submit')
-                    
+
                     // Validation
                     ->validate([
                         'username' => 'required|min:3|max:50|unique:users|alpha_dash',
@@ -81,7 +81,7 @@ $layout = Layout::create('user-onboarding-wizard')
                         'password' => 'required|min:8|confirmed',
                     ]);
             })
-            
+
             // ====================
             // STEP 2: Profile Information
             // ====================
@@ -90,42 +90,42 @@ $layout = Layout::create('user-onboarding-wizard')
                     ->content('Tell us about yourself')
                     ->variant('info')
                     ->icon('edit');
-                
+
                 $step->form('profile-form')
                     ->action('/onboarding/profile')
                     ->method('POST')
                     ->enctype('multipart/form-data')
-                    
+
                     // Profile photo
                     ->addField('avatar', 'file', 'Profile Photo', [
                         'accept' => 'image/png,image/jpeg,image/jpg',
                         'help' => 'Upload a profile picture (PNG, JPG)',
                     ])
-                    
+
                     // First name
                     ->addField('first_name', 'text', 'First Name', [
                         'placeholder' => 'John',
                         'required' => true,
                     ])
-                    
+
                     // Last name
                     ->addField('last_name', 'text', 'Last Name', [
                         'placeholder' => 'Doe',
                         'required' => true,
                     ])
-                    
+
                     // Phone
                     ->addField('phone', 'tel', 'Phone Number', [
                         'placeholder' => '+1 (555) 123-4567',
                     ])
-                    
+
                     // Bio
                     ->addField('bio', 'textarea', 'Bio', [
                         'placeholder' => 'Tell us about yourself...',
                         'rows' => 4,
                         'help' => 'Share a brief description about yourself',
                     ])
-                    
+
                     // Country
                     ->addField('country', 'select', 'Country', [
                         'required' => true,
@@ -140,11 +140,11 @@ $layout = Layout::create('user-onboarding-wizard')
                             'other' => 'Other',
                         ],
                     ])
-                    
+
                     // Buttons
                     ->addButton('back', '← Back', 'button')
                     ->addButton('next', 'Continue to Preferences →', 'submit')
-                    
+
                     // Validation
                     ->validate([
                         'avatar' => 'nullable|image|max:2048',
@@ -155,7 +155,7 @@ $layout = Layout::create('user-onboarding-wizard')
                         'country' => 'required',
                     ]);
             })
-            
+
             // ====================
             // STEP 3: Preferences
             // ====================
@@ -164,11 +164,11 @@ $layout = Layout::create('user-onboarding-wizard')
                     ->content('Customize your experience')
                     ->variant('info')
                     ->icon('settings');
-                
+
                 $step->form('preferences-form')
                     ->action('/onboarding/preferences')
                     ->method('POST')
-                    
+
                     // Language
                     ->addField('language', 'select', 'Language', [
                         'required' => true,
@@ -182,7 +182,7 @@ $layout = Layout::create('user-onboarding-wizard')
                             'zh' => 'Chinese (中文)',
                         ],
                     ])
-                    
+
                     // Timezone
                     ->addField('timezone', 'select', 'Timezone', [
                         'required' => true,
@@ -198,7 +198,7 @@ $layout = Layout::create('user-onboarding-wizard')
                             'Australia/Sydney' => 'Sydney (AEDT)',
                         ],
                     ])
-                    
+
                     // Theme
                     ->addField('theme', 'radio', 'Theme', [
                         'required' => true,
@@ -209,35 +209,35 @@ $layout = Layout::create('user-onboarding-wizard')
                             'auto' => 'Auto (System)',
                         ],
                     ])
-                    
+
                     // Email notifications
                     ->addField('notifications_email', 'checkbox', 'Email Notifications', [
                         'default' => true,
                         'help' => 'Receive important updates via email',
                     ])
-                    
+
                     // SMS notifications
                     ->addField('notifications_sms', 'checkbox', 'SMS Notifications', [
                         'default' => false,
                         'help' => 'Receive alerts via text message',
                     ])
-                    
+
                     // Newsletter
                     ->addField('newsletter', 'checkbox', 'Newsletter Subscription', [
                         'default' => false,
                         'help' => 'Stay updated with our latest news and features',
                     ])
-                    
+
                     // Marketing emails
                     ->addField('marketing', 'checkbox', 'Marketing Emails', [
                         'default' => false,
                         'help' => 'Receive promotional offers and tips',
                     ])
-                    
+
                     // Buttons
                     ->addButton('back', '← Back', 'button')
                     ->addButton('next', 'Continue to Interests →', 'submit')
-                    
+
                     // Validation
                     ->validate([
                         'language' => 'required',
@@ -245,7 +245,7 @@ $layout = Layout::create('user-onboarding-wizard')
                         'theme' => 'required|in:light,dark,auto',
                     ]);
             })
-            
+
             // ====================
             // STEP 4: Interests
             // ====================
@@ -254,11 +254,11 @@ $layout = Layout::create('user-onboarding-wizard')
                     ->content('Select your areas of interest')
                     ->variant('info')
                     ->icon('heart');
-                
+
                 $step->form('interests-form')
                     ->action('/onboarding/interests')
                     ->method('POST')
-                    
+
                     // Primary interest
                     ->addField('primary_interest', 'select', 'Primary Interest', [
                         'required' => true,
@@ -273,7 +273,7 @@ $layout = Layout::create('user-onboarding-wizard')
                             'other' => 'Other',
                         ],
                     ])
-                    
+
                     // Additional interests (multiple)
                     ->addField('interests', 'checkbox', 'Additional Interests', [
                         'help' => 'Select all that apply',
@@ -288,7 +288,7 @@ $layout = Layout::create('user-onboarding-wizard')
                             'iot' => 'Internet of Things',
                         ],
                     ])
-                    
+
                     // Experience level
                     ->addField('experience_level', 'radio', 'Experience Level', [
                         'required' => true,
@@ -299,18 +299,18 @@ $layout = Layout::create('user-onboarding-wizard')
                             'expert' => 'Expert',
                         ],
                     ])
-                    
+
                     // Buttons
                     ->addButton('back', '← Back', 'button')
                     ->addButton('next', 'Review & Complete →', 'submit')
-                    
+
                     // Validation
                     ->validate([
                         'primary_interest' => 'required',
                         'experience_level' => 'required',
                     ]);
             })
-            
+
             // ====================
             // STEP 5: Confirmation
             // ====================
@@ -319,7 +319,7 @@ $layout = Layout::create('user-onboarding-wizard')
                     ->content('Almost done! Please review your information.')
                     ->variant('success')
                     ->icon('check-circle');
-                
+
                 // Summary card
                 $step->card('summary')
                     ->title('Registration Summary')
@@ -336,31 +336,31 @@ $layout = Layout::create('user-onboarding-wizard')
                     ->addField('theme', 'Theme')
                     ->addField('primary_interest', 'Primary Interest')
                     ->addField('experience_level', 'Experience Level');
-                
+
                 // Terms acceptance form
                 $step->form('confirm-form')
                     ->action('/onboarding/complete')
                     ->method('POST')
-                    
+
                     // Terms of service
                     ->addField('terms', 'checkbox', 'I agree to the Terms of Service', [
                         'required' => true,
                     ])
-                    
+
                     // Privacy policy
                     ->addField('privacy', 'checkbox', 'I agree to the Privacy Policy', [
                         'required' => true,
                     ])
-                    
+
                     // Age confirmation
                     ->addField('age_confirm', 'checkbox', 'I confirm that I am 18 years or older', [
                         'required' => true,
                     ])
-                    
+
                     // Buttons
                     ->addButton('back', '← Back', 'button')
                     ->addButton('complete', '✓ Complete Registration', 'submit')
-                    
+
                     // Validation
                     ->validate([
                         'terms' => 'required|accepted',
@@ -368,7 +368,7 @@ $layout = Layout::create('user-onboarding-wizard')
                         'age_confirm' => 'required|accepted',
                     ]);
             })
-            
+
             // Wizard configuration
             ->currentStep('account')
             ->linear(true); // Must complete steps in order

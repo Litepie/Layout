@@ -129,6 +129,7 @@ class SectionContainer
         if (class_exists($sectionClass)) {
             $component = $sectionClass::make($name);
             $this->add($component);
+
             return $component;
         }
 
@@ -137,6 +138,7 @@ class SectionContainer
         if (class_exists($componentClass)) {
             $component = $componentClass::make($name);
             $this->add($component);
+
             return $component;
         }
 
@@ -328,6 +330,7 @@ class SectionContainer
         if (class_exists($class)) {
             $component = $class::make($name, $type);
             $this->add($component);
+
             return $component;
         }
 

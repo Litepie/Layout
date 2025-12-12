@@ -84,6 +84,7 @@ class LayoutBuilder
             $component = $sectionClass::make($name);
             $component->parentBuilder = $this;
             $this->addComponent($component);
+
             return $component;
         }
 
@@ -93,6 +94,7 @@ class LayoutBuilder
             $component = $componentClass::make($name);
             $component->parentBuilder = $this;
             $this->addComponent($component);
+
             return $component;
         }
 
@@ -100,6 +102,7 @@ class LayoutBuilder
         $component = \Litepie\Layout\Components\CustomComponent::make($name, $type);
         $component->parentBuilder = $this;
         $this->addComponent($component);
+
         return $component;
     }
 

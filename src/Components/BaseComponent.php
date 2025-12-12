@@ -13,13 +13,13 @@ use Litepie\Layout\Traits\Validatable;
 
 /**
  * BaseComponent
- * 
+ *
  * Base class for simple content components without section slots.
  * Use this for components that render actual content like forms, cards, tables, lists, alerts, etc.
- * 
+ *
  * Components are leaf nodes - they cannot contain other sections or components.
  * Examples: FormComponent, CardComponent, TableComponent, ListComponent, AlertComponent
- * 
+ *
  * For container components that have named section slots, use BaseSection instead.
  */
 abstract class BaseComponent implements Component, Renderable

@@ -2,7 +2,7 @@
 
 /**
  * Tabs with Icons Example
- * 
+ *
  * Demonstrates creating tabbed interfaces with icons, badges, and various options.
  */
 
@@ -11,15 +11,14 @@ use Litepie\Layout\Facades\Layout;
 // Create tabbed layout with icons
 $layout = Layout::create('tabs-with-icons')
     ->title('Tabbed Interface Examples')
-    
+
     ->section('main', function ($section) {
-        
         // ===========================
         // Example 1: Simple Tabs with Icons (Basic)
         // ===========================
         $section->tabs('simple-tabs')
             ->title('Simple Example')
-            
+
             ->addTab('overview', 'Overview', function ($tab) {
                 $tab->stats('users')->value(1234);
             }, [
@@ -43,13 +42,13 @@ $layout = Layout::create('tabs-with-icons')
                 'permissions' => ['manage-settings'],
             ])
             ->activeTab('overview');
-        
+
         // ===========================
         // Example 2: Complete Tab Options Demo
         // ===========================
         $section->tabs('all-options-tabs')
             ->title('All Tab Options')
-            
+
             ->addTab('tab1', 'Tab with Icon', function ($tab) {
                 $tab->card('content')->title('Tab 1 Content');
             }, [
@@ -80,13 +79,13 @@ $layout = Layout::create('tabs-with-icons')
                 'roles' => ['manager', 'admin'],  // Requires role
             ])
             ->activeTab('tab1');
-        
+
         // ===========================
         // Example 3: User Profile Tabs with Icons
         // ===========================
         $section->tabs('user-profile-tabs')
             ->title('User Profile')
-            
+
             // Personal Info tab with user icon
             ->addTab('personal', 'Personal Info', function ($tab) {
                 $tab->card('personal-info')
@@ -99,7 +98,7 @@ $layout = Layout::create('tabs-with-icons')
             }, [
                 'icon' => 'user',
             ])
-            
+
             // Account Settings tab with settings icon
             ->addTab('account', 'Account', function ($tab) {
                 $tab->form('account-settings')
@@ -112,7 +111,7 @@ $layout = Layout::create('tabs-with-icons')
             }, [
                 'icon' => 'settings',
             ])
-            
+
             // Security tab with shield icon
             ->addTab('security', 'Security', function ($tab) {
                 $tab->form('security-settings')
@@ -122,7 +121,7 @@ $layout = Layout::create('tabs-with-icons')
                     ->addField('new_password', 'password', 'New Password')
                     ->addField('confirm_password', 'password', 'Confirm Password')
                     ->addButton('change', 'Change Password', 'submit');
-                
+
                 $tab->card('sessions')
                     ->title('Active Sessions')
                     ->dataUrl('/api/profile/sessions')
@@ -130,7 +129,7 @@ $layout = Layout::create('tabs-with-icons')
             }, [
                 'icon' => 'shield',
             ])
-            
+
             // Notifications tab with bell icon and badge
             ->addTab('notifications', 'Notifications', function ($tab) {
                 $tab->form('notification-settings')
@@ -141,7 +140,7 @@ $layout = Layout::create('tabs-with-icons')
                     ->addField('sms_notifications', 'checkbox', 'SMS Notifications', ['default' => false])
                     ->addField('marketing_emails', 'checkbox', 'Marketing Emails', ['default' => false])
                     ->addButton('save', 'Save Preferences', 'submit');
-                
+
                 $tab->table('notification-history')
                     ->title('Recent Notifications')
                     ->dataUrl('/api/profile/notifications')
@@ -153,7 +152,7 @@ $layout = Layout::create('tabs-with-icons')
                 'icon' => 'bell',
                 'badge' => '5',  // Show unread count
             ])
-            
+
             // Privacy tab with lock icon
             ->addTab('privacy', 'Privacy', function ($tab) {
                 $tab->form('privacy-settings')
@@ -173,16 +172,16 @@ $layout = Layout::create('tabs-with-icons')
             }, [
                 'icon' => 'lock',
             ])
-            
+
             ->activeTab('personal')
             ->position('top');
-        
+
         // ===========================
         // Example 4: Dashboard Tabs with Icons and Permissions
         // ===========================
         $section->tabs('dashboard-tabs')
             ->title('Dashboard')
-            
+
             // Overview tab
             ->addTab('overview', 'Overview', function ($tab) {
                 $tab->grid('stats')
@@ -209,14 +208,14 @@ $layout = Layout::create('tabs-with-icons')
             }, [
                 'icon' => 'home',
             ])
-            
+
             // Analytics tab (restricted to certain roles)
             ->addTab('analytics', 'Analytics', function ($tab) {
                 $tab->chart('sales-chart')
                     ->title('Sales Trends')
                     ->chartType('line')
                     ->dataUrl('/api/analytics/sales');
-                
+
                 $tab->chart('revenue-chart')
                     ->title('Revenue by Category')
                     ->chartType('doughnut')
@@ -225,7 +224,7 @@ $layout = Layout::create('tabs-with-icons')
                 'icon' => 'bar-chart',
                 'permissions' => ['view-analytics'],
             ])
-            
+
             // Messages tab with badge
             ->addTab('messages', 'Messages', function ($tab) {
                 $tab->table('messages-table')
@@ -240,7 +239,7 @@ $layout = Layout::create('tabs-with-icons')
                 'icon' => 'mail',
                 'badge' => '12',  // Unread messages count
             ])
-            
+
             // Reports tab (admin only)
             ->addTab('reports', 'Reports', function ($tab) {
                 $tab->form('report-generator')
@@ -257,7 +256,7 @@ $layout = Layout::create('tabs-with-icons')
                     ->addField('date_from', 'date', 'From Date')
                     ->addField('date_to', 'date', 'To Date')
                     ->addButton('generate', 'Generate Report', 'submit');
-                
+
                 $tab->card('recent-reports')
                     ->title('Recent Reports')
                     ->dataUrl('/api/reports/recent');
@@ -265,7 +264,7 @@ $layout = Layout::create('tabs-with-icons')
                 'icon' => 'file-text',
                 'roles' => ['admin', 'manager'],
             ])
-            
+
             // Settings tab (disabled for demo)
             ->addTab('settings', 'Settings', function ($tab) {
                 $tab->text('coming-soon')
@@ -275,15 +274,15 @@ $layout = Layout::create('tabs-with-icons')
                 'icon' => 'settings',
                 'disabled' => true,  // Tab is disabled
             ])
-            
+
             ->activeTab('overview');
-        
+
         // ===========================
         // Example 5: Project Management Tabs
         // ===========================
         $section->tabs('project-tabs')
             ->title('Project Management')
-            
+
             // Tasks tab
             ->addTab('tasks', 'Tasks', function ($tab) {
                 $tab->table('tasks-table')
@@ -300,20 +299,20 @@ $layout = Layout::create('tabs-with-icons')
                 'icon' => 'check-square',
                 'badge' => '8',  // Pending tasks
             ])
-            
+
             // Team tab
             ->addTab('team', 'Team', function ($tab) {
                 $tab->grid('team-members')
                     ->columns(3)
                     ->dataUrl('/api/projects/1/team');
-                
+
                 $tab->card('add-member')
                     ->title('Invite Team Member')
                     ->addAction('invite', 'Invite', ['icon' => 'user-plus']);
             }, [
                 'icon' => 'users',
             ])
-            
+
             // Files tab
             ->addTab('files', 'Files', function ($tab) {
                 $tab->document('project-files')
@@ -326,7 +325,7 @@ $layout = Layout::create('tabs-with-icons')
             }, [
                 'icon' => 'folder',
             ])
-            
+
             // Timeline tab
             ->addTab('timeline', 'Timeline', function ($tab) {
                 $tab->timeline('project-timeline')
@@ -336,7 +335,7 @@ $layout = Layout::create('tabs-with-icons')
             }, [
                 'icon' => 'clock',
             ])
-            
+
             // Discussion tab
             ->addTab('discussion', 'Discussion', function ($tab) {
                 $tab->card('discussion-board')
@@ -346,16 +345,16 @@ $layout = Layout::create('tabs-with-icons')
                 'icon' => 'message-circle',
                 'badge' => '3',  // Unread messages
             ])
-            
+
             ->activeTab('tasks')
             ->position('left');  // Tabs on the left side
-        
+
         // ===========================
         // Example 6: E-commerce Product Tabs
         // ===========================
         $section->tabs('product-tabs')
             ->title('Product Details')
-            
+
             // Description tab
             ->addTab('description', 'Description', function ($tab) {
                 $tab->text('product-description')
@@ -364,7 +363,7 @@ $layout = Layout::create('tabs-with-icons')
             }, [
                 'icon' => 'file-text',
             ])
-            
+
             // Specifications tab
             ->addTab('specs', 'Specifications', function ($tab) {
                 $tab->table('specifications')
@@ -374,7 +373,7 @@ $layout = Layout::create('tabs-with-icons')
             }, [
                 'icon' => 'list',
             ])
-            
+
             // Reviews tab
             ->addTab('reviews', 'Reviews', function ($tab) {
                 $tab->stats('rating')
@@ -382,7 +381,7 @@ $layout = Layout::create('tabs-with-icons')
                     ->value(4.5)
                     ->suffix('/ 5.0')
                     ->icon('star');
-                
+
                 $tab->card('reviews-list')
                     ->title('Customer Reviews')
                     ->dataUrl('/api/products/1/reviews');
@@ -390,7 +389,7 @@ $layout = Layout::create('tabs-with-icons')
                 'icon' => 'star',
                 'badge' => '127',  // Review count
             ])
-            
+
             // Q&A tab
             ->addTab('qa', 'Questions & Answers', function ($tab) {
                 $tab->accordion('qa-list')
@@ -399,7 +398,7 @@ $layout = Layout::create('tabs-with-icons')
             }, [
                 'icon' => 'help-circle',
             ])
-            
+
             ->activeTab('description')
             ->lazy(true);  // Lazy load tab content
     });

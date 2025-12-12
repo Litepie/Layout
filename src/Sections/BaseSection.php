@@ -13,13 +13,13 @@ use Litepie\Layout\Traits\Validatable;
 
 /**
  * BaseSection
- * 
+ *
  * Base class for container/layout sections that have named section slots.
  * Use this for components that define AREAS where other components can be placed.
- * 
+ *
  * These are containers that hold other components in named slots.
  * Examples: HeaderSection, LayoutSection, GridSection, TabsSection, AccordionSection
- * 
+ *
  * For simple content components without section slots, use BaseComponent instead.
  */
 abstract class BaseSection implements Component, Renderable
@@ -329,7 +329,7 @@ abstract class BaseSection implements Component, Renderable
     public function section(string $name): \Litepie\Layout\SectionContainer
     {
         // Validate section name if allowed sections are defined
-        if (!empty($this->allowedSections) && !in_array($name, $this->allowedSections)) {
+        if (! empty($this->allowedSections) && ! in_array($name, $this->allowedSections)) {
             throw new \InvalidArgumentException(
                 sprintf(
                     "Section '%s' is not allowed in %s. Allowed sections: %s",
@@ -341,7 +341,7 @@ abstract class BaseSection implements Component, Renderable
         }
 
         // Create section container if it doesn't exist
-        if (!isset($this->sectionSlots[$name])) {
+        if (! isset($this->sectionSlots[$name])) {
             $this->sectionSlots[$name] = new \Litepie\Layout\SectionContainer($name, $this);
         }
 
@@ -377,7 +377,7 @@ abstract class BaseSection implements Component, Renderable
      */
     public function hasNamedSections(): bool
     {
-        return !empty($this->sectionSlots);
+        return ! empty($this->sectionSlots);
     }
 
     // ========================================================================
@@ -586,7 +586,7 @@ abstract class BaseSection implements Component, Renderable
         }
 
         // Add legacy sections for backward compatibility
-        if (!empty($this->sections)) {
+        if (! empty($this->sections)) {
             $properties['sections'] = $this->serializeLegacySections();
         }
 
@@ -599,11 +599,11 @@ abstract class BaseSection implements Component, Renderable
     protected function serializeSectionSlots(): array
     {
         $serialized = [];
-        
+
         foreach ($this->sectionSlots as $name => $container) {
             $serialized[$name] = $container->toArray();
         }
-        
+
         return $serialized;
     }
 
