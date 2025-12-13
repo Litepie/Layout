@@ -8,6 +8,10 @@ class ChartComponent extends BaseComponent
 
     protected array $series = []; // Series configurations
 
+    protected array $labels = []; // Chart labels/categories
+
+    protected array $datasets = []; // Chart datasets
+
     protected array $chartOptions = [];
 
     protected ?int $height = null;
@@ -75,6 +79,34 @@ class ChartComponent extends BaseComponent
         return $this;
     }
 
+    /**
+     * Set chart labels/categories
+     */
+    public function labels(array $labels): self
+    {
+        $this->labels = $labels;
+
+        return $this;
+    }
+
+    /**
+     * Set chart datasets
+     */
+    public function datasets(array $datasets): self
+    {
+        $this->datasets = $datasets;
+
+        return $this;
+    }
+
+    /**
+     * Alias for chartOptions
+     */
+    public function options(array $options): self
+    {
+        return $this->chartOptions($options);
+    }
+
     public function chartOptions(array $options): self
     {
         $this->chartOptions = array_merge($this->chartOptions, $options);
@@ -119,6 +151,8 @@ class ChartComponent extends BaseComponent
             'subtitle' => $this->subtitle,
             'icon' => $this->icon,
             'chart_type' => $this->chartType,
+            'labels' => $this->labels,
+            'datasets' => $this->datasets,
             'series' => $this->series,
             'chart_options' => $this->chartOptions,
             'height' => $this->height,
@@ -134,10 +168,6 @@ class ChartComponent extends BaseComponent
             'use_shared_data' => $this->useSharedData,
             'data_key' => $this->dataKey,
             'actions' => $this->actions,
-            'sections' => array_map(
-                fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
-                $this->sections
-            ),
             'order' => $this->order,
             'visible' => $this->visible,
             'permissions' => $this->permissions,

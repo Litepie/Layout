@@ -112,7 +112,7 @@ $layout = Layout::create('contact-form')
                 'required' => true,
             ])
             ->addButton('submit', 'Send Message', 'submit')
-            ->validate([
+            ->validationRules([
                 'name' => 'required|min:2|max:100',
                 'email' => 'required|email',
                 'subject' => 'required|max:200',
@@ -400,7 +400,7 @@ $layout = Layout::create('registration-wizard')
                     ->addField('password_confirmation', 'password', 'Confirm Password', [
                         'required' => true,
                     ])
-                    ->validate([
+                    ->validationRules([
                         'username' => 'required|min:3|max:50|unique:users',
                         'email' => 'required|email|unique:users',
                         'password' => 'required|min:8|confirmed',
@@ -423,7 +423,7 @@ $layout = Layout::create('registration-wizard')
                         'placeholder' => 'Tell us about yourself',
                         'rows' => 4,
                     ])
-                    ->validate([
+                    ->validationRules([
                         'first_name' => 'required|max:100',
                         'last_name' => 'required|max:100',
                         'phone' => 'nullable|regex:/^[0-9+\-\s()]+$/',

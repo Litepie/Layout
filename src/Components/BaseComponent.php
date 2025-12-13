@@ -52,8 +52,14 @@ abstract class BaseComponent implements Component, Renderable
 
     protected array $actions = [];
 
+    // Components are leaf nodes and shouldn't contain sections
+    // This property exists for backward compatibility
+    protected array $sections = [];
+
     // Data source configuration for frontend loading
     protected ?string $dataSource = null;
+
+    protected ?\Closure $dataSourceCallback = null;
 
     protected ?string $dataUrl = null;
 
@@ -209,13 +215,31 @@ abstract class BaseComponent implements Component, Renderable
     }
 
     /**
-     * Set data source endpoint for frontend loading
+     * Set data source endpoint for frontend loading or callback for server-side data
+     * Accepts either a string URL or a Closure for server-side data generation
      */
-    public function dataSource(string $source): self
+    public function dataSource(string|\Closure $source): self
     {
-        $this->dataSource = $source;
+        if ($source instanceof \Closure) {
+            $this->dataSourceCallback = $source;
+            // Execute the callback and store the result
+            $this->dataSource = 'callback';
+        } else {
+            $this->dataSource = $source;
+        }
 
         return $this;
+    }
+
+    /**
+     * Get the data from the data source callback
+     */
+    public function getDataSourceData(): mixed
+    {
+        if ($this->dataSourceCallback) {
+            return ($this->dataSourceCallback)();
+        }
+        return null;
     }
 
     /**
@@ -395,6 +419,22 @@ abstract class BaseComponent implements Component, Renderable
     }
 
     /**
+     * End section and return to parent builder
+     * Allows chaining: ->section('body')->chart()->endSection()->section('footer')
+     * 
+     * If parentBuilder is a SectionContainer, returns its parent (the section/layout)
+     * Otherwise returns parentBuilder directly
+     */
+    public function endSection()
+    {
+        if ($this->parentBuilder instanceof \Litepie\Layout\SectionContainer) {
+            return $this->parentBuilder->getParent();
+        }
+        
+        return $this->parentBuilder;
+    }
+
+    /**
      * Helper method to get common properties for toArray()
      */
     protected function getCommonProperties(): array
@@ -422,6 +462,11 @@ abstract class BaseComponent implements Component, Renderable
             'authorized_to_see' => $this->authorizedToSee,
             'meta' => $this->meta,
         ];
+
+        // If dataSource callback exists, execute it and include the data
+        if ($this->dataSourceCallback) {
+            $properties['data'] = $this->getDataSourceData();
+        }
 
         return $properties;
     }

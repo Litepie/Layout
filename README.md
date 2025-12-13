@@ -342,7 +342,7 @@ Validate form inputs:
 
 ```php
 $section->form('user-form')
-    ->validate([
+    ->validationRules([
         'name' => 'required|min:3|max:255',
         'email' => 'required|email|unique:users',
         'age' => 'required|integer|min:18',

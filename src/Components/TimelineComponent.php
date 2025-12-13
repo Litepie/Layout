@@ -78,15 +78,35 @@ class TimelineComponent extends BaseComponent
 
     /**
      * Add event configuration (structure only)
+     * Supports both patterns:
+     * - addEvent('event1', ['icon' => 'check', 'color' => 'green'])
+     * - addEvent(['key' => 'event1', 'icon' => 'check', 'color' => 'green'])
      */
-    public function addEvent(string $key, array $options = []): self
+    public function addEvent(string|array $keyOrEvent, array $options = []): self
     {
-        $this->events[] = [
-            'key' => $key,
-            'icon' => $options['icon'] ?? null,
-            'color' => $options['color'] ?? null,
-            'variant' => $options['variant'] ?? 'default', // default, success, warning, error
-        ];
+        if (is_array($keyOrEvent)) {
+            // Array pattern: all data in first parameter
+            $this->events[] = [
+                'key' => $keyOrEvent['key'] ?? null,
+                'title' => $keyOrEvent['title'] ?? null,
+                'description' => $keyOrEvent['description'] ?? null,
+                'date' => $keyOrEvent['date'] ?? null,
+                'icon' => $keyOrEvent['icon'] ?? null,
+                'color' => $keyOrEvent['color'] ?? null,
+                'variant' => $keyOrEvent['variant'] ?? 'default',
+            ];
+        } else {
+            // Individual parameters pattern
+            $this->events[] = [
+                'key' => $keyOrEvent,
+                'title' => $options['title'] ?? null,
+                'description' => $options['description'] ?? null,
+                'date' => $options['date'] ?? null,
+                'icon' => $options['icon'] ?? null,
+                'color' => $options['color'] ?? null,
+                'variant' => $options['variant'] ?? 'default',
+            ];
+        }
 
         return $this;
     }
@@ -114,10 +134,6 @@ class TimelineComponent extends BaseComponent
             'use_shared_data' => $this->useSharedData,
             'data_key' => $this->dataKey,
             'actions' => $this->actions,
-            'sections' => array_map(
-                fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
-                $this->sections
-            ),
             'order' => $this->order,
             'visible' => $this->visible,
             'permissions' => $this->permissions,

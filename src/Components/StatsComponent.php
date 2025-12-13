@@ -16,6 +16,19 @@ class StatsComponent extends BaseComponent
 
     protected bool $showChange = true;
 
+    // Single stat properties
+    protected mixed $value = null;
+
+    protected ?string $change = null;
+
+    protected ?string $trend = null; // up, down, neutral
+
+    protected ?string $prefix = null;
+
+    protected ?string $suffix = null;
+
+    protected ?string $color = null;
+
     public function __construct(string $name)
     {
         parent::__construct($name, 'stats');
@@ -42,6 +55,66 @@ class StatsComponent extends BaseComponent
             'show_trend' => $options['show_trend'] ?? $this->showTrend,
             'show_change' => $options['show_change'] ?? $this->showChange,
         ];
+
+        return $this;
+    }
+
+    /**
+     * Set the stat value (for single stat display)
+     */
+    public function value(mixed $value): self
+    {
+        $this->value = $value;
+
+        return $this;
+    }
+
+    /**
+     * Set the change indicator (e.g., "+12.5%", "-3.2%")
+     */
+    public function change(string $change): self
+    {
+        $this->change = $change;
+
+        return $this;
+    }
+
+    /**
+     * Set the trend direction
+     */
+    public function trend(string $trend): self
+    {
+        $this->trend = $trend;
+
+        return $this;
+    }
+
+    /**
+     * Set value prefix (e.g., "$" for currency)
+     */
+    public function prefix(string $prefix): self
+    {
+        $this->prefix = $prefix;
+
+        return $this;
+    }
+
+    /**
+     * Set value suffix (e.g., "%" for percentage)
+     */
+    public function suffix(string $suffix): self
+    {
+        $this->suffix = $suffix;
+
+        return $this;
+    }
+
+    /**
+     * Set the color theme
+     */
+    public function color(string $color): self
+    {
+        $this->color = $color;
 
         return $this;
     }
@@ -89,6 +162,12 @@ class StatsComponent extends BaseComponent
             'title' => $this->title,
             'subtitle' => $this->subtitle,
             'icon' => $this->icon,
+            'value' => $this->value,
+            'change' => $this->change,
+            'trend' => $this->trend,
+            'prefix' => $this->prefix,
+            'suffix' => $this->suffix,
+            'color' => $this->color,
             'metrics' => $this->metrics,
             'layout' => $this->layout,
             'columns' => $this->statsColumns,
@@ -104,10 +183,6 @@ class StatsComponent extends BaseComponent
             'use_shared_data' => $this->useSharedData,
             'data_key' => $this->dataKey,
             'actions' => $this->actions,
-            'sections' => array_map(
-                fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
-                $this->sections
-            ),
             'order' => $this->order,
             'visible' => $this->visible,
             'permissions' => $this->permissions,

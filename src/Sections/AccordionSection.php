@@ -10,7 +10,7 @@ class AccordionSection extends BaseSection
 
     protected bool $collapsible = true;
 
-    protected ?string $expanded = null;
+    protected array $expanded = []; // Changed to array to support multiple expanded panels
 
     public function __construct(string $name)
     {
@@ -24,13 +24,51 @@ class AccordionSection extends BaseSection
 
     /**
      * Add an accordion item with components
+     * Supports two patterns:
+     * 1. addItem($id, $label, $components, $options) - array of components
+     * 2. addItem($id, $label, function($panel) {...}) - callback to configure panel
      */
-    public function addItem(string $id, string $label, array $components = [], array $options = []): self
+    public function addItem(string $id, string $label, array|\Closure $componentsOrCallback = [], array $options = []): self
     {
+        // Pattern 2: Callback configuration
+        if ($componentsOrCallback instanceof \Closure) {
+            $callback = $componentsOrCallback;
+            
+            // Create a section container for this panel
+            $panelContainer = new \Litepie\Layout\SectionContainer($id, $this);
+            
+            // Execute the callback to configure the panel
+            $callback($panelContainer);
+            
+            // Get all components added to the panel container
+            $components = $panelContainer->getComponents();
+            
+            $this->items[$id] = [
+                'id' => $id,
+                'label' => $label,
+                'components' => $components,
+                'icon' => $options['icon'] ?? null,
+                'badge' => $options['badge'] ?? null,
+                'disabled' => $options['disabled'] ?? false,
+                'visible' => $options['visible'] ?? true,
+                'permissions' => $options['permissions'] ?? [],
+                'roles' => $options['roles'] ?? [],
+                'description' => $options['description'] ?? null,
+            ];
+            
+            // Set first item as expanded if none set
+            if (empty($this->expanded)) {
+                $this->expanded = [$id];
+            }
+            
+            return $this;
+        }
+        
+        // Pattern 1: Array of components
         $this->items[$id] = [
             'id' => $id,
             'label' => $label,
-            'components' => $components,
+            'components' => $componentsOrCallback,
             'icon' => $options['icon'] ?? null,
             'badge' => $options['badge'] ?? null,
             'disabled' => $options['disabled'] ?? false,
@@ -41,11 +79,19 @@ class AccordionSection extends BaseSection
         ];
 
         // Set first item as expanded if none set
-        if ($this->expanded === null) {
-            $this->expanded = $id;
+        if (empty($this->expanded)) {
+            $this->expanded = [$id];
         }
 
         return $this;
+    }
+
+    /**
+     * Alias for addItem() - adds a panel to the accordion
+     */
+    public function addPanel(string $id, string $label, array|\Closure $componentsOrCallback = [], array $options = []): self
+    {
+        return $this->addItem($id, $label, $componentsOrCallback, $options);
     }
 
     /**
@@ -56,6 +102,14 @@ class AccordionSection extends BaseSection
         $this->multiple = $multiple;
 
         return $this;
+    }
+
+    /**
+     * Alias for multiple()
+     */
+    public function allowMultiple(bool $allow = true): self
+    {
+        return $this->multiple($allow);
     }
 
     /**
@@ -73,7 +127,17 @@ class AccordionSection extends BaseSection
      */
     public function expanded(string $itemId): self
     {
-        $this->expanded = $itemId;
+        $this->expanded = [$itemId];
+
+        return $this;
+    }
+
+    /**
+     * Set the initially expanded panels (array of IDs)
+     */
+    public function expandedPanels(array $panelIds): self
+    {
+        $this->expanded = $panelIds;
 
         return $this;
     }
@@ -138,7 +202,7 @@ class AccordionSection extends BaseSection
                 'authorized' => $item['authorized'] ?? true,
                 'description' => $item['description'],
                 'components' => array_map(
-                    fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
+                    fn ($comp) => (is_object($comp) && method_exists($comp, 'toArray')) ? $comp->toArray() : (array) $comp,
                     $item['components']
                 ),
                 'permissions' => $item['permissions'],

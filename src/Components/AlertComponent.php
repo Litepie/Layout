@@ -8,6 +8,8 @@ class AlertComponent extends BaseComponent
 
     protected ?string $message = null;
 
+    protected ?string $content = null;
+
     protected bool $dismissible = false;
 
     protected bool $bordered = false;
@@ -58,6 +60,13 @@ class AlertComponent extends BaseComponent
         return $this;
     }
 
+    public function content(string $content): self
+    {
+        $this->content = $content;
+
+        return $this;
+    }
+
     public function dismissible(bool $dismissible = true): self
     {
         $this->dismissible = $dismissible;
@@ -89,6 +98,7 @@ class AlertComponent extends BaseComponent
             'icon' => $this->icon,
             'variant' => $this->variant,
             'message' => $this->message,
+            'content' => $this->content,
             'dismissible' => $this->dismissible,
             'bordered' => $this->bordered,
             'filled' => $this->filled,
@@ -101,10 +111,6 @@ class AlertComponent extends BaseComponent
             'use_shared_data' => $this->useSharedData,
             'data_key' => $this->dataKey,
             'actions' => $this->actions,
-            'sections' => array_map(
-                fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
-                $this->sections
-            ),
             'order' => $this->order,
             'visible' => $this->visible,
             'permissions' => $this->permissions,

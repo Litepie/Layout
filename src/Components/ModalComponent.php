@@ -4,6 +4,8 @@ namespace Litepie\Layout\Components;
 
 class ModalComponent extends BaseComponent
 {
+    protected ?string $content = null;
+
     protected string $size = 'md'; // xs, sm, md, lg, xl, full
 
     protected bool $closable = true;
@@ -13,6 +15,8 @@ class ModalComponent extends BaseComponent
     protected bool $closeOnEscape = true;
 
     protected ?string $trigger = null; // Element ID or selector that opens modal
+
+    protected array $buttons = [];
 
     protected array $footer = [];
 
@@ -24,6 +28,13 @@ class ModalComponent extends BaseComponent
     public static function make(string $name): self
     {
         return new static($name);
+    }
+
+    public function content(string $content): self
+    {
+        $this->content = $content;
+
+        return $this;
     }
 
     public function size(string $size): self
@@ -76,6 +87,19 @@ class ModalComponent extends BaseComponent
         return $this;
     }
 
+    /**
+     * Add a button to the modal
+     */
+    public function addButton(string $name, string $label, array $options = []): self
+    {
+        $this->buttons[] = array_merge([
+            'name' => $name,
+            'label' => $label,
+        ], $options);
+
+        return $this;
+    }
+
     public function addFooterButton(string $label, string $action, array $options = []): self
     {
         $this->footer[] = array_merge([
@@ -94,11 +118,13 @@ class ModalComponent extends BaseComponent
             'title' => $this->title,
             'subtitle' => $this->subtitle,
             'icon' => $this->icon,
+            'content' => $this->content,
             'size' => $this->size,
             'closable' => $this->closable,
             'close_on_backdrop' => $this->closeOnBackdrop,
             'close_on_escape' => $this->closeOnEscape,
             'trigger' => $this->trigger,
+            'buttons' => $this->buttons,
             'footer' => $this->footer,
             'data_source' => $this->dataSource,
             'data_url' => $this->dataUrl,
@@ -109,10 +135,6 @@ class ModalComponent extends BaseComponent
             'use_shared_data' => $this->useSharedData,
             'data_key' => $this->dataKey,
             'actions' => $this->actions,
-            'sections' => array_map(
-                fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
-                $this->sections
-            ),
             'order' => $this->order,
             'visible' => $this->visible,
             'permissions' => $this->permissions,

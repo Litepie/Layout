@@ -10,6 +10,10 @@ class TableComponent extends BaseComponent
 
     protected bool $sortable = false;
 
+    protected bool $filterable = false;
+
+    protected bool $selectable = false;
+
     protected bool $paginated = false;
 
     protected ?int $perPage = null;
@@ -26,6 +30,19 @@ class TableComponent extends BaseComponent
     public static function make(string $name): self
     {
         return new static($name);
+    }
+
+    /**
+     * Add a column to the table
+     */
+    public function addColumn(string $key, string $label, array $options = []): self
+    {
+        $this->tableColumns[] = array_merge([
+            'key' => $key,
+            'label' => $label,
+        ], $options);
+
+        return $this;
     }
 
     public function columns(array $columns): self
@@ -49,6 +66,20 @@ class TableComponent extends BaseComponent
         return $this;
     }
 
+    public function filterable(bool $filterable = true): self
+    {
+        $this->filterable = $filterable;
+
+        return $this;
+    }
+
+    public function selectable(bool $selectable = true): self
+    {
+        $this->selectable = $selectable;
+
+        return $this;
+    }
+
     public function paginated(bool $paginated = true): self
     {
         $this->paginated = $paginated;
@@ -58,6 +89,17 @@ class TableComponent extends BaseComponent
 
     public function perPage(int $perPage): self
     {
+        $this->perPage = $perPage;
+
+        return $this;
+    }
+
+    /**
+     * Alias for perPage() - enables pagination and sets per page count
+     */
+    public function paginate(int $perPage): self
+    {
+        $this->paginated = true;
         $this->perPage = $perPage;
 
         return $this;
@@ -82,6 +124,8 @@ class TableComponent extends BaseComponent
             'columns' => $this->tableColumns,
             'searchable' => $this->searchable,
             'sortable' => $this->sortable,
+            'filterable' => $this->filterable,
+            'selectable' => $this->selectable,
             'paginated' => $this->paginated,
             'per_page' => $this->perPage,
             'sort_column' => $this->sortColumn,
@@ -95,10 +139,6 @@ class TableComponent extends BaseComponent
             'use_shared_data' => $this->useSharedData,
             'data_key' => $this->dataKey,
             'actions' => $this->actions,
-            'sections' => array_map(
-                fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
-                $this->sections
-            ),
             'order' => $this->order,
             'visible' => $this->visible,
             'permissions' => $this->permissions,

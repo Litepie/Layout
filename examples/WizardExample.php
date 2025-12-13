@@ -75,7 +75,7 @@ $layout = Layout::create('user-onboarding-wizard')
                     ->addButton('next', 'Continue to Profile →', 'submit')
 
                     // Validation
-                    ->validate([
+                    ->validationRules([
                         'username' => 'required|min:3|max:50|unique:users|alpha_dash',
                         'email' => 'required|email|unique:users|max:255',
                         'password' => 'required|min:8|confirmed',
@@ -146,7 +146,7 @@ $layout = Layout::create('user-onboarding-wizard')
                     ->addButton('next', 'Continue to Preferences →', 'submit')
 
                     // Validation
-                    ->validate([
+                    ->validationRules([
                         'avatar' => 'nullable|image|max:2048',
                         'first_name' => 'required|max:100',
                         'last_name' => 'required|max:100',
@@ -239,7 +239,7 @@ $layout = Layout::create('user-onboarding-wizard')
                     ->addButton('next', 'Continue to Interests →', 'submit')
 
                     // Validation
-                    ->validate([
+                    ->validationRules([
                         'language' => 'required',
                         'timezone' => 'required',
                         'theme' => 'required|in:light,dark,auto',
@@ -305,7 +305,7 @@ $layout = Layout::create('user-onboarding-wizard')
                     ->addButton('next', 'Review & Complete →', 'submit')
 
                     // Validation
-                    ->validate([
+                    ->validationRules([
                         'primary_interest' => 'required',
                         'experience_level' => 'required',
                     ]);
@@ -362,7 +362,7 @@ $layout = Layout::create('user-onboarding-wizard')
                     ->addButton('complete', '✓ Complete Registration', 'submit')
 
                     // Validation
-                    ->validate([
+                    ->validationRules([
                         'terms' => 'required|accepted',
                         'privacy' => 'required|accepted',
                         'age_confirm' => 'required|accepted',

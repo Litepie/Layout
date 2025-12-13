@@ -7,20 +7,53 @@
  * tabs, accordions, modals, and conditional content.
  */
 
-use Litepie\Layout\Facades\Layout;
+use Litepie\Layout\LayoutBuilder;
+use Litepie\Layout\Components\StatsComponent;
+use Litepie\Layout\Components\ChartComponent;
+use Litepie\Layout\Components\TextComponent;
+use Litepie\Layout\Components\ListComponent;
+
+// Mock auth() helper for standalone script
+if (!function_exists('auth')) {
+    function auth() {
+        return new class {
+            public function id() {
+                return 1;
+            }
+            public function user() {
+                return (object)[
+                    'id' => 1,
+                    'name' => 'Admin User',
+                    'permissions' => ['view_dashboard', 'manage_users'],
+                ];
+            }
+        };
+    }
+}
+
+// Mock now() helper
+if (!function_exists('now')) {
+    function now() {
+        return new class {
+            public function format($format) {
+                return date($format);
+            }
+        };
+    }
+}
 
 // Create complex admin panel layout
-$layout = Layout::create('advanced-admin-panel')
+$layout = LayoutBuilder::create('advanced-admin-panel', 'view')
     ->title('Advanced Admin Panel')
     ->setSharedData([
-        'user' => auth()->user(),
-        'permissions' => auth()->user()->permissions ?? [],
+        'user'         => auth()->user(),
+        'permissions'  => auth()->user()->permissions ?? [],
         'current_date' => now()->format('F j, Y'),
     ])
 
-    // ===========================
-    // HEADER SECTION
-    // ===========================
+// ===========================
+// HEADER SECTION
+// ===========================
     ->section('header', function ($section) {
         // Breadcrumb navigation
         $section->breadcrumb('navigation')
@@ -35,66 +68,65 @@ $layout = Layout::create('advanced-admin-panel')
             ->variant('warning')
             ->icon('alert-triangle')
             ->dismissible(true)
-            ->canSee(fn ($user) => $user->isAdmin());
+            ->canSee(fn($user) => $user->isAdmin());
     })
 
-    // ===========================
-    // MAIN CONTENT SECTION
-    // ===========================
-    ->section('main', function ($section) {
+// ===========================
+// BODY CONTENT SECTION
+// ===========================
+    ->section('body', function ($section) {
         // Main layout with sidebar
-        $section->layout('main-layout')
+        $layout = $section->layout('main-layout');
 
-            // ===========================
-            // SIDEBAR
-            // ===========================
-            ->section('sidebar')
+        // ===========================
+        // SIDEBAR
+        // ===========================
+        $sidebar = $layout->section('sidebar');
 
-                // User profile card
-            ->card('user-profile')
+        // User profile card
+        $sidebar->card('user-profile')
             ->title(auth()->user()->name ?? 'User')
             ->subtitle(auth()->user()->role ?? 'Member')
             ->icon('user')
             ->addField('email', 'Email', auth()->user()->email ?? '')
             ->addField('member_since', 'Member Since', 'Jan 2024')
             ->addAction('profile', 'View Profile', [
-                'url' => '/profile',
+                'url'  => '/profile',
                 'icon' => 'user',
             ])
             ->addAction('settings', 'Settings', [
-                'url' => '/settings',
+                'url'  => '/settings',
                 'icon' => 'settings',
             ])
             ->addAction('logout', 'Logout', [
-                'url' => '/logout',
+                'url'  => '/logout',
                 'icon' => 'log-out',
-            ])
+            ]);
 
-                // Quick stats
-            ->stats('notifications')
+        // Quick stats
+        $sidebar->stats('notifications')
             ->title('Notifications')
             ->value(12)
             ->icon('bell')
-            ->addAction('view_all', 'View All', ['url' => '/notifications'])
-            ->stats('messages')
+            ->addAction('view_all', 'View All', ['url' => '/notifications']);
+
+        $sidebar->stats('messages')
             ->title('Messages')
             ->value(5)
             ->icon('mail')
-            ->addAction('view_all', 'View All', ['url' => '/messages'])
+            ->addAction('view_all', 'View All', ['url' => '/messages']);
 
-            ->endSection()
+        // ===========================
+        // MAIN CONTENT AREA
+        // ===========================
+        $main = $layout->section('body');
 
-            // ===========================
-            // MAIN CONTENT AREA
-            // ===========================
-            ->section('main')
-
-                // Stats overview
-            ->grid('overview-stats')
+        // Stats overview
+        $main->grid('overview-stats')
             ->columns(4)
             ->gap('1rem')
             ->addComponent(
-                $section->stats('users-stat')
+                StatsComponent::make('users-stat')
                     ->title('Users')
                     ->value(15234)
                     ->change('+12.5%')
@@ -103,7 +135,7 @@ $layout = Layout::create('advanced-admin-panel')
                     ->permissions(['view-users'])
             )
             ->addComponent(
-                $section->stats('revenue-stat')
+                StatsComponent::make('revenue-stat')
                     ->title('Revenue')
                     ->value(98650)
                     ->prefix('$')
@@ -113,7 +145,7 @@ $layout = Layout::create('advanced-admin-panel')
                     ->permissions(['view-financials'])
             )
             ->addComponent(
-                $section->stats('orders-stat')
+                StatsComponent::make('orders-stat')
                     ->title('Orders')
                     ->value(523)
                     ->change('+7.2%')
@@ -122,39 +154,38 @@ $layout = Layout::create('advanced-admin-panel')
                     ->permissions(['view-orders'])
             )
             ->addComponent(
-                $section->stats('support-stat')
+                StatsComponent::make('support-stat')
                     ->title('Support Tickets')
                     ->value(45)
                     ->change('-15.8%')
                     ->trend('down')
                     ->icon('help-circle')
                     ->permissions(['view-support'])
-            )
-            ->endSection()
+            );
 
-                // Tabbed content area
-            ->tabs('main-tabs')
+        // Tabbed content area
+        $main->tabs('main-tabs')
 
-                    // ====================
-                    // TAB 1: Overview
-                    // ====================
+        // ====================
+        // TAB 1: Overview
+        // ====================
             ->addTab('overview', 'Overview', function ($tab) {
                 // Charts grid
                 $tab->grid('charts')
                     ->columns(2)
 
-                    // Sales chart
+                // Sales chart
                     ->addComponent(
-                        $tab->chart('sales-chart')
+                        ChartComponent::make('sales-chart')
                             ->title('Sales Trends')
                             ->chartType('line')
                             ->dataUrl('/api/charts/sales')
                             ->permissions(['view-analytics'])
                     )
 
-                    // Revenue chart
+                // Revenue chart
                     ->addComponent(
-                        $tab->chart('revenue-chart')
+                        ChartComponent::make('revenue-chart')
                             ->title('Revenue by Category')
                             ->chartType('doughnut')
                             ->dataUrl('/api/charts/revenue')
@@ -168,25 +199,25 @@ $layout = Layout::create('advanced-admin-panel')
                     ->addField('activity_log', 'Activity');
             })
 
-                    // ====================
-                    // TAB 2: Users Management
-                    // ====================
+        // ====================
+        // TAB 2: Users Management
+        // ====================
             ->addTab('users', 'Users', function ($tab) {
                 // User management toolbar
                 $tab->card('user-toolbar')
                     ->title('User Management')
                     ->addAction('add_user', 'Add New User', [
-                        'icon' => 'user-plus',
-                        'url' => '/admin/users/create',
+                        'icon'    => 'user-plus',
+                        'url'     => '/admin/users/create',
                         'variant' => 'primary',
                     ])
                     ->addAction('import', 'Import Users', [
                         'icon' => 'upload',
-                        'url' => '/admin/users/import',
+                        'url'  => '/admin/users/import',
                     ])
                     ->addAction('export', 'Export Users', [
                         'icon' => 'download',
-                        'url' => '/admin/users/export',
+                        'url'  => '/admin/users/export',
                     ])
                     ->permissions(['manage-users']);
 
@@ -203,7 +234,7 @@ $layout = Layout::create('advanced-admin-panel')
                     ->addAction('view', 'View', ['icon' => 'eye'])
                     ->addAction('edit', 'Edit', ['icon' => 'pencil'])
                     ->addAction('delete', 'Delete', [
-                        'icon' => 'trash',
+                        'icon'    => 'trash',
                         'confirm' => 'Are you sure you want to delete this user?',
                     ])
                     ->sortable(true)
@@ -214,14 +245,14 @@ $layout = Layout::create('advanced-admin-panel')
                     ->permissions(['view-users']);
             })
 
-                    // ====================
-                    // TAB 3: Content Management
-                    // ====================
+        // ====================
+        // TAB 3: Content Management
+        // ====================
             ->addTab('content', 'Content', function ($tab) {
                 // Accordion for different content types
                 $tab->accordion('content-accordion')
 
-                    // Posts panel
+                // Posts panel
                     ->addPanel('posts', 'Blog Posts', function ($panel) {
                         $panel->table('posts-table')
                             ->dataUrl('/api/admin/posts')
@@ -235,7 +266,7 @@ $layout = Layout::create('advanced-admin-panel')
                             ->paginate(15);
                     })
 
-                    // Pages panel
+                // Pages panel
                     ->addPanel('pages', 'Pages', function ($panel) {
                         $panel->table('pages-table')
                             ->dataUrl('/api/admin/pages')
@@ -248,7 +279,7 @@ $layout = Layout::create('advanced-admin-panel')
                             ->paginate(15);
                     })
 
-                    // Media panel
+                // Media panel
                     ->addPanel('media', 'Media Library', function ($panel) {
                         $panel->document('media-manager')
                             ->title('Media Files')
@@ -263,9 +294,9 @@ $layout = Layout::create('advanced-admin-panel')
                     ->expandedPanels(['posts']);
             })
 
-                    // ====================
-                    // TAB 4: Reports
-                    // ====================
+        // ====================
+        // TAB 4: Reports
+        // ====================
             ->addTab('reports', 'Reports', function ($tab) {
                 // Report filters
                 $tab->form('report-filters')
@@ -275,9 +306,9 @@ $layout = Layout::create('advanced-admin-panel')
                     ->addField('date_to', 'date', 'To Date')
                     ->addField('report_type', 'select', 'Report Type', [
                         'options' => [
-                            'sales' => 'Sales Report',
-                            'users' => 'Users Report',
-                            'revenue' => 'Revenue Report',
+                            'sales'    => 'Sales Report',
+                            'users'    => 'Users Report',
+                            'revenue'  => 'Revenue Report',
                             'activity' => 'Activity Report',
                         ],
                     ])
@@ -291,14 +322,14 @@ $layout = Layout::create('advanced-admin-panel')
                     ->permissions(['view-reports']);
             })
 
-                    // ====================
-                    // TAB 5: Settings
-                    // ====================
+        // ====================
+        // TAB 5: Settings
+        // ====================
             ->addTab('settings', 'Settings', function ($tab) {
                 // Settings accordion
                 $tab->accordion('settings-accordion')
 
-                    // General settings
+                // General settings
                     ->addPanel('general', 'General Settings', function ($panel) {
                         $panel->form('general-settings')
                             ->action('/admin/settings/general')
@@ -308,16 +339,16 @@ $layout = Layout::create('advanced-admin-panel')
                             ->addField('admin_email', 'email', 'Admin Email', ['required' => true])
                             ->addField('timezone', 'select', 'Timezone', [
                                 'options' => [
-                                    'America/New_York' => 'Eastern',
-                                    'America/Chicago' => 'Central',
-                                    'America/Denver' => 'Mountain',
+                                    'America/New_York'    => 'Eastern',
+                                    'America/Chicago'     => 'Central',
+                                    'America/Denver'      => 'Mountain',
                                     'America/Los_Angeles' => 'Pacific',
                                 ],
                             ])
                             ->addButton('save', 'Save Changes', 'submit');
                     })
 
-                    // Email settings
+                // Email settings
                     ->addPanel('email', 'Email Settings', function ($panel) {
                         $panel->form('email-settings')
                             ->action('/admin/settings/email')
@@ -332,7 +363,7 @@ $layout = Layout::create('advanced-admin-panel')
                             ->addButton('save', 'Save Changes', 'submit');
                     })
 
-                    // Security settings
+                // Security settings
                     ->addPanel('security', 'Security Settings', function ($panel) {
                         $panel->form('security-settings')
                             ->action('/admin/settings/security')
@@ -348,82 +379,79 @@ $layout = Layout::create('advanced-admin-panel')
                     ->expandedPanels(['general']);
             })
             ->permissions(['manage-settings'])
-            ->activeTab('overview')
-            ->endSection()
-
-            ->endSection();
+            ->activeTab('overview');
     })
 
     // ===========================
     // FOOTER SECTION
     // ===========================
-    ->section('footer', function ($section) {
-        $section->grid('footer-content')
-            ->columns(2)
+        ->section('footer', function ($section) {
+            $section->grid('footer-content')
+                ->columns(2)
 
             // Copyright
-            ->addComponent(
-                $section->text('copyright')
-                    ->content('© 2025 Your Company. All rights reserved.')
-                    ->align('left')
-            )
+                ->addComponent(
+                    TextComponent::make('copyright')
+                        ->content('© 2025 Your Company. All rights reserved.')
+                        ->align('left')
+                )
 
             // Footer links
-            ->addComponent(
-                $section->list('footer-links')
-                    ->listType('unordered')
-                    ->addItem(['label' => 'Documentation', 'url' => '/docs'])
-                    ->addItem(['label' => 'Support', 'url' => '/support'])
-                    ->addItem(['label' => 'Privacy Policy', 'url' => '/privacy'])
-                    ->addItem(['label' => 'Terms of Service', 'url' => '/terms'])
-            );
-    })
+                ->addComponent(
+                    ListComponent::make('footer-links')
+                        ->listType('unordered')
+                        ->addItem(['label' => 'Documentation', 'url' => '/docs'])
+                        ->addItem(['label' => 'Support', 'url' => '/support'])
+                        ->addItem(['label' => 'Privacy Policy', 'url' => '/privacy'])
+                        ->addItem(['label' => 'Terms of Service', 'url' => '/terms'])
+                );
+        })
 
-    // ===========================
-    // MODALS
-    // ===========================
-    ->section('modals', function ($section) {
-        // Confirmation modal
-        $section->modal('confirm-delete')
-            ->title('Confirm Deletion')
-            ->content('Are you sure you want to delete this item? This action cannot be undone.')
-            ->size('medium')
-            ->closable(true)
-            ->addButton('cancel', 'Cancel', ['variant' => 'secondary'])
-            ->addButton('delete', 'Delete', ['variant' => 'danger']);
+        // ===========================
+        // MODALS
+        // ===========================
+        ->section('modals', function ($section) {
+            // Confirmation modal
+            $section->modal('confirm-delete')
+                ->title('Confirm Deletion')
+                ->content('Are you sure you want to delete this item? This action cannot be undone.')
+                ->size('medium')
+                ->closable(true)
+                ->addButton('cancel', 'Cancel', ['variant' => 'secondary'])
+                ->addButton('delete', 'Delete', ['variant' => 'danger']);
 
-        // Help modal
-        $section->modal('help-modal')
-            ->title('Help & Documentation')
-            ->content('Find answers to common questions and learn how to use the system.')
-            ->size('large')
-            ->closable(true)
-            ->addButton('close', 'Close', ['variant' => 'primary']);
-    })
+            // Help modal
+            $section->modal('help-modal')
+                ->title('Help & Documentation')
+                ->content('Find answers to common questions and learn how to use the system.')
+                ->size('large')
+                ->closable(true)
+                ->addButton('close', 'Close', ['variant' => 'primary']);
+        })
 
-    // Performance optimization with caching
-    ->cache()
-    ->ttl(600) // 10 minutes
-    ->key('admin-panel-'.auth()->id())
-    ->tags(['admin', 'dashboard', 'user-'.auth()->id()])
+        // Performance optimization with caching
+        ->cache()
+        ->ttl(600) // 10 minutes
+        ->key('admin-panel-' . auth()->id())
+        ->tags(['admin', 'dashboard', 'user-' . auth()->id()])
 
-    // Event hooks
-    ->beforeRender(function ($layout) {
-        \Log::info('Admin panel rendering', [
-            'user_id' => auth()->id(),
-            'timestamp' => now(),
-        ]);
-    })
+        // Event hooks
+        ->beforeRender(function ($layout) {
+            \Log::info('Admin panel rendering', [
+                'user_id'   => auth()->id(),
+                'timestamp' => now(),
+            ]);
+        })
 
-    ->afterRender(function ($layout, $output) {
-        \Log::info('Admin panel rendered', [
-            'sections' => count($output['sections'] ?? []),
-            'render_time' => microtime(true),
-        ]);
-    })
+        ->afterRender(function ($layout, $output) {
+            \Log::info('Admin panel rendered', [
+                'sections'    => count($output['sections'] ?? []),
+                'render_time' => microtime(true),
+            ]);
+        })
 
-    // Resolve authorization for all components
-    ->resolveAuthorization(auth()->user());
+        // Resolve authorization for all components
+        ->resolveAuthorization(auth()->user());
 
 // Render the complex layout
-return $layout->render();
+    return $layout->render();

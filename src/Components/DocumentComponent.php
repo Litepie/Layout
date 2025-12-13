@@ -18,6 +18,8 @@ class DocumentComponent extends BaseComponent
 
     protected string $uploadUrl = '';
 
+    protected string $listUrl = '';
+
     protected string $deleteUrl = '';
 
     protected string $downloadUrl = '';
@@ -113,6 +115,13 @@ class DocumentComponent extends BaseComponent
     public function uploadUrl(string $url): self
     {
         $this->uploadUrl = $url;
+
+        return $this;
+    }
+
+    public function listUrl(string $url): self
+    {
+        $this->listUrl = $url;
 
         return $this;
     }
@@ -270,6 +279,7 @@ class DocumentComponent extends BaseComponent
             'multiple' => $this->multiple,
             'drag_drop' => $this->dragDrop,
             'upload_url' => $this->uploadUrl,
+            'list_url' => $this->listUrl,
             'delete_url' => $this->deleteUrl,
             'download_url' => $this->downloadUrl,
             'display_mode' => $this->displayMode,
@@ -291,10 +301,6 @@ class DocumentComponent extends BaseComponent
             'use_shared_data' => $this->useSharedData,
             'data_key' => $this->dataKey,
             'actions' => $this->actions,
-            'sections' => array_map(
-                fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
-                $this->sections
-            ),
             'order' => $this->order,
             'visible' => $this->visible,
             'permissions' => $this->permissions,

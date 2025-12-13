@@ -614,11 +614,11 @@ Add a form button.
 $form->addButton('submit', 'Create User', 'submit');
 ```
 
-##### `validate(array $rules): self`
+##### `validationRules(array $rules): self`
 Set validation rules.
 
 ```php
-$form->validate([
+$form->validationRules([
     'email' => 'required|email|unique:users',
     'name' => 'required|min:3',
 ]);
@@ -647,7 +647,7 @@ $section->form('user-registration')
     ->addField('notifications', 'checkbox', 'Enable Notifications')
     ->addButton('submit', 'Create Account', 'submit')
     ->addButton('cancel', 'Cancel', 'button')
-    ->validate([
+    ->validationRules([
         'name' => 'required|min:3|max:255',
         'email' => 'required|email|unique:users',
         'password' => 'required|min:8',
@@ -1664,7 +1664,7 @@ $component->translateField('title', 'layout.dashboard.title');
 Adds validation support.
 
 ```php
-$component->validate([
+$component->validationRules([
     'name' => 'required|min:3',
     'email' => 'required|email',
 ]);

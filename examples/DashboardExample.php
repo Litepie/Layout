@@ -6,10 +6,12 @@
  * Demonstrates creating a comprehensive dashboard with stats, charts, and tables.
  */
 
-use Litepie\Layout\Facades\Layout;
+use Litepie\Layout\LayoutBuilder;
+use Litepie\Layout\Components\StatsComponent;
+use Litepie\Layout\Sections\LayoutSection;
 
 // Create dashboard layout
-$layout = Layout::create('admin-dashboard')
+$layout = LayoutBuilder::create('admin-dashboard', 'dashboard')
     ->title('Dashboard')
     ->setSharedData([
         'user' => auth()->user(),
@@ -41,7 +43,7 @@ $layout = Layout::create('admin-dashboard')
 
             // Total Users stat
             ->addComponent(
-                $section->stats('total-users')
+                StatsComponent::make('total-users')
                     ->title('Total Users')
                     ->icon('users')
                     ->dataUrl('/api/stats/users')
@@ -53,7 +55,7 @@ $layout = Layout::create('admin-dashboard')
 
             // Active Sessions stat
             ->addComponent(
-                $section->stats('active-sessions')
+                StatsComponent::make('active-sessions')
                     ->title('Active Sessions')
                     ->icon('activity')
                     ->dataUrl('/api/stats/sessions')
@@ -64,7 +66,7 @@ $layout = Layout::create('admin-dashboard')
 
             // Revenue stat
             ->addComponent(
-                $section->stats('revenue')
+                StatsComponent::make('revenue')
                     ->title('Total Revenue')
                     ->icon('dollar-sign')
                     ->dataUrl('/api/stats/revenue')
@@ -77,7 +79,7 @@ $layout = Layout::create('admin-dashboard')
 
             // Pending Tasks stat
             ->addComponent(
-                $section->stats('pending-tasks')
+                StatsComponent::make('pending-tasks')
                     ->title('Pending Tasks')
                     ->icon('check-square')
                     ->dataUrl('/api/stats/tasks')
@@ -93,7 +95,7 @@ $layout = Layout::create('admin-dashboard')
 
             // Left column (takes 2 columns) - Charts and tables
             ->addComponent(
-                $section->layout('left-column')
+                LayoutSection::make('left-column')
                     ->setDeviceConfig('mobile', ['order' => 2])
 
                     // Sales chart
@@ -158,7 +160,7 @@ $layout = Layout::create('admin-dashboard')
 
             // Right column (takes 1 column) - Sidebar content
             ->addComponent(
-                $section->layout('right-column')
+                LayoutSection::make('right-column')
                     ->setDeviceConfig('mobile', ['order' => 1])
 
                     // Quick actions card

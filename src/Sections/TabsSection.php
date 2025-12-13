@@ -24,13 +24,50 @@ class TabsSection extends BaseSection
 
     /**
      * Add a tab with components
+     * Supports two patterns:
+     * 1. addTab($id, $label, $components, $options) - array of components
+     * 2. addTab($id, $label, function($tab) {...}) - callback to configure tab
      */
-    public function addTab(string $id, string $label, array $components = [], array $options = []): self
+    public function addTab(string $id, string $label, array|\Closure $componentsOrCallback = [], array $options = []): self
     {
+        // Pattern 2: Callback configuration
+        if ($componentsOrCallback instanceof \Closure) {
+            $callback = $componentsOrCallback;
+            
+            // Create a section container for this tab
+            $tabContainer = new \Litepie\Layout\SectionContainer($id, $this);
+            
+            // Execute the callback to configure the tab
+            $callback($tabContainer);
+            
+            // Get all components added to the tab container
+            $components = $tabContainer->getComponents();
+            
+            $this->tabs[$id] = [
+                'id' => $id,
+                'label' => $label,
+                'components' => $components,
+                'icon' => $options['icon'] ?? null,
+                'badge' => $options['badge'] ?? null,
+                'disabled' => $options['disabled'] ?? false,
+                'visible' => $options['visible'] ?? true,
+                'permissions' => $options['permissions'] ?? [],
+                'roles' => $options['roles'] ?? [],
+            ];
+            
+            // Set first tab as active if none set
+            if ($this->activeTab === null) {
+                $this->activeTab = $id;
+            }
+            
+            return $this;
+        }
+        
+        // Pattern 1: Array of components
         $this->tabs[$id] = [
             'id' => $id,
             'label' => $label,
-            'components' => $components,
+            'components' => $componentsOrCallback,
             'icon' => $options['icon'] ?? null,
             'badge' => $options['badge'] ?? null,
             'disabled' => $options['disabled'] ?? false,
@@ -136,7 +173,7 @@ class TabsSection extends BaseSection
                 'visible' => $tab['visible'],
                 'authorized' => $tab['authorized'] ?? true,
                 'components' => array_map(
-                    fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
+                    fn ($comp) => (is_object($comp) && method_exists($comp, 'toArray')) ? $comp->toArray() : (array) $comp,
                     $tab['components']
                 ),
                 'permissions' => $tab['permissions'],

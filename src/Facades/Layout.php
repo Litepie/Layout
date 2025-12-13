@@ -5,6 +5,7 @@ namespace Litepie\Layout\Facades;
 use Illuminate\Support\Facades\Facade;
 
 /**
+ * @method static \Litepie\Layout\LayoutBuilder create(string $name)
  * @method static \Litepie\Layout\LayoutBuilder for(string $module, string $context)
  * @method static void register(string $module, string $context, \Closure $callback)
  * @method static \Litepie\Layout\Layout|null get(string $module, string $context, ?int $userId = null)

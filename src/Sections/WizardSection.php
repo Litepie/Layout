@@ -31,15 +31,45 @@ class WizardSection extends BaseSection
 
     /**
      * Add a step configuration
+     * Supports two patterns:
+     * 1. addStep($key, $label, $sections, $options) - array of sections
+     * 2. addStep($key, $label, function($step) {...}) - callback to configure step
      */
-    public function addStep(string $key, string $label, array $sections = [], array $options = []): self
+    public function addStep(string $key, string $label, array|\Closure $sectionsOrCallback = [], array $options = []): self
     {
+        // Pattern 2: Callback configuration
+        if ($sectionsOrCallback instanceof \Closure) {
+            $callback = $sectionsOrCallback;
+            
+            // Create a section container for this step
+            $stepContainer = new \Litepie\Layout\SectionContainer($key, $this);
+            
+            // Execute the callback to configure the step
+            $callback($stepContainer);
+            
+            // Get all components added to the step container
+            $sections = $stepContainer->getComponents();
+            
+            $this->steps[] = [
+                'key' => $key,
+                'label' => $label,
+                'description' => $options['description'] ?? null,
+                'icon' => $options['icon'] ?? null,
+                'sections' => $sections,
+                'optional' => $options['optional'] ?? false,
+                'validation' => $options['validation'] ?? null,
+            ];
+            
+            return $this;
+        }
+        
+        // Pattern 1: Array of sections
         $this->steps[] = [
             'key' => $key,
             'label' => $label,
             'description' => $options['description'] ?? null,
             'icon' => $options['icon'] ?? null,
-            'sections' => $sections,
+            'sections' => $sectionsOrCallback,
             'optional' => $options['optional'] ?? false,
             'validation' => $options['validation'] ?? null,
         ];
@@ -47,9 +77,21 @@ class WizardSection extends BaseSection
         return $this;
     }
 
-    public function currentStep(int $step): self
+    public function currentStep(string|int $step): self
     {
-        $this->currentStep = $step;
+        if (is_string($step)) {
+            // Find the step index by key
+            foreach ($this->steps as $index => $stepData) {
+                if ($stepData['key'] === $step) {
+                    $this->currentStep = $index;
+                    return $this;
+                }
+            }
+            // If not found, default to 0
+            $this->currentStep = 0;
+        } else {
+            $this->currentStep = $step;
+        }
 
         return $this;
     }
@@ -89,13 +131,29 @@ class WizardSection extends BaseSection
 
     public function toArray(): array
     {
+        // Serialize steps with their components
+        $serializedSteps = array_map(function ($step) {
+            return [
+                'key' => $step['key'],
+                'label' => $step['label'],
+                'description' => $step['description'],
+                'icon' => $step['icon'],
+                'components' => array_map(
+                    fn ($comp) => (is_object($comp) && method_exists($comp, 'toArray')) ? $comp->toArray() : (array) $comp,
+                    $step['sections'] ?? []
+                ),
+                'optional' => $step['optional'],
+                'validation' => $step['validation'],
+            ];
+        }, $this->steps);
+
         return [
             'type' => $this->type,
             'name' => $this->name,
             'title' => $this->title,
             'subtitle' => $this->subtitle,
             'icon' => $this->icon,
-            'steps' => $this->steps,
+            'steps' => $serializedSteps,
             'current_step' => $this->currentStep,
             'linear' => $this->linear,
             'show_step_numbers' => $this->showStepNumbers,
@@ -111,7 +169,7 @@ class WizardSection extends BaseSection
             'data_key' => $this->dataKey,
             'actions' => $this->actions,
             'sections' => array_map(
-                fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
+                fn ($comp) => (is_object($comp) && method_exists($comp, 'toArray')) ? $comp->toArray() : (array) $comp,
                 $this->sections
             ),
             'order' => $this->order,

@@ -21,6 +21,14 @@ class LayoutManager
     }
 
     /**
+     * Create a new layout builder (alias for for())
+     */
+    public function create(string $name): LayoutBuilder
+    {
+        return new LayoutBuilder($name, 'default');
+    }
+
+    /**
      * Create a new layout builder
      */
     public function for(string $module, string $context): LayoutBuilder

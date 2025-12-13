@@ -68,15 +68,37 @@ class ListComponent extends BaseComponent
 
     /**
      * Add item configuration (structure only)
+     * Supports two patterns:
+     * 1. addItem($key, $label, $options) - individual parameters
+     * 2. addItem($item) - array with all properties
      */
-    public function addItem(string $key, ?string $label = null, array $options = []): self
+    public function addItem(string|array $keyOrItem, ?string $label = null, array $options = []): self
     {
+        // Pattern 2: Array with all properties
+        if (is_array($keyOrItem)) {
+            $item = $keyOrItem;
+            $this->items[] = [
+                'key' => $item['key'] ?? null,
+                'label' => $item['label'] ?? null,
+                'url' => $item['url'] ?? null,
+                'icon' => $item['icon'] ?? null,
+                'color' => $item['color'] ?? null,
+                'checked' => $item['checked'] ?? null, // For checklist
+                'target' => $item['target'] ?? null,
+            ];
+            
+            return $this;
+        }
+        
+        // Pattern 1: Individual parameters
         $this->items[] = [
-            'key' => $key,
+            'key' => $keyOrItem,
             'label' => $label,
+            'url' => $options['url'] ?? null,
             'icon' => $options['icon'] ?? null,
             'color' => $options['color'] ?? null,
             'checked' => $options['checked'] ?? null, // For checklist
+            'target' => $options['target'] ?? null,
         ];
 
         return $this;
@@ -104,10 +126,6 @@ class ListComponent extends BaseComponent
             'use_shared_data' => $this->useSharedData,
             'data_key' => $this->dataKey,
             'actions' => $this->actions,
-            'sections' => array_map(
-                fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
-                $this->sections
-            ),
             'order' => $this->order,
             'visible' => $this->visible,
             'permissions' => $this->permissions,

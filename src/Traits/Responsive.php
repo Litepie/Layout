@@ -12,6 +12,8 @@ trait Responsive
 
     protected array $responsiveOrder = [];
 
+    protected array $deviceConfig = [];
+
     protected ?string $targetDevice = null;
 
     /**
@@ -70,6 +72,28 @@ trait Responsive
         $this->responsiveOrder = $order;
 
         return $this;
+    }
+
+    /**
+     * Set device-specific configuration
+     *
+     * Usage:
+     * ->setDeviceConfig('mobile', ['columns' => 1, 'order' => 2])
+     * ->setDeviceConfig('tablet', ['columns' => 2, 'hidden' => false])
+     */
+    public function setDeviceConfig(string $device, array $config): self
+    {
+        $this->deviceConfig[$device] = $config;
+
+        return $this;
+    }
+
+    /**
+     * Get device-specific configuration
+     */
+    public function getDeviceConfig(string $device): array
+    {
+        return $this->deviceConfig[$device] ?? [];
     }
 
     /**
@@ -181,6 +205,10 @@ trait Responsive
 
         if (! empty($this->responsiveOrder)) {
             $array['responsive_order'] = $this->responsiveOrder;
+        }
+
+        if (! empty($this->deviceConfig)) {
+            $array['device_config'] = $this->deviceConfig;
         }
 
         if ($this->targetDevice) {

@@ -8,6 +8,8 @@ class CardComponent extends BaseComponent
 
     protected string $variant = 'default'; // default, outlined, elevated
 
+    protected array $fields = [];
+
     public function __construct(string $name)
     {
         parent::__construct($name, 'card');
@@ -32,6 +34,22 @@ class CardComponent extends BaseComponent
         return $this;
     }
 
+    /**
+     * Add a field to display in the card
+     * Usage: addField('email', 'Email Address', 'john@example.com')
+     * Or: addField('email', 'Email Address') - value will come from dataSource
+     */
+    public function addField(string $name, string $label, mixed $value = null): self
+    {
+        $this->fields[] = [
+            'name' => $name,
+            'label' => $label,
+            'value' => $value,
+        ];
+
+        return $this;
+    }
+
     public function toArray(): array
     {
         return [
@@ -43,6 +61,7 @@ class CardComponent extends BaseComponent
             'description' => $this->description,
             'image' => $this->image,
             'variant' => $this->variant,
+            'fields' => $this->fields,
             'data_source' => $this->dataSource,
             'data_url' => $this->dataUrl,
             'data_params' => $this->dataParams,
@@ -52,10 +71,6 @@ class CardComponent extends BaseComponent
             'use_shared_data' => $this->useSharedData,
             'data_key' => $this->dataKey,
             'actions' => $this->actions,
-            'sections' => array_map(
-                fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
-                $this->sections
-            ),
             'order' => $this->order,
             'visible' => $this->visible,
             'permissions' => $this->permissions,

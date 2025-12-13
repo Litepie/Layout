@@ -65,10 +65,6 @@ class CustomComponent extends BaseComponent
             'component' => $this->component,
             'data' => $this->data,
             'actions' => $this->actions,
-            'sections' => array_map(
-                fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
-                $this->sections
-            ),
             'order' => $this->order,
             'visible' => $this->visible,
             'permissions' => $this->permissions,

@@ -10,6 +10,8 @@ class TextComponent extends BaseComponent
 
     protected string $align = 'left';
 
+    protected ?string $format = null; // text, markdown, html
+
     public function __construct(string $name)
     {
         parent::__construct($name, 'text');
@@ -41,6 +43,13 @@ class TextComponent extends BaseComponent
         return $this;
     }
 
+    public function format(string $format): self
+    {
+        $this->format = $format;
+
+        return $this;
+    }
+
     public function toArray(): array
     {
         return [
@@ -52,11 +61,8 @@ class TextComponent extends BaseComponent
             'content' => $this->content,
             'size' => $this->size,
             'align' => $this->align,
+            'format' => $this->format,
             'actions' => $this->actions,
-            'sections' => array_map(
-                fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp,
-                $this->sections
-            ),
             'order' => $this->order,
             'visible' => $this->visible,
             'permissions' => $this->permissions,

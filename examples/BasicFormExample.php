@@ -73,7 +73,7 @@ $layout = Layout::create('contact-form')
             ->addButton('reset', 'Clear Form', 'reset')
 
             // Validation rules
-            ->validate([
+            ->validationRules([
                 'name' => 'required|min:2|max:100',
                 'email' => 'required|email|max:255',
                 'phone' => 'nullable|regex:/^[0-9+\-\s()]+$/',
