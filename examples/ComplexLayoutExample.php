@@ -7,21 +7,26 @@
  * tabs, accordions, modals, and conditional content.
  */
 
-use Litepie\Layout\LayoutBuilder;
-use Litepie\Layout\Components\StatsComponent;
 use Litepie\Layout\Components\ChartComponent;
-use Litepie\Layout\Components\TextComponent;
 use Litepie\Layout\Components\ListComponent;
+use Litepie\Layout\Components\StatsComponent;
+use Litepie\Layout\Components\TextComponent;
+use Litepie\Layout\LayoutBuilder;
 
 // Mock auth() helper for standalone script
-if (!function_exists('auth')) {
-    function auth() {
-        return new class {
-            public function id() {
+if (! function_exists('auth')) {
+    function auth()
+    {
+        return new class
+        {
+            public function id()
+            {
                 return 1;
             }
-            public function user() {
-                return (object)[
+
+            public function user()
+            {
+                return (object) [
                     'id' => 1,
                     'name' => 'Admin User',
                     'permissions' => ['view_dashboard', 'manage_users'],
@@ -32,10 +37,13 @@ if (!function_exists('auth')) {
 }
 
 // Mock now() helper
-if (!function_exists('now')) {
-    function now() {
-        return new class {
-            public function format($format) {
+if (! function_exists('now')) {
+    function now()
+    {
+        return new class
+        {
+            public function format($format)
+            {
                 return date($format);
             }
         };
@@ -46,8 +54,8 @@ if (!function_exists('now')) {
 $layout = LayoutBuilder::create('advanced-admin-panel', 'view')
     ->title('Advanced Admin Panel')
     ->setSharedData([
-        'user'         => auth()->user(),
-        'permissions'  => auth()->user()->permissions ?? [],
+        'user' => auth()->user(),
+        'permissions' => auth()->user()->permissions ?? [],
         'current_date' => now()->format('F j, Y'),
     ])
 
@@ -68,7 +76,7 @@ $layout = LayoutBuilder::create('advanced-admin-panel', 'view')
             ->variant('warning')
             ->icon('alert-triangle')
             ->dismissible(true)
-            ->canSee(fn($user) => $user->isAdmin());
+            ->canSee(fn ($user) => $user->isAdmin());
     })
 
 // ===========================
@@ -91,15 +99,15 @@ $layout = LayoutBuilder::create('advanced-admin-panel', 'view')
             ->addField('email', 'Email', auth()->user()->email ?? '')
             ->addField('member_since', 'Member Since', 'Jan 2024')
             ->addAction('profile', 'View Profile', [
-                'url'  => '/profile',
+                'url' => '/profile',
                 'icon' => 'user',
             ])
             ->addAction('settings', 'Settings', [
-                'url'  => '/settings',
+                'url' => '/settings',
                 'icon' => 'settings',
             ])
             ->addAction('logout', 'Logout', [
-                'url'  => '/logout',
+                'url' => '/logout',
                 'icon' => 'log-out',
             ]);
 
@@ -207,17 +215,17 @@ $layout = LayoutBuilder::create('advanced-admin-panel', 'view')
                 $tab->card('user-toolbar')
                     ->title('User Management')
                     ->addAction('add_user', 'Add New User', [
-                        'icon'    => 'user-plus',
-                        'url'     => '/admin/users/create',
+                        'icon' => 'user-plus',
+                        'url' => '/admin/users/create',
                         'variant' => 'primary',
                     ])
                     ->addAction('import', 'Import Users', [
                         'icon' => 'upload',
-                        'url'  => '/admin/users/import',
+                        'url' => '/admin/users/import',
                     ])
                     ->addAction('export', 'Export Users', [
                         'icon' => 'download',
-                        'url'  => '/admin/users/export',
+                        'url' => '/admin/users/export',
                     ])
                     ->permissions(['manage-users']);
 
@@ -234,7 +242,7 @@ $layout = LayoutBuilder::create('advanced-admin-panel', 'view')
                     ->addAction('view', 'View', ['icon' => 'eye'])
                     ->addAction('edit', 'Edit', ['icon' => 'pencil'])
                     ->addAction('delete', 'Delete', [
-                        'icon'    => 'trash',
+                        'icon' => 'trash',
                         'confirm' => 'Are you sure you want to delete this user?',
                     ])
                     ->sortable(true)
@@ -306,9 +314,9 @@ $layout = LayoutBuilder::create('advanced-admin-panel', 'view')
                     ->addField('date_to', 'date', 'To Date')
                     ->addField('report_type', 'select', 'Report Type', [
                         'options' => [
-                            'sales'    => 'Sales Report',
-                            'users'    => 'Users Report',
-                            'revenue'  => 'Revenue Report',
+                            'sales' => 'Sales Report',
+                            'users' => 'Users Report',
+                            'revenue' => 'Revenue Report',
                             'activity' => 'Activity Report',
                         ],
                     ])
@@ -339,9 +347,9 @@ $layout = LayoutBuilder::create('advanced-admin-panel', 'view')
                             ->addField('admin_email', 'email', 'Admin Email', ['required' => true])
                             ->addField('timezone', 'select', 'Timezone', [
                                 'options' => [
-                                    'America/New_York'    => 'Eastern',
-                                    'America/Chicago'     => 'Central',
-                                    'America/Denver'      => 'Mountain',
+                                    'America/New_York' => 'Eastern',
+                                    'America/Chicago' => 'Central',
+                                    'America/Denver' => 'Mountain',
                                     'America/Los_Angeles' => 'Pacific',
                                 ],
                             ])
@@ -385,73 +393,72 @@ $layout = LayoutBuilder::create('advanced-admin-panel', 'view')
     // ===========================
     // FOOTER SECTION
     // ===========================
-        ->section('footer', function ($section) {
-            $section->grid('footer-content')
-                ->columns(2)
+    ->section('footer', function ($section) {
+        $section->grid('footer-content')
+            ->columns(2)
 
-            // Copyright
-                ->addComponent(
-                    TextComponent::make('copyright')
-                        ->content('© 2025 Your Company. All rights reserved.')
-                        ->align('left')
-                )
+        // Copyright
+            ->addComponent(
+                TextComponent::make('copyright')
+                    ->content('© 2025 Your Company. All rights reserved.')
+                    ->align('left')
+            )
 
-            // Footer links
-                ->addComponent(
-                    ListComponent::make('footer-links')
-                        ->listType('unordered')
-                        ->addItem(['label' => 'Documentation', 'url' => '/docs'])
-                        ->addItem(['label' => 'Support', 'url' => '/support'])
-                        ->addItem(['label' => 'Privacy Policy', 'url' => '/privacy'])
-                        ->addItem(['label' => 'Terms of Service', 'url' => '/terms'])
-                );
-        })
+        // Footer links
+            ->addComponent(
+                ListComponent::make('footer-links')
+                    ->listType('unordered')
+                    ->addItem(['label' => 'Documentation', 'url' => '/docs'])
+                    ->addItem(['label' => 'Support', 'url' => '/support'])
+                    ->addItem(['label' => 'Privacy Policy', 'url' => '/privacy'])
+                    ->addItem(['label' => 'Terms of Service', 'url' => '/terms'])
+            );
+    })
 
         // ===========================
         // MODALS
         // ===========================
-        ->section('modals', function ($section) {
-            // Confirmation modal
-            $section->modal('confirm-delete')
-                ->title('Confirm Deletion')
-                ->content('Are you sure you want to delete this item? This action cannot be undone.')
-                ->size('medium')
-                ->closable(true)
-                ->addButton('cancel', 'Cancel', ['variant' => 'secondary'])
-                ->addButton('delete', 'Delete', ['variant' => 'danger']);
+    ->section('modals', function ($section) {
+        // Confirmation modal
+        $section->modal('confirm-delete')
+            ->title('Confirm Deletion')
+            ->content('Are you sure you want to delete this item? This action cannot be undone.')
+            ->size('medium')
+            ->closable(true)
+            ->addButton('cancel', 'Cancel', ['variant' => 'secondary'])
+            ->addButton('delete', 'Delete', ['variant' => 'danger']);
 
-            // Help modal
-            $section->modal('help-modal')
-                ->title('Help & Documentation')
-                ->content('Find answers to common questions and learn how to use the system.')
-                ->size('large')
-                ->closable(true)
-                ->addButton('close', 'Close', ['variant' => 'primary']);
-        })
+        // Help modal
+        $section->modal('help-modal')
+            ->title('Help & Documentation')
+            ->content('Find answers to common questions and learn how to use the system.')
+            ->size('large')
+            ->closable(true)
+            ->addButton('close', 'Close', ['variant' => 'primary']);
+    })
 
         // Performance optimization with caching
-        ->cache()
-        ->ttl(600) // 10 minutes
-        ->key('admin-panel-' . auth()->id())
-        ->tags(['admin', 'dashboard', 'user-' . auth()->id()])
+    ->cache()
+    ->ttl(600) // 10 minutes
+    ->key('admin-panel-'.auth()->id())
+    ->tags(['admin', 'dashboard', 'user-'.auth()->id()])
 
         // Event hooks
-        ->beforeRender(function ($layout) {
-            \Log::info('Admin panel rendering', [
-                'user_id'   => auth()->id(),
-                'timestamp' => now(),
-            ]);
-        })
-
-        ->afterRender(function ($layout, $output) {
-            \Log::info('Admin panel rendered', [
-                'sections'    => count($output['sections'] ?? []),
-                'render_time' => microtime(true),
-            ]);
-        })
+    ->beforeRender(function ($layout) {
+        \Log::info('Admin panel rendering', [
+            'user_id' => auth()->id(),
+            'timestamp' => now(),
+        ]);
+    })
+    ->afterRender(function ($layout, $output) {
+        \Log::info('Admin panel rendered', [
+            'sections' => count($output['sections'] ?? []),
+            'render_time' => microtime(true),
+        ]);
+    })
 
         // Resolve authorization for all components
-        ->resolveAuthorization(auth()->user());
+    ->resolveAuthorization(auth()->user());
 
 // Render the complex layout
-    return $layout->render();
+return $layout->render();

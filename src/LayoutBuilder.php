@@ -214,21 +214,22 @@ class LayoutBuilder
         if ($nameOrCallback instanceof \Closure) {
             $sectionName = $typeOrName;
             $callback = $nameOrCallback;
-            
+
             // Create a LayoutSection (container for other components)
             $layoutSection = LayoutSection::make($sectionName);
             $layoutSection->parentBuilder = $this;
-            
+
             // Create a section container for the 'body' slot (default slot for LayoutSection)
             $sectionContainer = $layoutSection->section('body');
-            
+
             // Execute the callback with the section container
             $callback($sectionContainer);
-            
+
             $this->addComponent($layoutSection);
+
             return $this;
         }
-        
+
         // Pattern 1: section('type', 'name')
         return $this->component($typeOrName, $nameOrCallback);
     }
@@ -307,9 +308,10 @@ class LayoutBuilder
     public function build(): Layout
     {
         $layout = new Layout($this->name, $this->mode, $this->sections, $this->sharedDataUrl, $this->sharedDataParams);
-        if (!empty($this->meta)) {
+        if (! empty($this->meta)) {
             $layout->meta($this->meta);
         }
+
         return $layout;
     }
 

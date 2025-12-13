@@ -6,8 +6,8 @@
  * Demonstrates creating a comprehensive dashboard with stats, charts, and tables.
  */
 
-use Litepie\Layout\LayoutBuilder;
 use Litepie\Layout\Components\StatsComponent;
+use Litepie\Layout\LayoutBuilder;
 use Litepie\Layout\Sections\LayoutSection;
 
 // Create dashboard layout

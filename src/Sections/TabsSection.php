@@ -33,16 +33,16 @@ class TabsSection extends BaseSection
         // Pattern 2: Callback configuration
         if ($componentsOrCallback instanceof \Closure) {
             $callback = $componentsOrCallback;
-            
+
             // Create a section container for this tab
             $tabContainer = new \Litepie\Layout\SectionContainer($id, $this);
-            
+
             // Execute the callback to configure the tab
             $callback($tabContainer);
-            
+
             // Get all components added to the tab container
             $components = $tabContainer->getComponents();
-            
+
             $this->tabs[$id] = [
                 'id' => $id,
                 'label' => $label,
@@ -54,15 +54,15 @@ class TabsSection extends BaseSection
                 'permissions' => $options['permissions'] ?? [],
                 'roles' => $options['roles'] ?? [],
             ];
-            
+
             // Set first tab as active if none set
             if ($this->activeTab === null) {
                 $this->activeTab = $id;
             }
-            
+
             return $this;
         }
-        
+
         // Pattern 1: Array of components
         $this->tabs[$id] = [
             'id' => $id,

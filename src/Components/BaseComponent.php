@@ -239,6 +239,7 @@ abstract class BaseComponent implements Component, Renderable
         if ($this->dataSourceCallback) {
             return ($this->dataSourceCallback)();
         }
+
         return null;
     }
 
@@ -421,7 +422,7 @@ abstract class BaseComponent implements Component, Renderable
     /**
      * End section and return to parent builder
      * Allows chaining: ->section('body')->chart()->endSection()->section('footer')
-     * 
+     *
      * If parentBuilder is a SectionContainer, returns its parent (the section/layout)
      * Otherwise returns parentBuilder directly
      */
@@ -430,7 +431,7 @@ abstract class BaseComponent implements Component, Renderable
         if ($this->parentBuilder instanceof \Litepie\Layout\SectionContainer) {
             return $this->parentBuilder->getParent();
         }
-        
+
         return $this->parentBuilder;
     }
 

@@ -33,16 +33,16 @@ class AccordionSection extends BaseSection
         // Pattern 2: Callback configuration
         if ($componentsOrCallback instanceof \Closure) {
             $callback = $componentsOrCallback;
-            
+
             // Create a section container for this panel
             $panelContainer = new \Litepie\Layout\SectionContainer($id, $this);
-            
+
             // Execute the callback to configure the panel
             $callback($panelContainer);
-            
+
             // Get all components added to the panel container
             $components = $panelContainer->getComponents();
-            
+
             $this->items[$id] = [
                 'id' => $id,
                 'label' => $label,
@@ -55,15 +55,15 @@ class AccordionSection extends BaseSection
                 'roles' => $options['roles'] ?? [],
                 'description' => $options['description'] ?? null,
             ];
-            
+
             // Set first item as expanded if none set
             if (empty($this->expanded)) {
                 $this->expanded = [$id];
             }
-            
+
             return $this;
         }
-        
+
         // Pattern 1: Array of components
         $this->items[$id] = [
             'id' => $id,

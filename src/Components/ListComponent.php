@@ -86,10 +86,10 @@ class ListComponent extends BaseComponent
                 'checked' => $item['checked'] ?? null, // For checklist
                 'target' => $item['target'] ?? null,
             ];
-            
+
             return $this;
         }
-        
+
         // Pattern 1: Individual parameters
         $this->items[] = [
             'key' => $keyOrItem,

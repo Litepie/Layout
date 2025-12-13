@@ -40,16 +40,16 @@ class WizardSection extends BaseSection
         // Pattern 2: Callback configuration
         if ($sectionsOrCallback instanceof \Closure) {
             $callback = $sectionsOrCallback;
-            
+
             // Create a section container for this step
             $stepContainer = new \Litepie\Layout\SectionContainer($key, $this);
-            
+
             // Execute the callback to configure the step
             $callback($stepContainer);
-            
+
             // Get all components added to the step container
             $sections = $stepContainer->getComponents();
-            
+
             $this->steps[] = [
                 'key' => $key,
                 'label' => $label,
@@ -59,10 +59,10 @@ class WizardSection extends BaseSection
                 'optional' => $options['optional'] ?? false,
                 'validation' => $options['validation'] ?? null,
             ];
-            
+
             return $this;
         }
-        
+
         // Pattern 1: Array of sections
         $this->steps[] = [
             'key' => $key,
@@ -84,6 +84,7 @@ class WizardSection extends BaseSection
             foreach ($this->steps as $index => $stepData) {
                 if ($stepData['key'] === $step) {
                     $this->currentStep = $index;
+
                     return $this;
                 }
             }
