@@ -13,7 +13,6 @@
 
 use Litepie\Layout\Components\CustomComponent;
 use Litepie\Layout\LayoutBuilder;
-use Litepie\Layout\Sections\LayoutSection;
 
 // ============================================================================
 // APPROACH 1: Using CustomComponent Class
@@ -22,7 +21,7 @@ use Litepie\Layout\Sections\LayoutSection;
 
 $layout1 = LayoutBuilder::create('custom-inline', 'custom-inline')
     ->title('Custom Component Examples - Inline Approach')
-    
+
     // Example 1: QR Code Generator
     ->section('qr-code-section', function ($section) {
         $section->custom('qr-code-generator')
@@ -151,18 +150,31 @@ $layout1 = LayoutBuilder::create('custom-inline', 'custom-inline')
 class VideoPlayerComponent extends \Litepie\Layout\Components\BaseComponent
 {
     protected ?string $videoUrl = null;
+
     protected ?string $posterUrl = null;
+
     protected bool $autoplay = false;
+
     protected bool $controls = true;
+
     protected bool $loop = false;
+
     protected bool $muted = false;
+
     protected ?int $width = null;
+
     protected ?int $height = null;
+
     protected array $tracks = []; // Subtitles/captions
+
     protected ?string $quality = 'auto';
+
     protected array $chapters = [];
+
     protected bool $pip = true; // Picture-in-picture
+
     protected bool $fullscreen = true;
+
     protected ?float $playbackRate = 1.0;
 
     public function __construct(string $name, string $type = 'video-player')
@@ -178,36 +190,42 @@ class VideoPlayerComponent extends \Litepie\Layout\Components\BaseComponent
     public function videoUrl(string $url): self
     {
         $this->videoUrl = $url;
+
         return $this;
     }
 
     public function poster(string $url): self
     {
         $this->posterUrl = $url;
+
         return $this;
     }
 
     public function autoplay(bool $autoplay = true): self
     {
         $this->autoplay = $autoplay;
+
         return $this;
     }
 
     public function controls(bool $controls = true): self
     {
         $this->controls = $controls;
+
         return $this;
     }
 
     public function loop(bool $loop = true): self
     {
         $this->loop = $loop;
+
         return $this;
     }
 
     public function muted(bool $muted = true): self
     {
         $this->muted = $muted;
+
         return $this;
     }
 
@@ -215,6 +233,7 @@ class VideoPlayerComponent extends \Litepie\Layout\Components\BaseComponent
     {
         $this->width = $width;
         $this->height = $height;
+
         return $this;
     }
 
@@ -226,12 +245,14 @@ class VideoPlayerComponent extends \Litepie\Layout\Components\BaseComponent
             'label' => $label,
             'srclang' => $srclang,
         ];
+
         return $this;
     }
 
     public function quality(string $quality): self
     {
         $this->quality = $quality;
+
         return $this;
     }
 
@@ -241,24 +262,28 @@ class VideoPlayerComponent extends \Litepie\Layout\Components\BaseComponent
             'title' => $title,
             'time' => $time,
         ];
+
         return $this;
     }
 
     public function pip(bool $enabled = true): self
     {
         $this->pip = $enabled;
+
         return $this;
     }
 
     public function fullscreen(bool $enabled = true): self
     {
         $this->fullscreen = $enabled;
+
         return $this;
     }
 
     public function playbackRate(float $rate): self
     {
         $this->playbackRate = $rate;
+
         return $this;
     }
 
@@ -286,7 +311,7 @@ class VideoPlayerComponent extends \Litepie\Layout\Components\BaseComponent
 // Usage example of VideoPlayerComponent
 $layout2 = LayoutBuilder::create('video-layout', 'video-showcase')
     ->title('Video Player Examples')
-    
+
     ->section('video-section', function ($section) {
         // Simple video player
         $section->addComponent(
@@ -327,9 +352,13 @@ $layout2 = LayoutBuilder::create('video-layout', 'video-showcase')
 class KanbanBoardSection extends \Litepie\Layout\Sections\BaseSection
 {
     protected array $columns = [];
+
     protected bool $draggable = true;
+
     protected ?string $onCardMove = null;
+
     protected ?string $dataUrl = null;
+
     protected array $cardTemplate = [];
 
     public function __construct(string $name, string $type = 'kanban-board')
@@ -351,30 +380,35 @@ class KanbanBoardSection extends \Litepie\Layout\Sections\BaseSection
             'color' => $color,
             'limit' => $limit,
         ];
+
         return $this;
     }
 
     public function draggable(bool $enabled = true): self
     {
         $this->draggable = $enabled;
+
         return $this;
     }
 
     public function onCardMove(string $callback): self
     {
         $this->onCardMove = $callback;
+
         return $this;
     }
 
     public function dataUrl(string $url): self
     {
         $this->dataUrl = $url;
+
         return $this;
     }
 
     public function cardTemplate(array $template): self
     {
         $this->cardTemplate = $template;
+
         return $this;
     }
 
@@ -393,7 +427,7 @@ class KanbanBoardSection extends \Litepie\Layout\Sections\BaseSection
 // Usage example of KanbanBoardSection
 $layout3 = LayoutBuilder::create('project-kanban', 'kanban-view')
     ->title('Project Management Board')
-    
+
     ->section('kanban', function ($section) {
         $section->addComponent(
             KanbanBoardSection::make('project-board')
@@ -432,11 +466,17 @@ $layout3 = LayoutBuilder::create('project-kanban', 'kanban-view')
 class ChatComponent extends \Litepie\Layout\Components\BaseComponent
 {
     protected ?string $channelId = null;
+
     protected array $messages = [];
+
     protected bool $sendButton = true;
+
     protected bool $attachments = true;
+
     protected bool $emojis = true;
+
     protected bool $typing = true;
+
     protected ?int $maxLength = 1000;
 
     public function __construct(string $name, string $type = 'chat')
@@ -452,36 +492,42 @@ class ChatComponent extends \Litepie\Layout\Components\BaseComponent
     public function channel(string $id): self
     {
         $this->channelId = $id;
+
         return $this;
     }
 
     public function messages(array $messages): self
     {
         $this->messages = $messages;
+
         return $this;
     }
 
     public function attachments(bool $enabled = true): self
     {
         $this->attachments = $enabled;
+
         return $this;
     }
 
     public function emojis(bool $enabled = true): self
     {
         $this->emojis = $enabled;
+
         return $this;
     }
 
     public function typing(bool $enabled = true): self
     {
         $this->typing = $enabled;
+
         return $this;
     }
 
     public function maxLength(int $length): self
     {
         $this->maxLength = $length;
+
         return $this;
     }
 
@@ -503,11 +549,17 @@ class ChatComponent extends \Litepie\Layout\Components\BaseComponent
 class ModelViewerComponent extends \Litepie\Layout\Components\BaseComponent
 {
     protected ?string $modelUrl = null;
+
     protected ?string $format = 'gltf'; // gltf, obj, fbx
+
     protected bool $autoRotate = false;
+
     protected bool $controls = true;
+
     protected ?string $backgroundColor = '#ffffff';
+
     protected array $camera = ['position' => [0, 0, 5]];
+
     protected array $lighting = ['ambient' => 0.5, 'directional' => 0.8];
 
     public function __construct(string $name, string $type = '3d-viewer')
@@ -524,30 +576,35 @@ class ModelViewerComponent extends \Litepie\Layout\Components\BaseComponent
     {
         $this->modelUrl = $url;
         $this->format = $format;
+
         return $this;
     }
 
     public function autoRotate(bool $enabled = true): self
     {
         $this->autoRotate = $enabled;
+
         return $this;
     }
 
     public function controls(bool $enabled = true): self
     {
         $this->controls = $enabled;
+
         return $this;
     }
 
     public function backgroundColor(string $color): self
     {
         $this->backgroundColor = $color;
+
         return $this;
     }
 
     public function camera(array $config): self
     {
         $this->camera = array_merge($this->camera, $config);
+
         return $this;
     }
 
@@ -557,6 +614,7 @@ class ModelViewerComponent extends \Litepie\Layout\Components\BaseComponent
             'ambient' => $ambient,
             'directional' => $directional,
         ];
+
         return $this;
     }
 
@@ -577,12 +635,12 @@ class ModelViewerComponent extends \Litepie\Layout\Components\BaseComponent
 // Usage of custom components together
 $layout4 = LayoutBuilder::create('mixed-custom', 'custom-showcase')
     ->title('Custom Components Showcase')
-    
+
     ->section('communication', function ($section) {
         $section->grid('chat-grid')
             ->columns(2)
             ->gap('1.5rem')
-            
+
             // Chat component
             ->addComponent(
                 ChatComponent::make('team-chat')
@@ -593,7 +651,7 @@ $layout4 = LayoutBuilder::create('mixed-custom', 'custom-showcase')
                     ->maxLength(500)
                     ->label('Team Chat')
             )
-            
+
             // 3D Model viewer
             ->addComponent(
                 ModelViewerComponent::make('product-model')
@@ -631,16 +689,15 @@ $layout4 = LayoutBuilder::create('mixed-custom', 'custom-showcase')
  *
  * Then use them like this:
  */
-
 $layout5 = LayoutBuilder::create('with-helpers', 'helpers-demo')
     ->title('Using Custom Component Helpers')
-    
+
     ->section('video-section', function ($section) {
         // If helper method is added to SectionContainer
         // $section->videoPlayer('demo-video')
         //     ->videoUrl('/videos/demo.mp4')
         //     ->controls();
-        
+
         // Without helper, use addComponent
         $section->addComponent(
             VideoPlayerComponent::make('demo-video')
@@ -657,25 +714,25 @@ $layout5 = LayoutBuilder::create('with-helpers', 'helpers-demo')
  * React Component Example (components/VideoPlayer.jsx):
  *
  * import React from 'react';
- * 
- * export const VideoPlayer = ({ 
- *   video_url, 
- *   poster_url, 
- *   autoplay, 
+ *
+ * export const VideoPlayer = ({
+ *   video_url,
+ *   poster_url,
+ *   autoplay,
  *   controls,
  *   tracks,
  *   chapters
  * }) => {
  *   return (
  *     <div className="video-player">
- *       <video 
+ *       <video
  *         src={video_url}
  *         poster={poster_url}
  *         autoPlay={autoplay}
  *         controls={controls}
  *       >
  *         {tracks.map((track, idx) => (
- *           <track 
+ *           <track
  *             key={idx}
  *             src={track.src}
  *             kind={track.kind}
@@ -703,13 +760,13 @@ $layout5 = LayoutBuilder::create('with-helpers', 'helpers-demo')
  *
  * <template>
  *   <div class="video-player">
- *     <video 
+ *     <video
  *       :src="video_url"
  *       :poster="poster_url"
  *       :autoplay="autoplay"
  *       :controls="controls"
  *     >
- *       <track 
+ *       <track
  *         v-for="(track, idx) in tracks"
  *         :key="idx"
  *         :src="track.src"
@@ -719,9 +776,10 @@ $layout5 = LayoutBuilder::create('with-helpers', 'helpers-demo')
  *       />
  *     </video>
  *     <div v-if="chapters" class="chapters">
- *       <button 
+ *       <button
  *         v-for="(chapter, idx) in chapters"
  *         :key="idx"
+ *
  *         @click="seekTo(chapter.time)"
  *       >
  *         {{ chapter.title }}

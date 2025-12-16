@@ -11,8 +11,8 @@
  * - Clickable avatars with tooltips
  */
 
-use Litepie\Layout\LayoutBuilder;
 use Litepie\Layout\Components\AvatarComponent;
+use Litepie\Layout\LayoutBuilder;
 
 // Mock auth() helper for standalone script
 if (! function_exists('auth')) {
