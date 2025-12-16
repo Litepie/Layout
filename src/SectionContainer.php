@@ -250,6 +250,14 @@ class SectionContainer
     }
 
     /**
+     * Create and add an AvatarComponent
+     */
+    public function avatar(string $name): Component
+    {
+        return $this->component('avatar', $name);
+    }
+
+    /**
      * Create and add a TimelineComponent
      */
     public function timeline(string $name): Component
@@ -319,6 +327,14 @@ class SectionContainer
     public function layout(string $name): Component
     {
         return $this->component('layout', $name);
+    }
+
+    /**
+     * Create and add a DividerComponent
+     */
+    public function divider(string $name): Component
+    {
+        return $this->component('divider', $name);
     }
 
     /**

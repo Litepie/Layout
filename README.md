@@ -243,7 +243,9 @@ BaseComponent (Content leaf node)
 ├── CommentComponent
 ├── BreadcrumbComponent
 ├── DocumentComponent
-└── CustomComponent
+├── AvatarComponent
+├── DividerComponent
+└── CustomComponent (extensible for custom components)
 ```
 
 ## Features
@@ -365,9 +367,28 @@ $section->form('contact')
 
 ## Documentation
 
-- **[ARCHITECTURE.md](ARCHITECTURE.md)** - Detailed architecture and design patterns
-- **[API_REFERENCE.md](API_REFERENCE.md)** - Complete API documentation for all sections and components
-- **[EXAMPLES.md](EXAMPLES.md)** - Comprehensive usage examples and patterns
+### Backend (PHP/Laravel)
+
+- **[Architecture Guide](ARCHITECTURE.md)** - Detailed architecture and design patterns
+- **[API Reference](API_REFERENCE.md)** - Complete API documentation for all sections and components
+- **[Examples](EXAMPLES.md)** - Comprehensive usage examples and patterns
+- **[Custom Components Guide](docs/CUSTOM_COMPONENTS.md)** - Create project-specific components
+- **[Complete Guide](docs/GUIDE.md)** - Comprehensive documentation
+
+### Frontend Implementations
+
+- **[Frontend Overview](frontend/README.md)** - Overview of all frontend implementations
+- **[React/Next.js](frontend/react-next/README.md)** - ✅ Complete TypeScript implementation with Tailwind CSS
+- **[Vue.js](frontend/vue/README.md)** - 📋 Planned implementation
+- **[Flutter](frontend/flutter/README.md)** - 📋 Planned implementation
+
+### Code Examples (PHP)
+
+- **[Basic Usage](examples/usage.php)** - Simple layout examples
+- **[Dashboard Example](examples/DashboardExample.php)** - Complete dashboard with stats and charts
+- **[Avatar Component](examples/AvatarExample.php)** - User avatar display examples
+- **[Divider Component](examples/DividerExample.php)** - Visual separator examples
+- **[Custom Components](examples/CustomComponentExample.php)** - Creating custom components
 
 ## Testing
 
