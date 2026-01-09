@@ -3,20 +3,15 @@
 namespace Litepie\Layout\Sections;
 
 /**
- * HeaderComponent
+ * HeaderSection
  *
- * A component representing a page or section header with predefined section slots.
+ * A section representing a page or section header.
  * Common use case: Navigation headers, page titles, action bars
  *
- * Predefined sections:
- * - left: Left-aligned content (logo, brand)
- * - center: Center-aligned content (navigation, title)
- * - right: Right-aligned content (actions, user menu, search)
+ * No predefined slots - all content added via sections/components.
  */
 class HeaderSection extends BaseSection
 {
-    protected array $allowedSections = ['left', 'center', 'right'];
-
     protected string $variant = 'default'; // default, sticky, transparent, bordered
 
     protected ?string $background = null;

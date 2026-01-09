@@ -227,6 +227,7 @@ class CardComponent extends BaseComponent
 | `ModalComponent` | Dialogs | Trigger, content, actions |
 | `ChartComponent` | Visualizations | Chart types, datasets |
 | `TextComponent` | Rich text | Markdown, HTML support |
+| `CodeComponent` | Code blocks | Syntax highlighting, languages |
 | `MediaComponent` | Media | Images, videos, galleries |
 | `StatsComponent` | Statistics | Metrics, trends |
 | `TimelineComponent` | Timelines | Events, dates |

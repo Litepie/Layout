@@ -10,6 +10,8 @@ class AlertComponent extends BaseComponent
 
     protected ?string $content = null;
 
+    protected ?string $title = null;
+
     protected bool $dismissible = false;
 
     protected bool $bordered = false;
@@ -31,6 +33,11 @@ class AlertComponent extends BaseComponent
         $this->variant = $variant;
 
         return $this;
+    }
+
+    public function type(string $type): self
+    {
+        return $this->variant($type);
     }
 
     public function info(): self
@@ -56,6 +63,13 @@ class AlertComponent extends BaseComponent
     public function message(string $message): self
     {
         $this->message = $message;
+
+        return $this;
+    }
+
+    public function title(string $title): self
+    {
+        $this->title = $title;
 
         return $this;
     }
@@ -90,33 +104,14 @@ class AlertComponent extends BaseComponent
 
     public function toArray(): array
     {
-        return [
-            'type' => $this->type,
-            'name' => $this->name,
-            'title' => $this->title,
-            'subtitle' => $this->subtitle,
-            'icon' => $this->icon,
+        return array_merge($this->getCommonProperties(), $this->filterNullValues([
             'variant' => $this->variant,
             'message' => $this->message,
+            'title' => $this->title,
             'content' => $this->content,
             'dismissible' => $this->dismissible,
             'bordered' => $this->bordered,
             'filled' => $this->filled,
-            'data_source' => $this->dataSource,
-            'data_url' => $this->dataUrl,
-            'data_params' => $this->dataParams,
-            'data_transform' => $this->dataTransform,
-            'load_on_mount' => $this->loadOnMount,
-            'reload_on_change' => $this->reloadOnChange,
-            'use_shared_data' => $this->useSharedData,
-            'data_key' => $this->dataKey,
-            'actions' => $this->actions,
-            'order' => $this->order,
-            'visible' => $this->visible,
-            'permissions' => $this->permissions,
-            'roles' => $this->roles,
-            'authorized_to_see' => $this->authorizedToSee,
-            'meta' => $this->meta,
-        ];
+        ]));
     }
 }

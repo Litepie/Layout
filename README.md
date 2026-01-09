@@ -70,8 +70,11 @@ $layout = Layout::create('dashboard')
             ->addField('new_registrations', 'New This Month');
     });
 
-// Render to array (for JSON API responses)
-return $layout->render();
+// Render using the layout response macro (recommended)
+return response()->layout($layout->cache(true, 3600));
+
+// Or render to array manually
+return response()->json($layout->render());
 ```
 
 ### Creating a Form
@@ -163,6 +166,7 @@ Components are leaf nodes that render actual content. They cannot contain other 
 - `ModalComponent` - Dialogs and popups
 - `ChartComponent` - Data visualizations
 - `TextComponent` - Rich text content
+- `CodeComponent` - Syntax-highlighted code blocks
 - `MediaComponent` - Images, videos, galleries
 - `StatsComponent` - Statistics displays
 - `TimelineComponent` - Event timelines

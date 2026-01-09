@@ -12,8 +12,8 @@ class ScrollSpySection extends BaseSection
 
     protected int $offset = 80; // Scroll offset for active state
 
-    // ScrollSpy uses dynamic section slots for each spy section
-    // allowedSections is empty to allow dynamic sections
+    // ScrollSpy uses dynamic slots for each spy section
+    // allowedSlots is empty to allow dynamic slots
 
     public function __construct(string $name)
     {

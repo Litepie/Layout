@@ -6,6 +6,8 @@ class TableComponent extends BaseComponent
 {
     protected array $tableColumns = [];
 
+    protected array $tableData = [];
+
     protected bool $searchable = false;
 
     protected bool $sortable = false;
@@ -21,6 +23,10 @@ class TableComponent extends BaseComponent
     protected ?string $sortColumn = null;
 
     protected string $sortDirection = 'asc';
+
+    protected bool $hoverable = false;
+
+    protected bool $striped = false;
 
     public function __construct(string $name)
     {
@@ -48,6 +54,13 @@ class TableComponent extends BaseComponent
     public function columns(array $columns): self
     {
         $this->tableColumns = $columns;
+
+        return $this;
+    }
+
+    public function data(array $data): self
+    {
+        $this->tableData = $data;
 
         return $this;
     }
@@ -80,6 +93,20 @@ class TableComponent extends BaseComponent
         return $this;
     }
 
+    public function hoverable(bool $hoverable = true): self
+    {
+        $this->hoverable = $hoverable;
+
+        return $this;
+    }
+
+    public function striped(bool $striped = true): self
+    {
+        $this->striped = $striped;
+
+        return $this;
+    }
+
     public function paginated(bool $paginated = true): self
     {
         $this->paginated = $paginated;
@@ -105,6 +132,14 @@ class TableComponent extends BaseComponent
         return $this;
     }
 
+    /**
+     * Alias for paginate() - enables pagination and sets per page count
+     */
+    public function pagination(int $perPage): self
+    {
+        return $this->paginate($perPage);
+    }
+
     public function defaultSort(string $column, string $direction = 'asc'): self
     {
         $this->sortColumn = $column;
@@ -115,36 +150,19 @@ class TableComponent extends BaseComponent
 
     public function toArray(): array
     {
-        return [
-            'type' => $this->type,
-            'name' => $this->name,
-            'title' => $this->title,
-            'subtitle' => $this->subtitle,
-            'icon' => $this->icon,
+        return array_merge($this->getCommonProperties(), $this->filterNullValues([
             'columns' => $this->tableColumns,
+            'data' => $this->tableData,
             'searchable' => $this->searchable,
             'sortable' => $this->sortable,
             'filterable' => $this->filterable,
             'selectable' => $this->selectable,
+            'hoverable' => $this->hoverable,
+            'striped' => $this->striped,
             'paginated' => $this->paginated,
             'per_page' => $this->perPage,
             'sort_column' => $this->sortColumn,
             'sort_direction' => $this->sortDirection,
-            'data_source' => $this->dataSource,
-            'data_url' => $this->dataUrl,
-            'data_params' => $this->dataParams,
-            'data_transform' => $this->dataTransform,
-            'load_on_mount' => $this->loadOnMount,
-            'reload_on_change' => $this->reloadOnChange,
-            'use_shared_data' => $this->useSharedData,
-            'data_key' => $this->dataKey,
-            'actions' => $this->actions,
-            'order' => $this->order,
-            'visible' => $this->visible,
-            'permissions' => $this->permissions,
-            'roles' => $this->roles,
-            'authorized_to_see' => $this->authorizedToSee,
-            'meta' => $this->meta,
-        ];
+        ]));
     }
 }

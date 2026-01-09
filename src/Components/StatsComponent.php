@@ -19,6 +19,8 @@ class StatsComponent extends BaseComponent
     // Single stat properties
     protected mixed $value = null;
 
+    protected ?string $label = null;
+
     protected ?string $change = null;
 
     protected ?string $trend = null; // up, down, neutral
@@ -65,6 +67,16 @@ class StatsComponent extends BaseComponent
     public function value(mixed $value): self
     {
         $this->value = $value;
+
+        return $this;
+    }
+
+    /**
+     * Set the stat label
+     */
+    public function label(string $label): self
+    {
+        $this->label = $label;
 
         return $this;
     }
@@ -156,13 +168,9 @@ class StatsComponent extends BaseComponent
 
     public function toArray(): array
     {
-        return [
-            'type' => $this->type,
-            'name' => $this->name,
-            'title' => $this->title,
-            'subtitle' => $this->subtitle,
-            'icon' => $this->icon,
+        return array_merge($this->getCommonProperties(), $this->filterNullValues([
             'value' => $this->value,
+            'label' => $this->label,
             'change' => $this->change,
             'trend' => $this->trend,
             'prefix' => $this->prefix,
@@ -174,21 +182,6 @@ class StatsComponent extends BaseComponent
             'size' => $this->size,
             'show_trend' => $this->showTrend,
             'show_change' => $this->showChange,
-            'data_source' => $this->dataSource,
-            'data_url' => $this->dataUrl,
-            'data_params' => $this->dataParams,
-            'data_transform' => $this->dataTransform,
-            'load_on_mount' => $this->loadOnMount,
-            'reload_on_change' => $this->reloadOnChange,
-            'use_shared_data' => $this->useSharedData,
-            'data_key' => $this->dataKey,
-            'actions' => $this->actions,
-            'order' => $this->order,
-            'visible' => $this->visible,
-            'permissions' => $this->permissions,
-            'roles' => $this->roles,
-            'authorized_to_see' => $this->authorizedToSee,
-            'meta' => $this->meta,
-        ];
+        ]));
     }
 }

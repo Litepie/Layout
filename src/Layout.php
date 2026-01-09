@@ -14,6 +14,18 @@ use Litepie\Layout\Traits\Debuggable;
 use Litepie\Layout\Traits\Exportable;
 use Litepie\Layout\Traits\Testable;
 
+/**
+ * Layout
+ *
+ * Root-level container in the 4-level architecture:
+ * Layout → Section → Slot → Component
+ *
+ * Layout contains Sections (BaseSection subclasses)
+ * Sections contain Slots (named content areas)
+ * Slots contain Components or nested Sections
+ *
+ * This class also maintains backward compatibility with legacy Section/Subsection structure.
+ */
 class Layout implements Renderable
 {
     use Cacheable, Debuggable, Exportable, Testable;
@@ -123,29 +135,11 @@ class Layout implements Renderable
                 }
             }
 
-            // If it's a TabsSection, recurse into each tab's sections
-            if ($section instanceof TabsSection && method_exists($section, 'getTabs')) {
-                foreach ($section->getTabs() as $tab) {
-                    if (! empty($tab['sections'])) {
-                        $this->collectFormFieldsRecursive($tab['sections'], $fields);
-                    }
-                }
-            }
-
-            // If it's an AccordionSection, recurse into each item's sections
-            if ($section instanceof AccordionSection && method_exists($section, 'getItems')) {
-                foreach ($section->getItems() as $item) {
-                    if (! empty($item['sections'])) {
-                        $this->collectFormFieldsRecursive($item['sections'], $fields);
-                    }
-                }
-            }
-
-            // If it's a ScrollSpySection, recurse into each section's sections
-            if ($section instanceof ScrollSpySection && method_exists($section, 'getSpySections')) {
-                foreach ($section->getSpySections() as $spySection) {
-                    if (! empty($spySection['sections'])) {
-                        $this->collectFormFieldsRecursive($spySection['sections'], $fields);
+            // If section has slots, recurse into each slot's components
+            if (method_exists($section, 'getSlots')) {
+                foreach ($section->getSlots() as $slot) {
+                    if (method_exists($slot, 'getComponents')) {
+                        $this->collectFormFieldsRecursive($slot->getComponents(), $fields);
                     }
                 }
             }
@@ -198,29 +192,11 @@ class Layout implements Renderable
                 $this->resolveSectionAuthorization($section->getSections(), $user);
             }
 
-            // Recurse into TabsSection tabs
-            if ($section instanceof TabsSection && method_exists($section, 'getTabs')) {
-                foreach ($section->getTabs() as $tab) {
-                    if (! empty($tab['sections'])) {
-                        $this->resolveSectionAuthorization($tab['sections'], $user);
-                    }
-                }
-            }
-
-            // Recurse into AccordionSection items
-            if ($section instanceof AccordionSection && method_exists($section, 'getItems')) {
-                foreach ($section->getItems() as $item) {
-                    if (! empty($item['sections'])) {
-                        $this->resolveSectionAuthorization($item['sections'], $user);
-                    }
-                }
-            }
-
-            // Recurse into ScrollSpySection sections
-            if ($section instanceof ScrollSpySection && method_exists($section, 'getSpySections')) {
-                foreach ($section->getSpySections() as $spySection) {
-                    if (! empty($spySection['sections'])) {
-                        $this->resolveSectionAuthorization($spySection['sections'], $user);
+            // Recurse into nested sections through slots
+            if (method_exists($section, 'getSlots')) {
+                foreach ($section->getSlots() as $slot) {
+                    if (method_exists($slot, 'getComponents')) {
+                        $this->resolveSectionAuthorization($slot->getComponents(), $user);
                     }
                 }
             }

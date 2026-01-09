@@ -2,23 +2,52 @@
 
 namespace Litepie\Layout\Components;
 
+/**
+ * ModalComponent
+ *
+ * Modal component provides a solid foundation for creating dialogs, popovers, lightboxes, or whatever else.
+ * Renders children in front of a backdrop component and manages focus, stacking, and accessibility.
+ */
 class ModalComponent extends BaseComponent
 {
-    protected ?string $content = null;
+    // Core props
+    protected bool $open = false;
 
-    protected string $size = 'md'; // xs, sm, md, lg, xl, full
+    protected ?array $children = null; // Modal content
 
-    protected bool $closable = true;
+    // Callback handlers
+    protected ?string $onClose = null; // Callback when modal should close
 
-    protected bool $closeOnBackdrop = true;
+    // Backdrop props
+    protected bool $hideBackdrop = false;
 
-    protected bool $closeOnEscape = true;
+    protected ?array $backdropProps = null;
 
-    protected ?string $trigger = null; // Element ID or selector that opens modal
+    // Keyboard interaction
+    protected bool $disableEscapeKeyDown = false;
 
-    protected array $buttons = [];
+    // Focus management
+    protected bool $disableAutoFocus = false;
 
-    protected array $footer = [];
+    protected bool $disableEnforceFocus = false;
+
+    protected bool $disableRestoreFocus = false;
+
+    // Performance
+    protected bool $keepMounted = false;
+
+    // Portal
+    protected bool $disablePortal = false;
+
+    // Slots (for customization)
+    protected ?array $slots = null;
+
+    protected ?array $slotProps = null;
+
+    // Accessibility
+    protected ?string $ariaLabelledby = null;
+
+    protected ?string $ariaDescribedby = null;
 
     public function __construct(string $name)
     {
@@ -30,117 +59,210 @@ class ModalComponent extends BaseComponent
         return new static($name);
     }
 
-    public function content(string $content): self
+    // ========================================================================
+    // Core Props
+    // ========================================================================
+
+    /**
+     * Set modal open state
+     */
+    public function open(bool $open = true): self
     {
-        $this->content = $content;
-
-        return $this;
-    }
-
-    public function size(string $size): self
-    {
-        $this->size = $size;
-
-        return $this;
-    }
-
-    public function small(): self
-    {
-        return $this->size('sm');
-    }
-
-    public function large(): self
-    {
-        return $this->size('lg');
-    }
-
-    public function fullscreen(): self
-    {
-        return $this->size('full');
-    }
-
-    public function closable(bool $closable = true): self
-    {
-        $this->closable = $closable;
-
-        return $this;
-    }
-
-    public function closeOnBackdrop(bool $close = true): self
-    {
-        $this->closeOnBackdrop = $close;
-
-        return $this;
-    }
-
-    public function closeOnEscape(bool $close = true): self
-    {
-        $this->closeOnEscape = $close;
-
-        return $this;
-    }
-
-    public function trigger(string $trigger): self
-    {
-        $this->trigger = $trigger;
+        $this->open = $open;
 
         return $this;
     }
 
     /**
-     * Add a button to the modal
+     * Set modal children content
      */
-    public function addButton(string $name, string $label, array $options = []): self
+    public function children(array $children): self
     {
-        $this->buttons[] = array_merge([
-            'name' => $name,
-            'label' => $label,
-        ], $options);
+        $this->children = $children;
 
         return $this;
     }
 
-    public function addFooterButton(string $label, string $action, array $options = []): self
+    /**
+     * Set onClose callback
+     */
+    public function onClose(string $callback): self
     {
-        $this->footer[] = array_merge([
-            'label' => $label,
-            'action' => $action,
-        ], $options);
+        $this->onClose = $callback;
 
         return $this;
     }
+
+    // ========================================================================
+    // Backdrop Props
+    // ========================================================================
+
+    /**
+     * Hide the backdrop
+     */
+    public function hideBackdrop(bool $hide = true): self
+    {
+        $this->hideBackdrop = $hide;
+
+        return $this;
+    }
+
+    /**
+     * Set backdrop props
+     */
+    public function backdropProps(array $props): self
+    {
+        $this->backdropProps = $props;
+
+        return $this;
+    }
+
+    // ========================================================================
+    // Keyboard Interaction
+    // ========================================================================
+
+    /**
+     * Disable closing on Escape key
+     */
+    public function disableEscapeKeyDown(bool $disable = true): self
+    {
+        $this->disableEscapeKeyDown = $disable;
+
+        return $this;
+    }
+
+    // ========================================================================
+    // Focus Management
+    // ========================================================================
+
+    /**
+     * Disable auto focus when modal opens
+     */
+    public function disableAutoFocus(bool $disable = true): self
+    {
+        $this->disableAutoFocus = $disable;
+
+        return $this;
+    }
+
+    /**
+     * Disable focus trap (allow focus to escape modal)
+     */
+    public function disableEnforceFocus(bool $disable = true): self
+    {
+        $this->disableEnforceFocus = $disable;
+
+        return $this;
+    }
+
+    /**
+     * Disable restoring focus to previously focused element on close
+     */
+    public function disableRestoreFocus(bool $disable = true): self
+    {
+        $this->disableRestoreFocus = $disable;
+
+        return $this;
+    }
+
+    // ========================================================================
+    // Performance
+    // ========================================================================
+
+    /**
+     * Keep modal mounted when closed (optimization for expensive content)
+     */
+    public function keepMounted(bool $keep = true): self
+    {
+        $this->keepMounted = $keep;
+
+        return $this;
+    }
+
+    // ========================================================================
+    // Portal
+    // ========================================================================
+
+    /**
+     * Disable portal rendering (for SSR)
+     */
+    public function disablePortal(bool $disable = true): self
+    {
+        $this->disablePortal = $disable;
+
+        return $this;
+    }
+
+    // ========================================================================
+    // Customization (Slots)
+    // ========================================================================
+
+    /**
+     * Set custom slots for modal components
+     */
+    public function slots(array $slots): self
+    {
+        $this->slots = $slots;
+
+        return $this;
+    }
+
+    /**
+     * Set props for custom slots
+     */
+    public function slotProps(array $props): self
+    {
+        $this->slotProps = $props;
+
+        return $this;
+    }
+
+    // ========================================================================
+    // Accessibility
+    // ========================================================================
+
+    /**
+     * Set aria-labelledby attribute
+     */
+    public function ariaLabelledby(string $id): self
+    {
+        $this->ariaLabelledby = $id;
+
+        return $this;
+    }
+
+    /**
+     * Set aria-describedby attribute
+     */
+    public function ariaDescribedby(string $id): self
+    {
+        $this->ariaDescribedby = $id;
+
+        return $this;
+    }
+
+    // ========================================================================
+    // Serialization
+    // ========================================================================
 
     public function toArray(): array
     {
-        return [
-            'type' => $this->type,
-            'name' => $this->name,
-            'title' => $this->title,
-            'subtitle' => $this->subtitle,
-            'icon' => $this->icon,
-            'content' => $this->content,
-            'size' => $this->size,
-            'closable' => $this->closable,
-            'close_on_backdrop' => $this->closeOnBackdrop,
-            'close_on_escape' => $this->closeOnEscape,
-            'trigger' => $this->trigger,
-            'buttons' => $this->buttons,
-            'footer' => $this->footer,
-            'data_source' => $this->dataSource,
-            'data_url' => $this->dataUrl,
-            'data_params' => $this->dataParams,
-            'data_transform' => $this->dataTransform,
-            'load_on_mount' => $this->loadOnMount,
-            'reload_on_change' => $this->reloadOnChange,
-            'use_shared_data' => $this->useSharedData,
-            'data_key' => $this->dataKey,
-            'actions' => $this->actions,
-            'order' => $this->order,
-            'visible' => $this->visible,
-            'permissions' => $this->permissions,
-            'roles' => $this->roles,
-            'authorized_to_see' => $this->authorizedToSee,
-            'meta' => $this->meta,
-        ];
+        return array_merge($this->getCommonProperties(), $this->filterNullValues([
+            'open' => $this->open ? true : null,
+            'children' => $this->children,
+            'onClose' => $this->onClose,
+            'hideBackdrop' => $this->hideBackdrop ? true : null,
+            'backdropProps' => $this->backdropProps,
+            'disableEscapeKeyDown' => $this->disableEscapeKeyDown ? true : null,
+            'disableAutoFocus' => $this->disableAutoFocus ? true : null,
+            'disableEnforceFocus' => $this->disableEnforceFocus ? true : null,
+            'disableRestoreFocus' => $this->disableRestoreFocus ? true : null,
+            'keepMounted' => $this->keepMounted ? true : null,
+            'disablePortal' => $this->disablePortal ? true : null,
+            'slots' => $this->slots,
+            'slotProps' => $this->slotProps,
+            'aria-labelledby' => $this->ariaLabelledby,
+            'aria-describedby' => $this->ariaDescribedby,
+        ]));
     }
 }

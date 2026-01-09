@@ -11,7 +11,22 @@ use Litepie\Layout\Traits\Exportable;
 use Litepie\Layout\Traits\HandlesComputedFields;
 use Litepie\Layout\Traits\Testable;
 
-class LayoutBuilder
+use Litepie\Layout\Contracts\Renderable;
+
+/**
+ * LayoutBuilder
+ *
+ * Root-level container in the 4-level architecture:
+ * Layout → Section → Slot → Component
+ *
+ * LayoutBuilder can contain Sections (e.g., HeaderSection, GridSection, etc.)
+ * Sections contain Slots (named areas like 'left', 'right', 'body', 'items')
+ * Slots contain Components or nested Sections
+ *
+ * Note: addComponent() method name is maintained for backward compatibility
+ * but primarily adds Sections. For pure components, wrap them in a Section.
+ */
+class LayoutBuilder implements Renderable
 {
     use Cacheable, Debuggable, Exportable, HandlesComputedFields, Testable;
 
@@ -45,6 +60,16 @@ class LayoutBuilder
     public function title(string $title): self
     {
         $this->meta['title'] = $title;
+
+        return $this;
+    }
+
+    /**
+     * Set the layout type
+     */
+    public function type(string $type): self
+    {
+        $this->meta['type'] = $type;
 
         return $this;
     }
@@ -163,26 +188,74 @@ class LayoutBuilder
     }
 
     /**
-     * Create and add any component type dynamically
-     * Supports both Sections (containers) and Components (content)
+     * Create and add a Section (container component like Grid, Row, Column, Tabs, etc.)
+     * Sections are containers that have slots which hold other components or sections
      *
-     * @param  string  $type  Component type (header, layout, grid, form, card, table, etc.)
+     * Usage:
+     *   $layout->section('grid', 'main-grid')->columns(3)
+     *   $layout->section('header', function($section) { ... })
+     *
+     * @param  string  $typeOrName  Section type (grid, row, column, tabs, etc.) or section name when using callback
+     * @param  string|\Closure|null  $nameOrCallback  Section name or configuration callback
+     */
+    public function section(string $typeOrName, string|\Closure|null $nameOrCallback = null): self|Component
+    {
+        // Pattern 1: section('name', function($section) {...}) - LayoutSection with callback
+        if ($nameOrCallback instanceof \Closure) {
+            $sectionName = $typeOrName;
+            $callback = $nameOrCallback;
+
+            // Create a LayoutSection (container for other components)
+            $layoutSection = LayoutSection::make($sectionName);
+            $layoutSection->parentBuilder = $this;
+
+            // Execute the callback with the layout section itself (no slots!)
+            $callback($layoutSection);
+
+            $this->addComponent($layoutSection);
+
+            return $this;
+        }
+
+        // Pattern 2: section('type', 'name') - Create specific section type
+        $type = $typeOrName;
+        $name = $nameOrCallback;
+
+        // Convert kebab-case to PascalCase (e.g., 'avatar-group' => 'AvatarGroup')
+        $className = str_replace('-', '', ucwords($type, '-'));
+
+        // Try Section suffix (containers: Header, Layout, Grid, Tabs, Accordion, Row, Column)
+        $sectionClass = 'Litepie\\Layout\\Sections\\' . $className . 'Section';
+        if (class_exists($sectionClass)) {
+            $section = $sectionClass::make($name);
+            $section->parentBuilder = $this;
+            $this->addComponent($section);
+
+            return $section;
+        }
+
+        // If section type not found, throw exception
+        throw new \InvalidArgumentException("Section type '{$type}' not found. Available section types: grid, row, column, tabs, accordion, layout, header, etc.");
+    }
+
+    /**
+     * Create and add a Component (content component like Card, Button, Table, Form, etc.)
+     * Components are content items that don't have slots - they render actual UI elements
+     *
+     * Usage:
+     *   $layout->component('card', 'user-card')->title('User Profile')
+     *   $layout->component('button', 'submit-btn')->label('Submit')
+     *
+     * @param  string  $type  Component type (card, button, table, form, text, etc.)
      * @param  string  $name  Component name/identifier
      */
     public function component(string $type, string $name): Component
     {
-        // Try Section suffix first (containers: Header, Layout, Grid, Tabs, Accordion)
-        $sectionClass = 'Litepie\\Layout\\Sections\\'.ucfirst($type).'Section';
-        if (class_exists($sectionClass)) {
-            $component = $sectionClass::make($name);
-            $component->parentBuilder = $this;
-            $this->addComponent($component);
+        // Convert kebab-case to PascalCase (e.g., 'avatar-group' => 'AvatarGroup')
+        $className = str_replace('-', '', ucwords($type, '-'));
 
-            return $component;
-        }
-
-        // Try Component suffix (content: Form, Card, Table, List, etc.)
-        $componentClass = 'Litepie\\Layout\\Components\\'.ucfirst($type).'Component';
+        // Try Component suffix (content: Form, Card, Table, List, Button, Text, etc.)
+        $componentClass = 'Litepie\\Layout\\Components\\' . $className . 'Component';
         if (class_exists($componentClass)) {
             $component = $componentClass::make($name);
             $component->parentBuilder = $this;
@@ -197,41 +270,6 @@ class LayoutBuilder
         $this->addComponent($component);
 
         return $component;
-    }
-
-    /**
-     * Create a section with optional callback configuration
-     * Supports two patterns:
-     * 1. section('type', 'name') - creates a section of type with name
-     * 2. section('name', function($section) {...}) - creates a layout section with callback
-     *
-     * @param  string  $typeOrName  Section type or section name
-     * @param  string|\Closure  $nameOrCallback  Section name or configuration callback
-     */
-    public function section(string $typeOrName, string|\Closure $nameOrCallback): self|Component
-    {
-        // Pattern 2: section('name', function($section) {...})
-        if ($nameOrCallback instanceof \Closure) {
-            $sectionName = $typeOrName;
-            $callback = $nameOrCallback;
-
-            // Create a LayoutSection (container for other components)
-            $layoutSection = LayoutSection::make($sectionName);
-            $layoutSection->parentBuilder = $this;
-
-            // Create a section container for the 'body' slot (default slot for LayoutSection)
-            $sectionContainer = $layoutSection->section('body');
-
-            // Execute the callback with the section container
-            $callback($sectionContainer);
-
-            $this->addComponent($layoutSection);
-
-            return $this;
-        }
-
-        // Pattern 1: section('type', 'name')
-        return $this->component($typeOrName, $nameOrCallback);
     }
 
     /**
@@ -329,7 +367,7 @@ class LayoutBuilder
             'shared_data_params' => $this->sharedDataParams,
             'meta' => $this->meta,
             'sections' => array_map(
-                fn ($section) => method_exists($section, 'toArray') ? $section->toArray() : (array) $section,
+                fn($section) => method_exists($section, 'toArray') ? $section->toArray() : (array) $section,
                 $this->sections
             ),
         ];

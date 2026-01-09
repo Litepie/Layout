@@ -55,22 +55,10 @@ class CustomComponent extends BaseComponent
 
     public function toArray(): array
     {
-        return [
-            'type' => $this->type,
-            'name' => $this->name,
-            'title' => $this->title,
-            'subtitle' => $this->subtitle,
-            'icon' => $this->icon,
+        return array_merge($this->getCommonProperties(), $this->filterNullValues([
             'view' => $this->view,
             'component' => $this->component,
             'data' => $this->data,
-            'actions' => $this->actions,
-            'order' => $this->order,
-            'visible' => $this->visible,
-            'permissions' => $this->permissions,
-            'roles' => $this->roles,
-            'authorized_to_see' => $this->authorizedToSee,
-            'meta' => $this->meta,
-        ];
+        ]));
     }
 }

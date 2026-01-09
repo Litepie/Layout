@@ -2,17 +2,27 @@
 
 namespace Litepie\Layout\Components;
 
+/**
+ * ListComponent
+ *
+ * Lists are continuous, vertical indexes of text or images.
+ * Composed of items containing primary and supplemental actions, represented by icons and text.
+ */
 class ListComponent extends BaseComponent
 {
-    protected string $listType = 'bullet'; // bullet, numbered, definition, checklist
+    // List props
+    protected bool $dense = false;
 
-    protected array $items = []; // Item configurations (structure, not data)
+    protected bool $disablePadding = false;
 
-    protected bool $ordered = false;
+    protected ?string $subheader = null;
 
-    protected bool $nested = false;
+    protected ?array $subheaderProps = null;
 
-    protected ?string $marker = null; // Custom bullet marker
+    protected ?string $variant = null;
+
+    // Children - array of list items
+    protected array $children = [];
 
     public function __construct(string $name)
     {
@@ -24,114 +34,242 @@ class ListComponent extends BaseComponent
         return new static($name);
     }
 
-    public function listType(string $type): self
+    // ========================================================================
+    // Core List Props
+    // ========================================================================
+
+    /**
+     * Enable dense spacing
+     */
+    public function dense(bool $dense = true): self
     {
-        $this->listType = $type;
-        $this->ordered = in_array($type, ['numbered', 'checklist']);
-
-        return $this;
-    }
-
-    public function bullet(): self
-    {
-        return $this->listType('bullet');
-    }
-
-    public function numbered(): self
-    {
-        return $this->listType('numbered');
-    }
-
-    public function definition(): self
-    {
-        return $this->listType('definition');
-    }
-
-    public function checklist(): self
-    {
-        return $this->listType('checklist');
-    }
-
-    public function nested(bool $nested = true): self
-    {
-        $this->nested = $nested;
-
-        return $this;
-    }
-
-    public function marker(string $marker): self
-    {
-        $this->marker = $marker;
+        $this->dense = $dense;
 
         return $this;
     }
 
     /**
-     * Add item configuration (structure only)
-     * Supports two patterns:
-     * 1. addItem($key, $label, $options) - individual parameters
-     * 2. addItem($item) - array with all properties
+     * Disable padding
      */
-    public function addItem(string|array $keyOrItem, ?string $label = null, array $options = []): self
+    public function disablePadding(bool $disable = true): self
     {
-        // Pattern 2: Array with all properties
-        if (is_array($keyOrItem)) {
-            $item = $keyOrItem;
-            $this->items[] = [
-                'key' => $item['key'] ?? null,
-                'label' => $item['label'] ?? null,
-                'url' => $item['url'] ?? null,
-                'icon' => $item['icon'] ?? null,
-                'color' => $item['color'] ?? null,
-                'checked' => $item['checked'] ?? null, // For checklist
-                'target' => $item['target'] ?? null,
-            ];
+        $this->disablePadding = $disable;
 
-            return $this;
+        return $this;
+    }
+
+    /**
+     * Set subheader text
+     */
+    public function subheader(string $text, array $props = []): self
+    {
+        $this->subheader = $text;
+        $this->subheaderProps = $props;
+
+        return $this;
+    }
+
+    /**
+     * Set list variant/style
+     * 
+     * @param string $variant Variant type: 'ordered', 'unordered', 'none'
+     */
+    public function variant(string $variant): self
+    {
+        $this->variant = $variant;
+
+        return $this;
+    }
+
+    /**
+     * Set children items
+     */
+    public function children(array $children): self
+    {
+        $this->children = $children;
+
+        return $this;
+    }
+
+    /**
+     * Add multiple simple text items from an array of strings
+     * 
+     * @param array $items Array of strings to be added as list items
+     */
+    public function items(array $items): self
+    {
+        foreach ($items as $item) {
+            if (is_string($item)) {
+                $this->addTextItem($item);
+            } elseif (is_array($item)) {
+                $this->addItem($item);
+            }
         }
 
-        // Pattern 1: Individual parameters
-        $this->items[] = [
-            'key' => $keyOrItem,
-            'label' => $label,
-            'url' => $options['url'] ?? null,
-            'icon' => $options['icon'] ?? null,
-            'color' => $options['color'] ?? null,
-            'checked' => $options['checked'] ?? null, // For checklist
-            'target' => $options['target'] ?? null,
+        return $this;
+    }
+
+    // ========================================================================
+    // List Item Builder
+    // ========================================================================
+
+    /**
+     * Add a list item
+     * 
+     * @param array $config Item configuration with keys:
+     *   - primary: Primary text (string)
+     *   - secondary: Secondary text (string)
+     *   - button: Make item clickable (bool)
+     *   - href: Link URL (string)
+     *   - selected: Selected state (bool)
+     *   - disabled: Disabled state (bool)
+     *   - divider: Show divider after item (bool)
+     *   - disableGutters: Disable gutters (bool)
+     *   - disablePadding: Disable padding (bool)
+     *   - alignItems: Alignment (flex-start, center)
+     *   - inset: Inset item (bool)
+     *   - icon: Leading icon config (string or array)
+     *   - avatar: Leading avatar config (array with src, alt, etc)
+     *   - secondaryAction: Secondary action config (button/icon button)
+     *   - nested: Nested list items (array)
+     */
+    public function addItem(array $config): self
+    {
+        $item = [];
+
+        // Text content
+        if (isset($config['primary'])) {
+            $item['primary'] = $config['primary'];
+        }
+        if (isset($config['secondary'])) {
+            $item['secondary'] = $config['secondary'];
+        }
+
+        // Button/interaction props
+        if (isset($config['button'])) {
+            $item['button'] = $config['button'];
+        }
+        if (isset($config['href'])) {
+            $item['href'] = $config['href'];
+        }
+        if (isset($config['selected'])) {
+            $item['selected'] = $config['selected'];
+        }
+        if (isset($config['disabled'])) {
+            $item['disabled'] = $config['disabled'];
+        }
+
+        // Layout props
+        if (isset($config['divider'])) {
+            $item['divider'] = $config['divider'];
+        }
+        if (isset($config['disableGutters'])) {
+            $item['disableGutters'] = $config['disableGutters'];
+        }
+        if (isset($config['disablePadding'])) {
+            $item['disablePadding'] = $config['disablePadding'];
+        }
+        if (isset($config['alignItems'])) {
+            $item['alignItems'] = $config['alignItems'];
+        }
+        if (isset($config['inset'])) {
+            $item['inset'] = $config['inset'];
+        }
+
+        // Content elements
+        if (isset($config['icon'])) {
+            $item['icon'] = $config['icon'];
+        }
+        if (isset($config['avatar'])) {
+            $item['avatar'] = $config['avatar'];
+        }
+        if (isset($config['secondaryAction'])) {
+            $item['secondaryAction'] = $config['secondaryAction'];
+        }
+
+        // Nested items
+        if (isset($config['nested'])) {
+            $item['nested'] = $config['nested'];
+        }
+
+        $this->children[] = $item;
+
+        return $this;
+    }
+
+    /**
+     * Add a simple text item
+     */
+    public function addTextItem(string $primary, ?string $secondary = null): self
+    {
+        return $this->addItem([
+            'primary' => $primary,
+            'secondary' => $secondary,
+        ]);
+    }
+
+    /**
+     * Add a button item (clickable)
+     */
+    public function addButtonItem(string $primary, string $href, array $options = []): self
+    {
+        return $this->addItem(array_merge([
+            'primary' => $primary,
+            'button' => true,
+            'href' => $href,
+        ], $options));
+    }
+
+    /**
+     * Add an item with icon
+     */
+    public function addIconItem(string $icon, string $primary, ?string $secondary = null, array $options = []): self
+    {
+        return $this->addItem(array_merge([
+            'icon' => $icon,
+            'primary' => $primary,
+            'secondary' => $secondary,
+        ], $options));
+    }
+
+    /**
+     * Add an item with avatar
+     */
+    public function addAvatarItem(array $avatar, string $primary, ?string $secondary = null, array $options = []): self
+    {
+        return $this->addItem(array_merge([
+            'avatar' => $avatar,
+            'primary' => $primary,
+            'secondary' => $secondary,
+        ], $options));
+    }
+
+    /**
+     * Add a divider
+     */
+    public function addDivider(array $props = []): self
+    {
+        $this->children[] = [
+            'type' => 'divider',
+            'props' => $props,
         ];
 
         return $this;
     }
 
+    // ========================================================================
+    // Serialization
+    // ========================================================================
+
     public function toArray(): array
     {
-        return [
-            'type' => $this->type,
-            'name' => $this->name,
-            'title' => $this->title,
-            'subtitle' => $this->subtitle,
-            'icon' => $this->icon,
-            'list_type' => $this->listType,
-            'ordered' => $this->ordered,
-            'nested' => $this->nested,
-            'marker' => $this->marker,
-            'items' => $this->items,
-            'data_source' => $this->dataSource,
-            'data_url' => $this->dataUrl,
-            'data_params' => $this->dataParams,
-            'data_transform' => $this->dataTransform,
-            'load_on_mount' => $this->loadOnMount,
-            'reload_on_change' => $this->reloadOnChange,
-            'use_shared_data' => $this->useSharedData,
-            'data_key' => $this->dataKey,
-            'actions' => $this->actions,
-            'order' => $this->order,
-            'visible' => $this->visible,
-            'permissions' => $this->permissions,
-            'roles' => $this->roles,
-            'authorized_to_see' => $this->authorizedToSee,
-            'meta' => $this->meta,
-        ];
+        return array_merge($this->getCommonProperties(), $this->filterNullValues([
+            'dense' => $this->dense ? true : null,
+            'disablePadding' => $this->disablePadding ? true : null,
+            'subheader' => $this->subheader,
+            'subheaderProps' => $this->subheaderProps,
+            'variant' => $this->variant,
+            'children' => $this->children,
+        ]));
     }
 }

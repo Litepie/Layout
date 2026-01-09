@@ -4,7 +4,13 @@ namespace Litepie\Layout\Traits;
 
 use Litepie\Layout\Conditional\ExpressionEvaluator;
 
-trait HasConditionalLogic
+/**
+ * HasVisibility Trait
+ * 
+ * Provides conditional visibility logic and authorization control.
+ * Controls when components are shown/hidden based on conditions or permissions.
+ */
+trait HasVisibility
 {
     protected array $showWhenConditions = [];
 
@@ -15,6 +21,15 @@ trait HasConditionalLogic
     protected string $conditionLogic = 'AND'; // AND or OR
 
     protected bool $enabled = true;
+
+    // Authorization
+    protected array $permissions = [];
+
+    protected array $roles = [];
+
+    protected ?\Closure $canSeeCallback = null;
+
+    protected bool $authorizedToSee = true;
 
     /**
      * Show component when condition is met
@@ -59,6 +74,121 @@ trait HasConditionalLogic
         $this->conditionLogic = strtoupper($logic);
 
         return $this;
+    }
+
+    /**
+     * Set required permissions
+     */
+    public function permissions(array|string $permissions): self
+    {
+        $this->permissions = is_array($permissions) ? $permissions : [$permissions];
+
+        return $this;
+    }
+
+    /**
+     * Set required roles
+     */
+    public function roles(array|string $roles): self
+    {
+        $this->roles = is_array($roles) ? $roles : [$roles];
+
+        return $this;
+    }
+
+    /**
+     * Set custom authorization callback
+     */
+    public function canSee(\Closure $callback): self
+    {
+        $this->canSeeCallback = $callback;
+
+        return $this;
+    }
+
+    /**
+     * Resolve authorization for given user
+     */
+    public function resolveAuthorization($user = null): self
+    {
+        if ($this->canSeeCallback !== null) {
+            $this->authorizedToSee = call_user_func($this->canSeeCallback, $user);
+        }
+
+        if (! empty($this->permissions) && $user !== null) {
+            $this->authorizedToSee = $this->checkPermissions($user, $this->permissions);
+        }
+
+        if (! empty($this->roles) && $user !== null) {
+            $this->authorizedToSee = $this->checkRoles($user, $this->roles);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Check if user has required permissions
+     */
+    protected function checkPermissions($user, array $permissions): bool
+    {
+        if (method_exists($user, 'hasAnyPermission')) {
+            return $user->hasAnyPermission($permissions);
+        }
+        if (method_exists($user, 'can')) {
+            foreach ($permissions as $permission) {
+                if ($user->can($permission)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if user has required roles
+     */
+    protected function checkRoles($user, array $roles): bool
+    {
+        if (method_exists($user, 'hasAnyRole')) {
+            return $user->hasAnyRole($roles);
+        }
+        if (method_exists($user, 'hasRole')) {
+            foreach ($roles as $role) {
+                if ($user->hasRole($role)) {
+                    return true;
+                }
+            }
+        }
+        if (isset($user->role)) {
+            return in_array($user->role, $roles);
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if component is authorized to be seen
+     */
+    public function isAuthorizedToSee(): bool
+    {
+        return $this->authorizedToSee;
+    }
+
+    /**
+     * Get required permissions
+     */
+    public function getPermissions(): array
+    {
+        return $this->permissions;
+    }
+
+    /**
+     * Get required roles
+     */
+    public function getRoles(): array
+    {
+        return $this->roles;
     }
 
     /**

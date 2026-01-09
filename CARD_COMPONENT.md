@@ -222,10 +222,99 @@ $card->addField('price', 'Price', '$99.99')
     'icon' => 'icon-name',
     'size' => 'xs|sm|md|lg',
     'class' => 'custom-class',
-    'confirm' => 'Confirmation message',
     'method' => 'GET|POST|PUT|DELETE',
-    'target' => '_blank|_self'
+    'target' => '_blank|_self',
+    
+    // Confirmation dialog
+    'confirmation' => [
+        'title' => 'Confirm Delete',
+        'message' => 'Are you sure you want to delete this item?',
+        'button' => 'Delete',
+        'variant' => 'danger'
+    ],
+    
+    // Modal with form (ActionModal object)
+    'modal' => ActionModal::make('hold-modal')
+        ->title('Hold Item')
+        ->description('Please provide a reason')
+        ->addFormFields([...])
+        ->submitLabel('Submit')
 ]
+```
+
+### Confirmation Dialogs
+Actions can trigger a confirmation dialog before execution:
+
+```php
+// Simple confirmation
+$card->addFooterAction('Delete', '/users/1/delete', [
+    'variant' => 'danger',
+    'icon' => 'trash',
+    'confirmation' => [
+        'title' => 'Confirm Delete',
+        'message' => 'Are you sure you want to delete this user? This action cannot be undone.',
+        'button' => 'Delete User',
+        'variant' => 'danger'
+    ]
+]);
+
+// Confirmation with custom styling
+$card->addHeaderAction('Archive', '/items/1/archive', [
+    'variant' => 'warning',
+    'icon' => 'archive',
+    'confirmation' => [
+        'title' => 'Archive Item',
+        'message' => 'This item will be moved to archives. You can restore it later.',
+        'button' => 'Archive',
+        'variant' => 'warning'
+    ]
+]);
+```
+
+### Modal Forms with ActionModal
+For actions that require user input, use the ActionModal object:
+
+```php
+use Litepie\Layout\ActionModal;
+
+// Modal with form fields
+$card->addFooterAction('Hold', '/orders/1/hold', [
+    'variant' => 'warning',
+    'icon' => 'pause',
+    'modal' => ActionModal::make('hold-order-modal')
+        ->title('Hold Order')
+        ->description('Please provide details for holding this order')
+        ->addFormFields([
+            // Add Litepie\Form field instances here
+        ])
+        ->submitLabel('Hold Order')
+        ->submitClass('btn btn-warning')
+]);
+
+// Complete example with form fields
+$holdModal = ActionModal::make('hold-modal')
+    ->title('Hold Item')
+    ->description('Specify the reason for holding this item')
+    ->submitLabel('Hold Item')
+    ->cancelLabel('Cancel');
+
+$card->addHeaderAction('Hold', '/items/1/hold', [
+    'variant' => 'warning',
+    'icon' => 'pause',
+    'modal' => $holdModal
+]);
+
+// Modal for collecting feedback
+$feedbackModal = ActionModal::make('feedback-modal')
+    ->title('Provide Feedback')
+    ->description('Help us improve by sharing your thoughts')
+    ->submitLabel('Submit Feedback')
+    ->submitClass('btn btn-primary');
+
+$card->addFooterAction('Feedback', '/feedback', [
+    'icon' => 'message-circle',
+    'modal' => $feedbackModal
+]);
 ```
 
 ### Dropdown Item Options
@@ -236,13 +325,20 @@ $card->addField('price', 'Price', '$99.99')
     'icon' => 'icon-name',
     'variant' => 'default|danger|warning',
     'method' => 'GET|POST',
-    'confirm' => 'Are you sure?',
     'disabled' => false,
-    'divider' => false  // Or use string 'divider' for separator
+    'divider' => false,  // Or use string 'divider' for separator
+    
+    // Confirmation for dropdown items
+    'confirmation' => [
+        'title' => 'Confirm Action',
+        'message' => 'Are you sure?',
+        'button' => 'Confirm',
+        'variant' => 'danger'
+    ]
 ]
 ```
 
-### Dropdown with Dividers
+### Dropdown with Dividers and Confirmations
 ```php
 $card->addHeaderDropdown('Menu', [
     ['label' => 'View', 'action' => '/view', 'icon' => 'eye'],
@@ -250,7 +346,18 @@ $card->addHeaderDropdown('Menu', [
     'divider',  // Separator line
     ['label' => 'Share', 'action' => '/share', 'icon' => 'share'],
     'divider',
-    ['label' => 'Delete', 'action' => '/delete', 'variant' => 'danger', 'icon' => 'trash']
+    [
+        'label' => 'Delete', 
+        'action' => '/delete', 
+        'variant' => 'danger', 
+        'icon' => 'trash',
+        'confirmation' => [
+            'title' => 'Delete Item',
+            'message' => 'This action cannot be undone.',
+            'button' => 'Delete',
+            'variant' => 'danger'
+        ]
+    ]
 ]);
 ```
 

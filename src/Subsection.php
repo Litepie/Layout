@@ -3,10 +3,13 @@
 namespace Litepie\Layout;
 
 use Litepie\Layout\Contracts\Renderable;
+use Litepie\Layout\Contracts\Component;
 
-class Subsection implements Renderable
+class Subsection implements Component
 {
     protected string $name;
+
+    protected ?string $type = 'subsection';
 
     protected ?string $label = null;
 
@@ -15,6 +18,8 @@ class Subsection implements Renderable
     protected ?string $icon = null;
 
     protected array $formFields = []; // Litepie/Form field instances
+
+    protected array $components = []; // Layout components
 
     protected ?int $order = null;
 
@@ -31,6 +36,8 @@ class Subsection implements Renderable
     protected array $modals = [];
 
     protected ?Section $parent = null;
+
+    public mixed $parentBuilder = null;
 
     // Authorization properties
     protected array $permissions = [];
@@ -58,6 +65,14 @@ class Subsection implements Renderable
     public static function make(string $name): self
     {
         return new static($name);
+    }
+
+    /**
+     * Get the component type
+     */
+    public function getType(): string
+    {
+        return $this->type ?? 'subsection';
     }
 
     public function label(string $label): self
@@ -444,14 +459,189 @@ class Subsection implements Renderable
         return $this->meta;
     }
 
+    // ========================================================================
+    // Component creation methods (similar to Slot)
+    // ========================================================================
+
+    /**
+     * Add a component to this subsection
+     */
+    public function add($component): self
+    {
+        if (is_object($component) && property_exists($component, 'parentBuilder')) {
+            $component->parentBuilder = $this;
+        }
+        $this->components[] = $component;
+
+        return $this;
+    }
+
+    /**
+     * Create and add a component by type
+     */
+    public function component(string $type, string $name)
+    {
+        // Convert kebab-case to PascalCase
+        $className = str_replace('-', '', ucwords($type, '-'));
+        
+        // Try Components namespace
+        $componentClass = 'Litepie\\Layout\\Components\\'.$className.'Component';
+        if (class_exists($componentClass)) {
+            $component = $componentClass::make($name);
+            $this->add($component);
+            return $component;
+        }
+
+        return $this->custom($type, $name);
+    }
+
+    /**
+     * Create and add a TextComponent
+     */
+    public function text(string $name)
+    {
+        return $this->component('text', $name);
+    }
+
+    /**
+     * Create and add a CardComponent
+     */
+    public function card(string $name)
+    {
+        return $this->component('card', $name);
+    }
+
+    /**
+     * Create and add a FormComponent
+     */
+    public function form(string $name)
+    {
+        return $this->component('form', $name);
+    }
+
+    /**
+     * Create and add a DividerComponent
+     */
+    public function divider(string $name)
+    {
+        return $this->component('divider', $name);
+    }
+
+    /**
+     * Create and add an AvatarComponent
+     */
+    public function avatar(string $name)
+    {
+        return $this->component('avatar', $name);
+    }
+
+    /**
+     * Create and add a BadgeComponent
+     */
+    public function badge(string $name)
+    {
+        return $this->component('badge', $name);
+    }
+
+    /**
+     * Create and add an AlertComponent
+     */
+    public function alert(string $name)
+    {
+        return $this->component('alert', $name);
+    }
+
+    /**
+     * Create and add a DrawerComponent
+     */
+    public function drawer(string $name)
+    {
+        return $this->component('drawer', $name);
+    }
+
+    /**
+     * Create and add a StepperComponent
+     */
+    public function stepper(string $name)
+    {
+        return $this->component('stepper', $name);
+    }
+
+    /**
+     * Create and add a TableComponent
+     */
+    public function table(string $name)
+    {
+        return $this->component('table', $name);
+    }
+
+    /**
+     * Create and add a ListComponent
+     */
+    public function list(string $name)
+    {
+        return $this->component('list', $name);
+    }
+
+    /**
+     * Create and add a nested Subsection
+     */
+    public function subsection(string $name, ?\Closure $callback = null): Subsection
+    {
+        $subsection = new Subsection($name, null);
+        $this->add($subsection);
+
+        if ($callback) {
+            $callback($subsection);
+        }
+
+        return $subsection;
+    }
+
+    /**
+     * Create and add a MediaComponent with video type
+     */
+    public function videoPlayer(string $name)
+    {
+        $component = $this->component('media', $name);
+        $component->video(); // Set media type to video
+        
+        return $component;
+    }
+
+    /**
+     * Create and add a CustomComponent
+     */
+    public function custom(string $type, string $name)
+    {
+        $class = 'Litepie\\Layout\\Components\\CustomComponent';
+        if (class_exists($class)) {
+            $component = $class::make($name, $type);
+            $this->add($component);
+            return $component;
+        }
+
+        throw new \RuntimeException("CustomComponent class not found and cannot create component of type '{$type}'");
+    }
+
+    /**
+     * Get all components in this subsection
+     */
+    public function getComponents(): array
+    {
+        return $this->components;
+    }
+
     public function toArray(): array
     {
         $array = [
             'name' => $this->name,
+            'type' => $this->getType(),
             'label' => $this->label,
             'description' => $this->description,
             'icon' => $this->icon,
             'fields' => array_map(fn ($field) => method_exists($field, 'toArray') ? $field->toArray() : (array) $field, $this->formFields),
+            'components' => array_map(fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp, $this->components),
             'actions' => $this->actions,
             'modals' => array_map(fn ($modal) => $modal->toArray(), $this->modals),
             'order' => $this->order,

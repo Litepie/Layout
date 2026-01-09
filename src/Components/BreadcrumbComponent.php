@@ -2,19 +2,28 @@
 
 namespace Litepie\Layout\Components;
 
+/**
+ * BreadcrumbComponent
+ *
+ * Breadcrumbs component that helps visualize a page's location within a site's hierarchical structure.
+ * Allows navigation up to any of the ancestors.
+ */
 class BreadcrumbComponent extends BaseComponent
 {
-    protected array $items = [];
+    // Children - array of breadcrumb items
+    protected array $children = [];
 
-    protected string $separator = '/';
+    // Separator between breadcrumb items
+    protected string|array|null $separator = '/'; // Can be string or icon config
 
-    protected bool $showHome = true;
+    // Collapsing configuration
+    protected ?int $maxItems = null; // Maximum number of items to display
 
-    protected ?string $homeUrl = null;
+    protected int $itemsBeforeCollapse = 1; // Number of items before collapse
 
-    protected ?string $homeLabel = 'Home';
+    protected int $itemsAfterCollapse = 1; // Number of items after collapse
 
-    protected ?string $homeIcon = null;
+    protected string $expandText = '...'; // Text for expand indicator
 
     public function __construct(string $name)
     {
@@ -26,26 +35,58 @@ class BreadcrumbComponent extends BaseComponent
         return new static($name);
     }
 
+    // ========================================================================
+    // Core Props
+    // ========================================================================
+
     /**
-     * Add a breadcrumb item
+     * Add a breadcrumb item (Link or Typography)
      */
-    public function addItem(string $label, ?string $url = null, array $options = []): self
+    public function addItem(string $label, ?string $href = null, array $options = []): self
     {
-        $this->items[] = [
+        $item = [
             'label' => $label,
-            'url' => $url,
-            'icon' => $options['icon'] ?? null,
-            'active' => $options['active'] ?? false,
-            'disabled' => $options['disabled'] ?? false,
+            'href' => $href,
         ];
+
+        // Optional properties
+        if (isset($options['icon'])) {
+            $item['icon'] = $options['icon'];
+        }
+        if (isset($options['underline'])) {
+            $item['underline'] = $options['underline'];
+        }
+        if (isset($options['color'])) {
+            $item['color'] = $options['color'];
+        }
+
+        $this->children[] = $item;
 
         return $this;
     }
 
     /**
-     * Set the separator between breadcrumb items
+     * Set all breadcrumb items at once
      */
-    public function separator(string $separator): self
+    public function children(array $children): self
+    {
+        $this->children = $children;
+
+        return $this;
+    }
+
+    /**
+     * Alias for children() - set all breadcrumb items at once
+     */
+    public function items(array $items): self
+    {
+        return $this->children($items);
+    }
+
+    /**
+     * Set separator between items
+     */
+    public function separator(string|array $separator): self
     {
         $this->separator = $separator;
 
@@ -53,59 +94,25 @@ class BreadcrumbComponent extends BaseComponent
     }
 
     /**
-     * Set whether to show home link
+     * Set color for all breadcrumb links
      */
-    public function showHome(bool $show = true): self
+    public function color(string $color): self
     {
-        $this->showHome = $show;
+        $this->meta['color'] = $color;
 
         return $this;
     }
 
-    /**
-     * Set home URL
-     */
-    public function homeUrl(string $url): self
-    {
-        $this->homeUrl = $url;
-
-        return $this;
-    }
+    // ========================================================================
+    // Separator Helpers
+    // ========================================================================
 
     /**
-     * Set home label
-     */
-    public function homeLabel(string $label): self
-    {
-        $this->homeLabel = $label;
-
-        return $this;
-    }
-
-    /**
-     * Set home icon
-     */
-    public function homeIcon(string $icon): self
-    {
-        $this->homeIcon = $icon;
-
-        return $this;
-    }
-
-    /**
-     * Use chevron separator (>)
+     * Use chevron separator (›)
      */
     public function chevron(): self
     {
-        return $this->separator('>');
-    }
-
-    /**
-     * Use arrow separator (→)
-     */
-    public function arrow(): self
-    {
-        return $this->separator('→');
+        return $this->separator('›');
     }
 
     /**
@@ -117,51 +124,92 @@ class BreadcrumbComponent extends BaseComponent
     }
 
     /**
-     * Use dot separator (•)
+     * Use dash separator (-)
      */
-    public function dot(): self
+    public function dash(): self
     {
-        return $this->separator('•');
+        return $this->separator('-');
     }
+
+    /**
+     * Use icon separator
+     */
+    public function iconSeparator(string $icon, array $options = []): self
+    {
+        $this->separator = array_merge(['icon' => $icon], $options);
+
+        return $this;
+    }
+
+    // ========================================================================
+    // Collapsing Configuration
+    // ========================================================================
+
+    /**
+     * Set maximum number of items to display
+     */
+    public function maxItems(int $max): self
+    {
+        $this->maxItems = $max;
+
+        return $this;
+    }
+
+    /**
+     * Set number of items to display before collapse indicator
+     */
+    public function itemsBeforeCollapse(int $count): self
+    {
+        $this->itemsBeforeCollapse = $count;
+
+        return $this;
+    }
+
+    /**
+     * Set number of items to display after collapse indicator
+     */
+    public function itemsAfterCollapse(int $count): self
+    {
+        $this->itemsAfterCollapse = $count;
+
+        return $this;
+    }
+
+    /**
+     * Set text for expand indicator
+     */
+    public function expandText(string $text): self
+    {
+        $this->expandText = $text;
+
+        return $this;
+    }
+
+    // ========================================================================
+    // Convenience Methods
+    // ========================================================================
 
     /**
      * Get all breadcrumb items
      */
     public function getItems(): array
     {
-        return $this->items;
+        return $this->children;
     }
+
+    // ========================================================================
+    // Serialization
+    // ========================================================================
 
     public function toArray(): array
     {
-        return [
-            'type' => $this->type,
-            'name' => $this->name,
-            'title' => $this->title,
-            'subtitle' => $this->subtitle,
-            'icon' => $this->icon,
-            'description' => $this->description,
-            'separator' => $this->separator,
-            'show_home' => $this->showHome,
-            'home_url' => $this->homeUrl,
-            'home_label' => $this->homeLabel,
-            'home_icon' => $this->homeIcon,
-            'items' => $this->items,
-            'data_source' => $this->dataSource,
-            'data_url' => $this->dataUrl,
-            'data_params' => $this->dataParams,
-            'data_transform' => $this->dataTransform,
-            'load_on_mount' => $this->loadOnMount,
-            'reload_on_change' => $this->reloadOnChange,
-            'use_shared_data' => $this->useSharedData,
-            'data_key' => $this->dataKey,
-            'actions' => $this->actions,
-            'order' => $this->order,
-            'visible' => $this->visible,
-            'permissions' => $this->permissions,
-            'roles' => $this->roles,
-            'authorized_to_see' => $this->authorizedToSee,
-            'meta' => $this->meta,
-        ];
+        return array_merge($this->getCommonProperties(), $this->filterNullValues([
+            'children' => $this->children,
+            'separator' => $this->separator !== '/' ? $this->separator : null,
+            'maxItems' => $this->maxItems,
+            'itemsBeforeCollapse' => $this->itemsBeforeCollapse !== 1 ? $this->itemsBeforeCollapse : null,
+            'itemsAfterCollapse' => $this->itemsAfterCollapse !== 1 ? $this->itemsAfterCollapse : null,
+            'expandText' => $this->expandText !== '...' ? $this->expandText : null,
+        ]));
     }
 }

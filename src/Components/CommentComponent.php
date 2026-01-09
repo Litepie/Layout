@@ -88,12 +88,7 @@ class CommentComponent extends BaseComponent
 
     public function toArray(): array
     {
-        return [
-            'type' => $this->type,
-            'name' => $this->name,
-            'title' => $this->title,
-            'subtitle' => $this->subtitle,
-            'icon' => $this->icon,
+        return array_merge($this->getCommonProperties(), $this->filterNullValues([
             'threaded' => $this->threaded,
             'max_depth' => $this->maxDepth,
             'voting' => $this->voting,
@@ -102,21 +97,6 @@ class CommentComponent extends BaseComponent
             'sort_order' => $this->sortOrder,
             'mentioning' => $this->mentioning,
             'markdown' => $this->markdown,
-            'data_source' => $this->dataSource,
-            'data_url' => $this->dataUrl,
-            'data_params' => $this->dataParams,
-            'data_transform' => $this->dataTransform,
-            'load_on_mount' => $this->loadOnMount,
-            'reload_on_change' => $this->reloadOnChange,
-            'use_shared_data' => $this->useSharedData,
-            'data_key' => $this->dataKey,
-            'actions' => $this->actions,
-            'order' => $this->order,
-            'visible' => $this->visible,
-            'permissions' => $this->permissions,
-            'roles' => $this->roles,
-            'authorized_to_see' => $this->authorizedToSee,
-            'meta' => $this->meta,
-        ];
+        ]));
     }
 }

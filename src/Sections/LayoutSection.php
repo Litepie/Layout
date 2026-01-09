@@ -3,22 +3,16 @@
 namespace Litepie\Layout\Sections;
 
 /**
- * LayoutComponent
+ * LayoutSection
  *
- * A component representing a complete page layout with predefined section slots.
+ * A section representing a complete page layout.
  * Common use case: Master layouts, dashboard layouts, application shells
  *
- * Predefined sections:
- * - header: Top header area
- * - sidebar: Left or right sidebar
- * - body: Main content area
- * - footer: Bottom footer area
- * - aside: Secondary content area
+ * No predefined slots - all content added via sections/components.
+ * Use meta data or dedicated properties to organize content areas.
  */
 class LayoutSection extends BaseSection
 {
-    protected array $allowedSections = ['header', 'sidebar', 'body', 'footer', 'aside'];
-
     protected string $variant = 'default'; // default, sidebar-left, sidebar-right, full-width
 
     protected bool $hasSidebar = true;

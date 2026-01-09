@@ -2,19 +2,38 @@
 
 namespace Litepie\Layout\Components;
 
+/**
+ * BadgeComponent
+ *
+ * Badge component that generates a small badge to the top-right of its children.
+ * Supports numerical badges, dot badges, colors, visibility control, and positioning.
+ */
 class BadgeComponent extends BaseComponent
 {
-    protected string $variant = 'default'; // default, primary, secondary, success, warning, error, info
+    // Core badge props
+    protected string|int|null $badgeContent = null;
 
-    protected string $size = 'md'; // xs, sm, md, lg
+    protected ?array $children = null; // Content to wrap (can be component config)
 
-    protected bool $pill = false; // Rounded pill style
+    protected string $color = 'default'; // default, primary, secondary, error, info, success, warning
 
-    protected bool $outlined = false;
+    protected string $variant = 'standard'; // standard, dot
 
-    protected bool $removable = false;
+    // Positioning
+    protected string $vertical = 'top'; // top, bottom
 
-    protected array $badges = []; // Badge configurations
+    protected string $horizontal = 'right'; // left, right
+
+    // Overlap
+    protected string $overlap = 'rectangular'; // rectangular, circular
+
+    // Visibility control
+    protected bool $invisible = false;
+
+    protected bool $showZero = false;
+
+    // Maximum value
+    protected ?int $max = null;
 
     public function __construct(string $name)
     {
@@ -26,6 +45,81 @@ class BadgeComponent extends BaseComponent
         return new static($name);
     }
 
+    // ========================================================================
+    // Core Props
+    // ========================================================================
+
+    /**
+     * Set badge content (number or text)
+     */
+    public function badgeContent(string|int $content): self
+    {
+        $this->badgeContent = $content;
+
+        return $this;
+    }
+
+    /**
+     * Alias for badgeContent()
+     */
+    public function content(string|int $content): self
+    {
+        return $this->badgeContent($content);
+    }
+
+    /**
+     * Set children (wrapped content)
+     */
+    public function children(array $children): self
+    {
+        $this->children = $children;
+
+        return $this;
+    }
+
+    /**
+     * Set color
+     */
+    public function color(string $color): self
+    {
+        $this->color = $color;
+
+        return $this;
+    }
+
+    public function primary(): self
+    {
+        return $this->color('primary');
+    }
+
+    public function secondary(): self
+    {
+        return $this->color('secondary');
+    }
+
+    public function error(): self
+    {
+        return $this->color('error');
+    }
+
+    public function info(): self
+    {
+        return $this->color('info');
+    }
+
+    public function success(): self
+    {
+        return $this->color('success');
+    }
+
+    public function warning(): self
+    {
+        return $this->color('warning');
+    }
+
+    /**
+     * Set variant
+     */
     public function variant(string $variant): self
     {
         $this->variant = $variant;
@@ -33,109 +127,142 @@ class BadgeComponent extends BaseComponent
         return $this;
     }
 
-    public function primary(): self
+    /**
+     * Set dot variant (small dot notification)
+     */
+    public function dot(): self
     {
-        return $this->variant('primary');
+        return $this->variant('dot');
     }
 
-    public function success(): self
+    // ========================================================================
+    // Positioning (anchorOrigin)
+    // ========================================================================
+
+    /**
+     * Set anchor origin (positioning)
+     */
+    public function anchorOrigin(string $vertical, string $horizontal): self
     {
-        return $this->variant('success');
-    }
-
-    public function warning(): self
-    {
-        return $this->variant('warning');
-    }
-
-    public function error(): self
-    {
-        return $this->variant('error');
-    }
-
-    public function size(string $size): self
-    {
-        $this->size = $size;
-
-        return $this;
-    }
-
-    public function small(): self
-    {
-        return $this->size('sm');
-    }
-
-    public function large(): self
-    {
-        return $this->size('lg');
-    }
-
-    public function pill(bool $pill = true): self
-    {
-        $this->pill = $pill;
-
-        return $this;
-    }
-
-    public function outlined(bool $outlined = true): self
-    {
-        $this->outlined = $outlined;
-
-        return $this;
-    }
-
-    public function removable(bool $removable = true): self
-    {
-        $this->removable = $removable;
+        $this->vertical = $vertical;
+        $this->horizontal = $horizontal;
 
         return $this;
     }
 
     /**
-     * Add badge configuration
+     * Position badge at top-right (default)
      */
-    public function addBadge(string $key, array $options = []): self
+    public function topRight(): self
     {
-        $this->badges[] = [
-            'key' => $key,
-            'icon' => $options['icon'] ?? null,
-            'color' => $options['color'] ?? null,
-            'variant' => $options['variant'] ?? $this->variant,
-            'removable' => $options['removable'] ?? $this->removable,
-        ];
+        return $this->anchorOrigin('top', 'right');
+    }
+
+    /**
+     * Position badge at top-left
+     */
+    public function topLeft(): self
+    {
+        return $this->anchorOrigin('top', 'left');
+    }
+
+    /**
+     * Position badge at bottom-right
+     */
+    public function bottomRight(): self
+    {
+        return $this->anchorOrigin('bottom', 'right');
+    }
+
+    /**
+     * Position badge at bottom-left
+     */
+    public function bottomLeft(): self
+    {
+        return $this->anchorOrigin('bottom', 'left');
+    }
+
+    // ========================================================================
+    // Overlap
+    // ========================================================================
+
+    /**
+     * Set overlap mode (affects positioning relative to wrapped element)
+     */
+    public function overlap(string $overlap): self
+    {
+        $this->overlap = $overlap;
 
         return $this;
     }
 
+    public function rectangular(): self
+    {
+        return $this->overlap('rectangular');
+    }
+
+    public function circular(): self
+    {
+        return $this->overlap('circular');
+    }
+
+    // ========================================================================
+    // Visibility Control
+    // ========================================================================
+
+    /**
+     * Set badge visibility
+     */
+    public function invisible(bool $invisible = true): self
+    {
+        $this->invisible = $invisible;
+
+        return $this;
+    }
+
+    /**
+     * Show badge even when badgeContent is 0
+     */
+    public function showZero(bool $showZero = true): self
+    {
+        $this->showZero = $showZero;
+
+        return $this;
+    }
+
+    // ========================================================================
+    // Maximum Value
+    // ========================================================================
+
+    /**
+     * Set maximum value to display (shows "max+" when exceeded)
+     */
+    public function max(int $max): self
+    {
+        $this->max = $max;
+
+        return $this;
+    }
+
+    // ========================================================================
+    // Serialization
+    // ========================================================================
+
     public function toArray(): array
     {
-        return [
-            'type' => $this->type,
-            'name' => $this->name,
-            'title' => $this->title,
-            'subtitle' => $this->subtitle,
-            'icon' => $this->icon,
-            'variant' => $this->variant,
-            'size' => $this->size,
-            'pill' => $this->pill,
-            'outlined' => $this->outlined,
-            'removable' => $this->removable,
-            'badges' => $this->badges,
-            'data_source' => $this->dataSource,
-            'data_url' => $this->dataUrl,
-            'data_params' => $this->dataParams,
-            'data_transform' => $this->dataTransform,
-            'load_on_mount' => $this->loadOnMount,
-            'reload_on_change' => $this->reloadOnChange,
-            'use_shared_data' => $this->useSharedData,
-            'data_key' => $this->dataKey,
-            'actions' => $this->actions,
-            'order' => $this->order,
-            'visible' => $this->visible,
-            'permissions' => $this->permissions,
-            'roles' => $this->roles,
-            'authorized_to_see' => $this->authorizedToSee,
-            'meta' => $this->meta,
-        ];
+        return array_merge($this->getCommonProperties(), $this->filterNullValues([
+            'badgeContent' => $this->badgeContent,
+            'children' => $this->children,
+            'color' => $this->color !== 'default' ? $this->color : null,
+            'variant' => $this->variant !== 'standard' ? $this->variant : null,
+            'anchorOrigin' => [
+                'vertical' => $this->vertical,
+                'horizontal' => $this->horizontal,
+            ],
+            'overlap' => $this->overlap !== 'rectangular' ? $this->overlap : null,
+            'invisible' => $this->invisible ? true : null,
+            'showZero' => $this->showZero ? true : null,
+            'max' => $this->max,
+        ]));
     }
 }

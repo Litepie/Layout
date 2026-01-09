@@ -12,6 +12,12 @@ class ChartComponent extends BaseComponent
 
     protected array $datasets = []; // Chart datasets
 
+    protected ?string $dataMethod = 'GET'; // HTTP method for data fetching
+
+    protected ?int $refreshInterval = null; // Auto-refresh interval in milliseconds
+
+    protected bool $loadOnInit = true; // Load data on component initialization
+
     protected array $chartOptions = [];
 
     protected ?int $height = null;
@@ -39,6 +45,11 @@ class ChartComponent extends BaseComponent
         return $this;
     }
 
+    public function type(string $type): self
+    {
+        return $this->chartType($type);
+    }
+
     public function line(): self
     {
         return $this->chartType('line');
@@ -62,6 +73,127 @@ class ChartComponent extends BaseComponent
     public function area(): self
     {
         return $this->chartType('area');
+    }
+
+    public function radar(): self
+    {
+        return $this->chartType('radar');
+    }
+
+    public function scatter(): self
+    {
+        return $this->chartType('scatter');
+    }
+
+    public function bubble(): self
+    {
+        return $this->chartType('bubble');
+    }
+
+    public function donut(): self
+    {
+        return $this->chartType('doughnut');
+    }
+
+    public function gauge(): self
+    {
+        return $this->chartType('gauge');
+    }
+
+    public function heatmap(): self
+    {
+        return $this->chartType('heatmap');
+    }
+
+    public function funnel(): self
+    {
+        return $this->chartType('funnel');
+    }
+
+    public function polarArea(): self
+    {
+        return $this->chartType('polarArea');
+    }
+
+    /**
+     * Chart-specific properties (stored in options)
+     */
+    public function value($value): self
+    {
+        $this->chartOptions['value'] = $value;
+        return $this;
+    }
+
+    public function min($min): self
+    {
+        $this->chartOptions['min'] = $min;
+        return $this;
+    }
+
+    public function max($max): self
+    {
+        $this->chartOptions['max'] = $max;
+        return $this;
+    }
+
+    public function zones(array $zones): self
+    {
+        $this->chartOptions['zones'] = $zones;
+        return $this;
+    }
+
+    public function circumference($degrees): self
+    {
+        $this->chartOptions['circumference'] = $degrees;
+        return $this;
+    }
+
+    public function rotation($degrees): self
+    {
+        $this->chartOptions['rotation'] = $degrees;
+        return $this;
+    }
+
+    public function xLabels(array $labels): self
+    {
+        $this->chartOptions['xLabels'] = $labels;
+        return $this;
+    }
+
+    public function yLabels(array $labels): self
+    {
+        $this->chartOptions['yLabels'] = $labels;
+        return $this;
+    }
+
+    public function colorScale(array $colors): self
+    {
+        $this->chartOptions['colorScale'] = $colors;
+        return $this;
+    }
+
+    public function colors(array $colors): self
+    {
+        $this->chartOptions['colors'] = $colors;
+        return $this;
+    }
+
+    public function color(string $color): self
+    {
+        $this->chartOptions['color'] = $color;
+        return $this;
+    }
+
+    public function inverted(bool $inverted = true): self
+    {
+        $this->chartOptions['inverted'] = $inverted;
+        return $this;
+    }
+
+    public function label(string $label): self
+    {
+        $this->chartOptions['label'] = $label;
+        return $this;
     }
 
     /**
@@ -95,6 +227,87 @@ class ChartComponent extends BaseComponent
     public function datasets(array $datasets): self
     {
         $this->datasets = $datasets;
+
+        return $this;
+    }
+
+    /**
+     * Alias for datasets
+     */
+    public function data(array $data): self
+    {
+        return $this->datasets($data);
+    }
+
+    /**
+     * Set data source URL for dynamic data fetching (chart-specific)
+     * This extends the parent dataSource by adding chart-specific configuration
+     */
+    public function chartDataSource(string $url): self
+    {
+        $this->dataSource($url); // Call parent trait method
+        
+        return $this;
+    }
+
+    /**
+     * Alias for chartDataSource
+     */
+    public function source(string $url): self
+    {
+        return $this->chartDataSource($url);
+    }
+
+    /**
+     * Alias for chartDataSource
+     */
+    public function url(string $url): self
+    {
+        return $this->chartDataSource($url);
+    }
+
+    /**
+     * Set HTTP method for data fetching
+     */
+    public function dataMethod(string $method): self
+    {
+        $this->dataMethod = strtoupper($method);
+
+        return $this;
+    }
+
+    /**
+     * Set auto-refresh interval in milliseconds
+     */
+    public function refreshInterval(int $milliseconds): self
+    {
+        $this->refreshInterval = $milliseconds;
+
+        return $this;
+    }
+
+    /**
+     * Alias for refreshInterval - set in seconds
+     */
+    public function refreshEvery(int $seconds): self
+    {
+        return $this->refreshInterval($seconds * 1000);
+    }
+
+    /**
+     * Enable/disable auto-refresh
+     */
+    public function autoRefresh(int $seconds): self
+    {
+        return $this->refreshEvery($seconds);
+    }
+
+    /**
+     * Set whether to load data on initialization
+     */
+    public function loadOnInit(bool $load = true): self
+    {
+        $this->loadOnInit = $load;
 
         return $this;
     }
@@ -144,36 +357,21 @@ class ChartComponent extends BaseComponent
 
     public function toArray(): array
     {
-        return [
-            'type' => $this->type,
-            'name' => $this->name,
-            'title' => $this->title,
-            'subtitle' => $this->subtitle,
-            'icon' => $this->icon,
+        return array_merge($this->getCommonProperties(), $this->filterNullValues([
             'chart_type' => $this->chartType,
             'labels' => $this->labels,
             'datasets' => $this->datasets,
             'series' => $this->series,
+            'data_source' => $this->dataSource,
+            'data_method' => $this->dataMethod,
+            'data_params' => $this->dataParams,
+            'refresh_interval' => $this->refreshInterval,
+            'load_on_init' => $this->loadOnInit,
             'chart_options' => $this->chartOptions,
             'height' => $this->height,
             'responsive' => $this->responsive,
             'animated' => $this->animated,
             'library' => $this->library,
-            'data_source' => $this->dataSource,
-            'data_url' => $this->dataUrl,
-            'data_params' => $this->dataParams,
-            'data_transform' => $this->dataTransform,
-            'load_on_mount' => $this->loadOnMount,
-            'reload_on_change' => $this->reloadOnChange,
-            'use_shared_data' => $this->useSharedData,
-            'data_key' => $this->dataKey,
-            'actions' => $this->actions,
-            'order' => $this->order,
-            'visible' => $this->visible,
-            'permissions' => $this->permissions,
-            'roles' => $this->roles,
-            'authorized_to_see' => $this->authorizedToSee,
-            'meta' => $this->meta,
-        ];
+        ]));
     }
 }

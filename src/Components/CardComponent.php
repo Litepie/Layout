@@ -2,17 +2,100 @@
 
 namespace Litepie\Layout\Components;
 
+use Litepie\Layout\ActionModal;
+
+/**
+ * CardComponent
+ *
+ * Card component for displaying content with header, media, content, and actions.
+ */
 class CardComponent extends BaseComponent
 {
+    /**
+     * If true, the card will use raised styling.
+     */
+    protected bool $raised = false;
+
+    /**
+     * The variant of the card (e.g., 'outlined', 'elevated', 'filled').
+     */
+    protected ?string $variant = null;
+
+    /**
+     * The content of the component (children).
+     */
+    protected ?string $children = null;
+
+    // CardHeader properties
+    /**
+     * The action to display in the card header.
+     * Can be a string, array of actions, or null.
+     */
+    protected string|array|null $action = null;
+
+    /**
+     * The Avatar element to display.
+     */
+    protected ?string $avatar = null;
+
+    /**
+     * The content of the Card header title.
+     */
+    protected ?string $title = null;
+
+    /**
+     * The content of the Card header subheader.
+     */
+    protected ?string $subheader = null;
+
+    /**
+     * If true, subheader and title won't be wrapped by a Typography component.
+     */
+    protected bool $disableTypography = false;
+
+    // CardMedia properties
+    /**
+     * Image to be displayed as a background image or via src.
+     */
     protected ?string $image = null;
 
-    protected string $variant = 'default'; // default, outlined, elevated
+    /**
+     * An alias for image property. Available only with media components.
+     */
+    protected ?string $src = null;
 
-    protected array $fields = [];
+    /**
+     * The component used for the media. Either a string to use a HTML element or a component.
+     */
+    protected ?string $component = null;
 
-    protected array $header = [];
+    // CardContent (just holds children, no specific props)
 
-    protected array $footer = [];
+    // CardActions properties
+    /**
+     * If true, the actions do not have additional margin.
+     */
+    protected bool $disableSpacing = false;
+
+    /**
+     * Array of action items for CardActions.
+     */
+    protected array $actions = [];
+
+    /**
+     * The footer content or components.
+     */
+    protected mixed $footer = null;
+
+    /**
+     * Badge text to display on the card.
+     */
+    protected ?string $badge = null;
+
+    /**
+     * Color theme for the card.
+     */
+    protected ?string $color = null;
 
     public function __construct(string $name)
     {
@@ -24,13 +107,23 @@ class CardComponent extends BaseComponent
         return new static($name);
     }
 
-    public function image(string $image): self
+    // ========================================================================
+    // Card API Methods
+    // ========================================================================
+
+    /**
+     * If true, the card will use raised styling.
+     */
+    public function raised(bool $raised = true): self
     {
-        $this->image = $image;
+        $this->raised = $raised;
 
         return $this;
     }
 
+    /**
+     * Set the variant of the card (e.g., 'outlined', 'elevated', 'filled').
+     */
     public function variant(string $variant): self
     {
         $this->variant = $variant;
@@ -39,60 +132,89 @@ class CardComponent extends BaseComponent
     }
 
     /**
-     * Add a field to display in the card
-     * Usage: addField('email', 'Email Address', 'john@example.com')
-     * Or: addField('email', 'Email Address') - value will come from dataSource
+     * Set the content of the component (children).
      */
-    public function addField(string $name, string $label, mixed $value = null): self
+    public function children(string $children): self
     {
-        $this->fields[] = [
-            'name' => $name,
-            'label' => $label,
-            'value' => $value,
-        ];
+        $this->children = $children;
 
         return $this;
     }
 
     /**
-     * Add a custom header item
-     * Usage: addHeader('badge', 'Status', ['variant' => 'success', 'text' => 'Active'])
+     * Alias for children() method. Set the content of the card.
      */
-    public function addHeader(string $type, string $label, array $options = []): self
+    public function content(string $content): self
     {
-        $this->header[] = array_merge([
-            'type' => $type,
+        return $this->children($content);
+    }
+
+    // ========================================================================
+    // CardHeader API Methods
+    // ========================================================================
+
+    /**
+     * Set the action to display in the card header.
+     * Can accept a string or array of action items.
+     */
+    public function action(string|array $action): self
+    {
+        $this->action = $action;
+
+        return $this;
+    }
+
+    /**
+     * Add a single action to the card header.
+     * Use this to build multiple header actions.
+     */
+    public function addHeaderAction(string $label, string $url, array $options = []): self
+    {
+        if (!is_array($this->action)) {
+            $this->action = [];
+        }
+
+        $this->action[] = array_merge([
+            'type' => 'button',
             'label' => $label,
+            'url' => $url,
         ], $options);
 
         return $this;
     }
 
     /**
-     * Add an action button to the card header
-     * Usage: addHeaderAction('Edit', '/edit', ['variant' => 'primary', 'icon' => 'edit'])
-     */
-    public function addHeaderAction(string $label, string $action, array $options = []): self
-    {
-        $this->header[] = array_merge([
-            'type' => 'action',
-            'label' => $label,
-            'action' => $action,
-        ], $options);
-
-        return $this;
-    }
-
-    /**
-     * Add a dropdown menu to the card header
-     * Usage: addHeaderDropdown('Actions', [
-     *     ['label' => 'Edit', 'action' => '/edit'],
-     *     ['label' => 'Delete', 'action' => '/delete', 'variant' => 'danger']
-     * ], ['icon' => 'more-vertical'])
+     * Add a dropdown menu to the card header.
+     * 
+     * @param string $label The dropdown button label
+     * @param array $items Array of menu items. Each item can have:
+     *                     - 'label': Menu item text
+     *                     - 'url': Action URL
+     *                     - 'icon': Optional icon
+     *                     - 'confirmation': Confirmation dialog config
+     *                     - 'modal': Modal dialog config
+     * @param array $options Additional options (icon, variant, etc.)
+     * 
+     * Example:
+     * ->addHeaderDropdown('Actions', [
+     *     ['label' => 'Edit', 'url' => '/edit', 'icon' => 'edit'],
+     *     ['label' => 'Delete', 'url' => '/delete', 'confirmation' => [
+     *         'title' => 'Confirm Delete',
+     *         'message' => 'Are you sure?'
+     *     ]],
+     *     ['label' => 'Share', 'url' => '/share', 'modal' => [
+     *         'title' => 'Share Item',
+     *         'fields' => [...]
+     *     ]]
+     * ])
      */
     public function addHeaderDropdown(string $label, array $items, array $options = []): self
     {
-        $this->header[] = array_merge([
+        if (!is_array($this->action)) {
+            $this->action = [];
+        }
+
+        $this->action[] = array_merge([
             'type' => 'dropdown',
             'label' => $label,
             'items' => $items,
@@ -102,98 +224,259 @@ class CardComponent extends BaseComponent
     }
 
     /**
-     * Set the entire header array
+     * Set the Avatar element to display.
      */
-    public function header(array $header): self
+    public function avatar(string $avatar): self
     {
-        $this->header = $header;
+        $this->avatar = $avatar;
 
         return $this;
     }
 
     /**
-     * Add a footer button or element
-     * Usage: addFooter('Edit', '/edit', ['variant' => 'primary', 'icon' => 'edit'])
+     * Set the title content.
      */
-    public function addFooter(string $label, string $action, array $options = []): self
+    public function title(string $title): self
     {
-        $this->footer[] = array_merge([
-            'type' => 'action',
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * Set the subheader content.
+     */
+    public function subheader(string $subheader): self
+    {
+        $this->subheader = $subheader;
+
+        return $this;
+    }
+
+    /**
+     * If true, subheader and title won't be wrapped by a Typography component.
+     */
+    public function disableTypography(bool $disableTypography = true): self
+    {
+        $this->disableTypography = $disableTypography;
+
+        return $this;
+    }
+
+    // ========================================================================
+    // CardMedia API Methods
+    // ========================================================================
+
+    /**
+     * Set image to be displayed as a background image.
+     */
+    public function image(string $image): self
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * Set the src (alias for image property).
+     */
+    public function src(string $src): self
+    {
+        $this->src = $src;
+
+        return $this;
+    }
+
+    /**
+     * Set the component used for the media.
+     */
+    public function component(string $component): self
+    {
+        $this->component = $component;
+
+        return $this;
+    }
+
+    // ========================================================================
+    // CardActions API Methods
+    // ========================================================================
+
+    /**
+     * If true, the actions do not have additional margin.
+     */
+    public function disableSpacing(bool $disableSpacing = true): self
+    {
+        $this->disableSpacing = $disableSpacing;
+
+        return $this;
+    }
+
+    /**
+     * Add an action item to CardActions.
+     */
+    public function addAction(string $label, string $actionUrl, array $options = []): self
+    {
+        $this->actions[] = array_merge([
             'label' => $label,
-            'action' => $action,
+            'action' => $actionUrl,
         ], $options);
 
         return $this;
     }
 
     /**
-     * Add an action button to the card footer
-     * Usage: addFooterAction('Save', '/save', ['variant' => 'primary', 'icon' => 'save'])
+     * Set all actions at once.
      */
-    public function addFooterAction(string $label, string $action, array $options = []): self
+    public function actions(array $actions): self
     {
-        return $this->addFooter($label, $action, $options);
-    }
-
-    /**
-     * Add a dropdown menu to the card footer
-     * Usage: addFooterDropdown('More Actions', [
-     *     ['label' => 'Archive', 'action' => '/archive'],
-     *     ['label' => 'Export', 'action' => '/export'],
-     *     'divider',
-     *     ['label' => 'Delete', 'action' => '/delete', 'variant' => 'danger']
-     * ])
-     */
-    public function addFooterDropdown(string $label, array $items, array $options = []): self
-    {
-        $this->footer[] = array_merge([
-            'type' => 'dropdown',
-            'label' => $label,
-            'items' => $items,
-        ], $options);
+        $this->actions = $actions;
 
         return $this;
     }
 
     /**
-     * Set the entire footer array
+     * Set the footer content or components.
+     * Can accept a string, array, or closure that receives a slot/container.
      */
-    public function footer(array $footer): self
+    public function footer(mixed $footer): self
     {
-        $this->footer = $footer;
+        if ($footer instanceof \Closure) {
+            // If closure, we'll need to create a container/slot for it
+            // For now, store the closure to be executed during rendering
+            $this->footer = $footer;
+        } else {
+            $this->footer = $footer;
+        }
 
         return $this;
     }
+
+    /**
+     * Set a badge text to display on the card.
+     */
+    public function badge(string $badge): self
+    {
+        $this->badge = $badge;
+
+        return $this;
+    }
+
+    /**
+     * Set the color theme for the card (e.g., 'primary', 'success', 'warning', 'error').
+     */
+    public function color(string $color): self
+    {
+        $this->color = $color;
+
+        return $this;
+    }
+
+    // ========================================================================
+    // Serialization
+    // ========================================================================
 
     public function toArray(): array
     {
-        return [
-            'type' => $this->type,
-            'name' => $this->name,
-            'title' => $this->title,
-            'subtitle' => $this->subtitle,
-            'icon' => $this->icon,
-            'description' => $this->description,
-            'image' => $this->image,
+        $data = array_merge($this->getCommonProperties(), [
+            'raised' => $this->raised,
             'variant' => $this->variant,
-            'fields' => $this->fields,
-            'header' => $this->header,
-            'footer' => $this->footer,
-            'data_source' => $this->dataSource,
-            'data_url' => $this->dataUrl,
-            'data_params' => $this->dataParams,
-            'data_transform' => $this->dataTransform,
-            'load_on_mount' => $this->loadOnMount,
-            'reload_on_change' => $this->reloadOnChange,
-            'use_shared_data' => $this->useSharedData,
-            'data_key' => $this->dataKey,
-            'actions' => $this->actions,
-            'order' => $this->order,
-            'visible' => $this->visible,
-            'permissions' => $this->permissions,
-            'roles' => $this->roles,
-            'authorized_to_see' => $this->authorizedToSee,
-            'meta' => $this->meta,
-        ];
+            'badge' => $this->badge,
+            'color' => $this->color,
+            'children' => $this->children,
+        ]);
+
+        // Add header section if any header properties are set
+        $header = $this->filterNullValues([
+            'actions' => $this->serializeActions($this->action),
+            'avatar' => $this->avatar,
+            'title' => $this->title,
+            'subheader' => $this->subheader,
+            'disableTypography' => $this->disableTypography ?: null,
+        ]);
+        if (!empty($header)) {
+            $data['header'] = $header;
+        }
+
+        // Add media section if any media properties are set
+        $media = $this->filterNullValues([
+            'image' => $this->image,
+            'src' => $this->src,
+            'component' => $this->component,
+        ]);
+        if (!empty($media)) {
+            $data['media'] = $media;
+        }
+
+        // Add actions section if any action properties are set
+        if (!empty($this->actions) || $this->disableSpacing) {
+            $data['actions'] = $this->filterNullValues([
+                'disableSpacing' => $this->disableSpacing ?: null,
+                'items' => $this->serializeActionItems($this->actions),
+            ]);
+        }
+
+        // Add footer section if set
+        if ($this->footer !== null) {
+            if ($this->footer instanceof \Closure) {
+                // Footer closures should be handled by the rendering layer
+                $data['footer'] = ['type' => 'closure'];
+            } else {
+                $data['footer'] = $this->footer;
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Serialize action field to handle ActionModal objects
+     */
+    protected function serializeActions(string|array|null $action): string|array|null
+    {
+        if (!is_array($action)) {
+            return $action;
+        }
+
+        return array_map(function ($item) {
+            if (is_string($item)) {
+                return $item;
+            }
+
+            // Handle dropdown items with modals
+            if (isset($item['items']) && is_array($item['items'])) {
+                $item['items'] = array_map(function ($dropdownItem) {
+                    if (is_string($dropdownItem)) {
+                        return $dropdownItem;
+                    }
+                    
+                    // Convert ActionModal to array
+                    if (isset($dropdownItem['modal']) && $dropdownItem['modal'] instanceof ActionModal) {
+                        $dropdownItem['modal'] = $dropdownItem['modal']->toArray();
+                    }
+                    
+                    return $dropdownItem;
+                }, $item['items']);
+            }
+
+            // Handle direct modal on action
+            if (isset($item['modal']) && $item['modal'] instanceof ActionModal) {
+                $item['modal'] = $item['modal']->toArray();
+            }
+
+            return $item;
+        }, $action);
+    }
+
+    /**
+     * Serialize action items array to handle ActionModal objects
+     */
+    protected function serializeActionItems(array $actions): array
+    {
+        return array_map(function ($action) {
+            if (isset($action['modal']) && $action['modal'] instanceof ActionModal) {
+                $action['modal'] = $action['modal']->toArray();
+            }
+            return $action;
+        }, $actions);
     }
 }

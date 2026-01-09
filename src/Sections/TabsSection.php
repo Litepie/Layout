@@ -2,14 +2,26 @@
 
 namespace Litepie\Layout\Sections;
 
+/**
+ * TabsSection
+ *
+ * Tabbed interface section. Each tab stores its content directly.
+ * No slots - tabs store sections and components in arrays.
+ *
+ * Example:
+ *   TabsSection::make('user-tabs')
+ *       ->tab('profile', 'Profile', function($section) {
+ *           $section->form('profile-form');
+ *       }, ['icon' => 'user'])
+ *       ->tab('settings', 'Settings', function($section) {
+ *           $section->form('settings-form');
+ *       }, ['icon' => 'cog']);
+ */
 class TabsSection extends BaseSection
 {
     protected array $tabs = [];
-
     protected ?string $activeTab = null;
-
     protected string $position = 'top'; // top, left, right, bottom
-
     protected bool $lazy = false;
 
     public function __construct(string $name)
@@ -23,57 +35,22 @@ class TabsSection extends BaseSection
     }
 
     /**
-     * Add a tab with components
-     * Supports two patterns:
-     * 1. addTab($id, $label, $components, $options) - array of components
-     * 2. addTab($id, $label, function($tab) {...}) - callback to configure tab
+     * Add a tab with callback configuration
      */
-    public function addTab(string $id, string $label, array|\Closure $componentsOrCallback = [], array $options = []): self
+    public function tab(string $id, string $label, \Closure $callback, array $options = []): self
     {
-        // Pattern 2: Callback configuration
-        if ($componentsOrCallback instanceof \Closure) {
-            $callback = $componentsOrCallback;
-
-            // Create a section container for this tab
-            $tabContainer = new \Litepie\Layout\SectionContainer($id, $this);
-
-            // Execute the callback to configure the tab
-            $callback($tabContainer);
-
-            // Get all components added to the tab container
-            $components = $tabContainer->getComponents();
-
-            $this->tabs[$id] = [
-                'id' => $id,
-                'label' => $label,
-                'components' => $components,
-                'icon' => $options['icon'] ?? null,
-                'badge' => $options['badge'] ?? null,
-                'disabled' => $options['disabled'] ?? false,
-                'visible' => $options['visible'] ?? true,
-                'permissions' => $options['permissions'] ?? [],
-                'roles' => $options['roles'] ?? [],
-            ];
-
-            // Set first tab as active if none set
-            if ($this->activeTab === null) {
-                $this->activeTab = $id;
-            }
-
-            return $this;
-        }
-
-        // Pattern 1: Array of components
+        // Store tab metadata
         $this->tabs[$id] = [
             'id' => $id,
             'label' => $label,
-            'components' => $componentsOrCallback,
             'icon' => $options['icon'] ?? null,
             'badge' => $options['badge'] ?? null,
             'disabled' => $options['disabled'] ?? false,
             'visible' => $options['visible'] ?? true,
             'permissions' => $options['permissions'] ?? [],
             'roles' => $options['roles'] ?? [],
+            'sections' => [],
+            'components' => [],
         ];
 
         // Set first tab as active if none set
@@ -81,78 +58,95 @@ class TabsSection extends BaseSection
             $this->activeTab = $id;
         }
 
+        // Store current sections/components counts
+        $beforeSections = count($this->sections);
+        $beforeComponents = count($this->components);
+
+        // Execute callback - it will add to $this->sections and $this->components
+        $callback($this);
+
+        // Move new sections/components into tab
+        $this->tabs[$id]['sections'] = array_splice($this->sections, $beforeSections);
+        $this->tabs[$id]['components'] = array_splice($this->components, $beforeComponents);
+
         return $this;
     }
 
     /**
-     * Set the active tab
+     * Add a tab without content (just metadata)
      */
+    public function addTab(string $id, string $label, array $options = []): self
+    {
+        $this->tabs[$id] = [
+            'id' => $id,
+            'label' => $label,
+            'icon' => $options['icon'] ?? null,
+            'badge' => $options['badge'] ?? null,
+            'disabled' => $options['disabled'] ?? false,
+            'visible' => $options['visible'] ?? true,
+            'permissions' => $options['permissions'] ?? [],
+            'roles' => $options['roles'] ?? [],
+            'sections' => [],
+            'components' => [],
+        ];
+
+        if ($this->activeTab === null) {
+            $this->activeTab = $id;
+        }
+
+        return $this;
+    }
+
     public function activeTab(string $tabId): self
     {
         $this->activeTab = $tabId;
-
         return $this;
     }
 
-    /**
-     * Set tab position
-     */
     public function position(string $position): self
     {
         $this->position = $position;
-
         return $this;
     }
 
-    /**
-     * Enable lazy loading for tabs
-     */
     public function lazy(bool $lazy = true): self
     {
         $this->lazy = $lazy;
-
         return $this;
     }
 
-    /**
-     * Get all tabs
-     */
     public function getTabs(): array
     {
         return $this->tabs;
     }
 
-    /**
-     * Get a specific tab
-     */
     public function getTab(string $id): ?array
     {
         return $this->tabs[$id] ?? null;
     }
 
-    /**
-     * Resolve authorization for tabs and their components
-     */
     public function resolveAuthorization($user = null): self
     {
         parent::resolveAuthorization($user);
 
-        foreach ($this->tabs as &$tab) {
-            // Check tab-level permissions
-            if (! empty($tab['permissions'])) {
+        foreach ($this->tabs as $id => &$tab) {
+            if (!empty($tab['permissions'])) {
                 $tab['authorized'] = $this->checkPermissions($user, $tab['permissions']);
-            } elseif (! empty($tab['roles'])) {
+            } elseif (!empty($tab['roles'])) {
                 $tab['authorized'] = $this->checkRoles($user, $tab['roles']);
             } else {
                 $tab['authorized'] = true;
             }
 
-            // Resolve authorization for components in the tab
-            if (! empty($tab['components'])) {
-                foreach ($tab['components'] as $component) {
-                    if (method_exists($component, 'resolveAuthorization')) {
-                        $component->resolveAuthorization($user);
-                    }
+            foreach ($tab['components'] as $component) {
+                if (method_exists($component, 'resolveAuthorization')) {
+                    $component->resolveAuthorization($user);
+                }
+            }
+
+            foreach ($tab['sections'] as $section) {
+                if (method_exists($section, 'resolveAuthorization')) {
+                    $section->resolveAuthorization($user);
                 }
             }
         }
@@ -162,42 +156,45 @@ class TabsSection extends BaseSection
 
     public function toArray(): array
     {
-        $tabs = [];
-        foreach ($this->tabs as $tab) {
-            $tabs[] = [
+        $data = $this->getCommonProperties();
+        
+        $tabsOutput = [];
+        foreach ($this->tabs as $id => $tab) {
+            $tabData = [
                 'id' => $tab['id'],
                 'label' => $tab['label'],
                 'icon' => $tab['icon'],
                 'badge' => $tab['badge'],
                 'disabled' => $tab['disabled'],
                 'visible' => $tab['visible'],
-                'authorized' => $tab['authorized'] ?? true,
-                'components' => array_map(
-                    fn ($comp) => (is_object($comp) && method_exists($comp, 'toArray')) ? $comp->toArray() : (array) $comp,
-                    $tab['components']
-                ),
                 'permissions' => $tab['permissions'],
                 'roles' => $tab['roles'],
+                'authorized' => $tab['authorized'] ?? true,
             ];
+
+            if (!empty($tab['sections'])) {
+                $tabData['sections'] = array_map(function($section) {
+                    return method_exists($section, 'toArray') ? $section->toArray() : (array)$section;
+                }, $tab['sections']);
+            }
+
+            if (!empty($tab['components'])) {
+                $tabData['components'] = array_map(function($component) {
+                    return method_exists($component, 'toArray') ? $component->toArray() : (array)$component;
+                }, $tab['components']);
+            }
+
+            $tabsOutput[] = $tabData;
         }
 
-        return [
-            'type' => $this->type,
-            'name' => $this->name,
-            'title' => $this->title,
-            'subtitle' => $this->subtitle,
-            'icon' => $this->icon,
-            'tabs' => $tabs,
-            'active_tab' => $this->activeTab,
+        return array_merge($data, [
+            'tabs' => $tabsOutput,
+            'activeTab' => $this->activeTab,
             'position' => $this->position,
             'lazy' => $this->lazy,
-            'actions' => $this->actions,
-            'order' => $this->order,
-            'visible' => $this->visible,
-            'permissions' => $this->permissions,
-            'roles' => $this->roles,
-            'authorized_to_see' => $this->authorizedToSee,
-            'meta' => $this->meta,
-        ];
+            'permissions' => $this->permissions ?? [],
+            'roles' => $this->roles ?? [],
+            'authorized_to_see' => $this->authorizedToSee ?? null,
+        ]);
     }
 }

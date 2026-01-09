@@ -2,15 +2,28 @@
 
 namespace Litepie\Layout\Sections;
 
+/**
+ * AccordionSection
+ *
+ * Collapsible accordion section where each panel has its own content.
+ * Panels store sections and components directly without slots.
+ *
+ * Example:
+ *   AccordionSection::make('faq')
+ *       ->panel('about', 'About Us', function($section) {
+ *           $section->text('about-text')->content('...');
+ *       })
+ *       ->panel('contact', 'Contact', function($section) {
+ *           $section->form('contact-form');
+ *       });
+ */
 class AccordionSection extends BaseSection
 {
-    protected array $items = [];
-
+    protected array $panels = [];
     protected bool $multiple = false;
-
     protected bool $collapsible = true;
-
-    protected array $expanded = []; // Changed to array to support multiple expanded panels
+    protected array $expanded = [];
+    protected ?string $variant = null;
 
     public function __construct(string $name)
     {
@@ -23,62 +36,63 @@ class AccordionSection extends BaseSection
     }
 
     /**
-     * Add an accordion item with components
-     * Supports two patterns:
-     * 1. addItem($id, $label, $components, $options) - array of components
-     * 2. addItem($id, $label, function($panel) {...}) - callback to configure panel
+     * Add a panel with callback configuration
      */
-    public function addItem(string $id, string $label, array|\Closure $componentsOrCallback = [], array $options = []): self
+    public function panel(string $id, string $label, \Closure $callback, array $options = []): self
     {
-        // Pattern 2: Callback configuration
-        if ($componentsOrCallback instanceof \Closure) {
-            $callback = $componentsOrCallback;
-
-            // Create a section container for this panel
-            $panelContainer = new \Litepie\Layout\SectionContainer($id, $this);
-
-            // Execute the callback to configure the panel
-            $callback($panelContainer);
-
-            // Get all components added to the panel container
-            $components = $panelContainer->getComponents();
-
-            $this->items[$id] = [
-                'id' => $id,
-                'label' => $label,
-                'components' => $components,
-                'icon' => $options['icon'] ?? null,
-                'badge' => $options['badge'] ?? null,
-                'disabled' => $options['disabled'] ?? false,
-                'visible' => $options['visible'] ?? true,
-                'permissions' => $options['permissions'] ?? [],
-                'roles' => $options['roles'] ?? [],
-                'description' => $options['description'] ?? null,
-            ];
-
-            // Set first item as expanded if none set
-            if (empty($this->expanded)) {
-                $this->expanded = [$id];
-            }
-
-            return $this;
-        }
-
-        // Pattern 1: Array of components
-        $this->items[$id] = [
+        // Store panel metadata
+        $this->panels[$id] = [
             'id' => $id,
             'label' => $label,
-            'components' => $componentsOrCallback,
             'icon' => $options['icon'] ?? null,
             'badge' => $options['badge'] ?? null,
             'disabled' => $options['disabled'] ?? false,
             'visible' => $options['visible'] ?? true,
+            'description' => $options['description'] ?? null,
             'permissions' => $options['permissions'] ?? [],
             'roles' => $options['roles'] ?? [],
-            'description' => $options['description'] ?? null,
+            'sections' => [],
+            'components' => [],
         ];
 
-        // Set first item as expanded if none set
+        // Set first panel as expanded if none set
+        if (empty($this->expanded)) {
+            $this->expanded = [$id];
+        }
+
+        // Store current sections/components counts
+        $beforeSections = count($this->sections);
+        $beforeComponents = count($this->components);
+
+        // Execute callback - it will add to $this->sections and $this->components
+        $callback($this);
+
+        // Move new sections/components into panel
+        $this->panels[$id]['sections'] = array_splice($this->sections, $beforeSections);
+        $this->panels[$id]['components'] = array_splice($this->components, $beforeComponents);
+
+        return $this;
+    }
+
+    /**
+     * Add a panel without content (just metadata)
+     */
+    public function addPanel(string $id, string $label, array $options = []): self
+    {
+        $this->panels[$id] = [
+            'id' => $id,
+            'label' => $label,
+            'icon' => $options['icon'] ?? null,
+            'badge' => $options['badge'] ?? null,
+            'disabled' => $options['disabled'] ?? false,
+            'visible' => $options['visible'] ?? true,
+            'description' => $options['description'] ?? null,
+            'permissions' => $options['permissions'] ?? [],
+            'roles' => $options['roles'] ?? [],
+            'sections' => [],
+            'components' => [],
+        ];
+
         if (empty($this->expanded)) {
             $this->expanded = [$id];
         }
@@ -86,101 +100,73 @@ class AccordionSection extends BaseSection
         return $this;
     }
 
-    /**
-     * Alias for addItem() - adds a panel to the accordion
-     */
-    public function addPanel(string $id, string $label, array|\Closure $componentsOrCallback = [], array $options = []): self
-    {
-        return $this->addItem($id, $label, $componentsOrCallback, $options);
-    }
-
-    /**
-     * Allow multiple items to be expanded simultaneously
-     */
     public function multiple(bool $multiple = true): self
     {
         $this->multiple = $multiple;
-
         return $this;
     }
 
-    /**
-     * Alias for multiple()
-     */
     public function allowMultiple(bool $allow = true): self
     {
         return $this->multiple($allow);
     }
 
-    /**
-     * Set whether items can be collapsed
-     */
     public function collapsible(bool $collapsible = true): self
     {
         $this->collapsible = $collapsible;
-
         return $this;
     }
 
-    /**
-     * Set the initially expanded item
-     */
-    public function expanded(string $itemId): self
+    public function expanded(string $panelId): self
     {
-        $this->expanded = [$itemId];
-
+        $this->expanded = [$panelId];
         return $this;
     }
 
-    /**
-     * Set the initially expanded panels (array of IDs)
-     */
     public function expandedPanels(array $panelIds): self
     {
         $this->expanded = $panelIds;
-
         return $this;
     }
 
-    /**
-     * Get all items
-     */
-    public function getItems(): array
+    public function variant(string $variant): self
     {
-        return $this->items;
+        $this->variant = $variant;
+        return $this;
     }
 
-    /**
-     * Get a specific item
-     */
-    public function getItem(string $id): ?array
+    public function getPanels(): array
     {
-        return $this->items[$id] ?? null;
+        return $this->panels;
     }
 
-    /**
-     * Resolve authorization for items and their components
-     */
+    public function getPanel(string $id): ?array
+    {
+        return $this->panels[$id] ?? null;
+    }
+
     public function resolveAuthorization($user = null): self
     {
         parent::resolveAuthorization($user);
 
-        foreach ($this->items as &$item) {
-            // Check item-level permissions
-            if (! empty($item['permissions'])) {
-                $item['authorized'] = $this->checkPermissions($user, $item['permissions']);
-            } elseif (! empty($item['roles'])) {
-                $item['authorized'] = $this->checkRoles($user, $item['roles']);
+        foreach ($this->panels as $id => &$panel) {
+            if (!empty($panel['permissions'])) {
+                $panel['authorized'] = $this->checkPermissions($user, $panel['permissions']);
+            } elseif (!empty($panel['roles'])) {
+                $panel['authorized'] = $this->checkRoles($user, $panel['roles']);
             } else {
-                $item['authorized'] = true;
+                $panel['authorized'] = true;
             }
 
-            // Resolve authorization for components in the item
-            if (! empty($item['components'])) {
-                foreach ($item['components'] as $component) {
-                    if (method_exists($component, 'resolveAuthorization')) {
-                        $component->resolveAuthorization($user);
-                    }
+            foreach ($panel['components'] as $component) {
+                if (method_exists($component, 'resolveAuthorization')) {
+                    $component->resolveAuthorization($user);
+                }
+            }
+
+            foreach ($panel['sections'] as $section) {
+                if (method_exists($section, 'resolveAuthorization')) {
+                    $section->resolveAuthorization($user);
                 }
             }
         }
@@ -190,43 +176,47 @@ class AccordionSection extends BaseSection
 
     public function toArray(): array
     {
-        $items = [];
-        foreach ($this->items as $item) {
-            $items[] = [
-                'id' => $item['id'],
-                'label' => $item['label'],
-                'icon' => $item['icon'],
-                'badge' => $item['badge'],
-                'disabled' => $item['disabled'],
-                'visible' => $item['visible'],
-                'authorized' => $item['authorized'] ?? true,
-                'description' => $item['description'],
-                'components' => array_map(
-                    fn ($comp) => (is_object($comp) && method_exists($comp, 'toArray')) ? $comp->toArray() : (array) $comp,
-                    $item['components']
-                ),
-                'permissions' => $item['permissions'],
-                'roles' => $item['roles'],
+        $data = $this->getCommonProperties();
+        
+        $panelsOutput = [];
+        foreach ($this->panels as $id => $panel) {
+            $panelData = [
+                'id' => $panel['id'],
+                'label' => $panel['label'],
+                'icon' => $panel['icon'],
+                'badge' => $panel['badge'],
+                'disabled' => $panel['disabled'],
+                'visible' => $panel['visible'],
+                'description' => $panel['description'],
+                'permissions' => $panel['permissions'],
+                'roles' => $panel['roles'],
+                'authorized' => $panel['authorized'] ?? true,
             ];
+
+            if (!empty($panel['sections'])) {
+                $panelData['sections'] = array_map(function($section) {
+                    return method_exists($section, 'toArray') ? $section->toArray() : (array)$section;
+                }, $panel['sections']);
+            }
+
+            if (!empty($panel['components'])) {
+                $panelData['components'] = array_map(function($component) {
+                    return method_exists($component, 'toArray') ? $component->toArray() : (array)$component;
+                }, $panel['components']);
+            }
+
+            $panelsOutput[] = $panelData;
         }
 
-        return [
-            'type' => $this->type,
-            'name' => $this->name,
-            'title' => $this->title,
-            'subtitle' => $this->subtitle,
-            'icon' => $this->icon,
-            'items' => $items,
-            'expanded' => $this->expanded,
+        return array_merge($data, [
+            'panels' => $panelsOutput,
             'multiple' => $this->multiple,
             'collapsible' => $this->collapsible,
-            'actions' => $this->actions,
-            'order' => $this->order,
-            'visible' => $this->visible,
-            'permissions' => $this->permissions,
-            'roles' => $this->roles,
-            'authorized_to_see' => $this->authorizedToSee,
-            'meta' => $this->meta,
-        ];
+            'expanded' => $this->expanded,
+            'variant' => $this->variant,
+            'permissions' => $this->permissions ?? [],
+            'roles' => $this->roles ?? [],
+            'authorized_to_see' => $this->authorizedToSee ?? null,
+        ]);
     }
 }

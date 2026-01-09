@@ -1793,4 +1793,32 @@ return $layout->render();
 
 ---
 
+## Laravel Integration
+
+### Response Macro
+
+The package includes a Laravel response macro for convenient layout rendering in controllers.
+
+#### `response()->layout(Renderable $layout): JsonResponse`
+
+Instead of manually calling `render()` and wrapping it in `response()->json()`, you can use the `layout()` method directly on the response factory.
+
+```php
+use Litepie\Layout\Facades\Layout;
+
+public function index()
+{
+    $layout = Layout::create('dashboard', 'view')
+        ->title('Dashboard Overview');
+
+    // ... configure layout ...
+
+    return response()->layout($layout);
+}
+```
+
+This macro automatically calls `$layout->render()` and returns a JSON response.
+
+---
+
 This API reference provides a complete overview of all available sections, components, and methods in the Litepie Layout Builder package.
