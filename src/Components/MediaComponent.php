@@ -282,8 +282,8 @@ class MediaComponent extends BaseComponent
 
     /**
      * Set rounded corners/border radius for the media element
-     * 
-     * @param bool|string $size Can be true for default rounding, or a size string like 'sm', 'md', 'lg', 'xl', 'full', 'none'
+     *
+     * @param  bool|string  $size  Can be true for default rounding, or a size string like 'sm', 'md', 'lg', 'xl', 'full', 'none'
      */
     public function rounded(bool|string $size = true): self
     {
@@ -421,7 +421,7 @@ class MediaComponent extends BaseComponent
 
     public function preload(string $preload): self
     {
-        if (!in_array($preload, ['none', 'metadata', 'auto'])) {
+        if (! in_array($preload, ['none', 'metadata', 'auto'])) {
             throw new \InvalidArgumentException("Preload must be 'none', 'metadata', or 'auto'");
         }
 
@@ -507,7 +507,7 @@ class MediaComponent extends BaseComponent
 
     public function crossOrigin(?string $crossOrigin): self
     {
-        if ($crossOrigin !== null && !in_array($crossOrigin, ['anonymous', 'use-credentials'])) {
+        if ($crossOrigin !== null && ! in_array($crossOrigin, ['anonymous', 'use-credentials'])) {
             throw new \InvalidArgumentException("crossOrigin must be 'anonymous' or 'use-credentials'");
         }
 

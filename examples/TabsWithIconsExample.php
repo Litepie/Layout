@@ -4,10 +4,10 @@
  * Tabs Example - Clean 4-Level Architecture
  */
 
-use Litepie\Layout\LayoutBuilder;
-use Litepie\Layout\Sections\TabsSection;
 use Litepie\Layout\Components\CardComponent;
 use Litepie\Layout\Components\FormComponent;
+use Litepie\Layout\LayoutBuilder;
+use Litepie\Layout\Sections\TabsSection;
 
 $layout = LayoutBuilder::create('tabs-demo', 'view');
 

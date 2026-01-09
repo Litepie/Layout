@@ -2,7 +2,6 @@
 
 namespace Litepie\Layout;
 
-use Litepie\Layout\Contracts\Renderable;
 use Litepie\Layout\Contracts\Component;
 
 class Subsection implements Component
@@ -483,12 +482,13 @@ class Subsection implements Component
     {
         // Convert kebab-case to PascalCase
         $className = str_replace('-', '', ucwords($type, '-'));
-        
+
         // Try Components namespace
         $componentClass = 'Litepie\\Layout\\Components\\'.$className.'Component';
         if (class_exists($componentClass)) {
             $component = $componentClass::make($name);
             $this->add($component);
+
             return $component;
         }
 
@@ -605,7 +605,7 @@ class Subsection implements Component
     {
         $component = $this->component('media', $name);
         $component->video(); // Set media type to video
-        
+
         return $component;
     }
 
@@ -618,6 +618,7 @@ class Subsection implements Component
         if (class_exists($class)) {
             $component = $class::make($name, $type);
             $this->add($component);
+
             return $component;
         }
 

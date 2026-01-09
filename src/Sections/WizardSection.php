@@ -23,10 +23,15 @@ namespace Litepie\Layout\Sections;
 class WizardSection extends BaseSection
 {
     protected array $steps = [];
+
     protected int $currentStep = 0;
+
     protected bool $linear = true;
+
     protected bool $showStepNumbers = true;
+
     protected string $orientation = 'horizontal'; // horizontal, vertical
+
     protected bool $validateOnNext = true;
 
     public function __construct(string $name)
@@ -110,24 +115,28 @@ class WizardSection extends BaseSection
     public function linear(bool $linear = true): self
     {
         $this->linear = $linear;
+
         return $this;
     }
 
     public function showStepNumbers(bool $show = true): self
     {
         $this->showStepNumbers = $show;
+
         return $this;
     }
 
     public function orientation(string $orientation): self
     {
         $this->orientation = $orientation;
+
         return $this;
     }
 
     public function validateOnNext(bool $validate = true): self
     {
         $this->validateOnNext = $validate;
+
         return $this;
     }
 
@@ -151,9 +160,9 @@ class WizardSection extends BaseSection
         parent::resolveAuthorization($user);
 
         foreach ($this->steps as $key => &$step) {
-            if (!empty($step['permissions'])) {
+            if (! empty($step['permissions'])) {
                 $step['authorized'] = $this->checkPermissions($user, $step['permissions']);
-            } elseif (!empty($step['roles'])) {
+            } elseif (! empty($step['roles'])) {
                 $step['authorized'] = $this->checkRoles($user, $step['roles']);
             } else {
                 $step['authorized'] = true;
@@ -178,7 +187,7 @@ class WizardSection extends BaseSection
     public function toArray(): array
     {
         $data = $this->getCommonProperties();
-        
+
         $stepsOutput = [];
         foreach ($this->steps as $key => $step) {
             $stepData = [
@@ -193,15 +202,15 @@ class WizardSection extends BaseSection
                 'authorized' => $step['authorized'] ?? true,
             ];
 
-            if (!empty($step['sections'])) {
-                $stepData['sections'] = array_map(function($section) {
-                    return method_exists($section, 'toArray') ? $section->toArray() : (array)$section;
+            if (! empty($step['sections'])) {
+                $stepData['sections'] = array_map(function ($section) {
+                    return method_exists($section, 'toArray') ? $section->toArray() : (array) $section;
                 }, $step['sections']);
             }
 
-            if (!empty($step['components'])) {
-                $stepData['components'] = array_map(function($component) {
-                    return method_exists($component, 'toArray') ? $component->toArray() : (array)$component;
+            if (! empty($step['components'])) {
+                $stepData['components'] = array_map(function ($component) {
+                    return method_exists($component, 'toArray') ? $component->toArray() : (array) $component;
                 }, $step['components']);
             }
 

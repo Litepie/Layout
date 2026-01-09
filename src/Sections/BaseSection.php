@@ -4,15 +4,15 @@ namespace Litepie\Layout\Sections;
 
 use Litepie\Layout\Contracts\Component;
 use Litepie\Layout\Contracts\Renderable;
+use Litepie\Layout\Traits\CreatesComponents;
+use Litepie\Layout\Traits\CreatesSections;
 use Litepie\Layout\Traits\Debuggable;
-use Litepie\Layout\Traits\HasVisibility;
 use Litepie\Layout\Traits\HasDataSource;
 use Litepie\Layout\Traits\HasEvents;
+use Litepie\Layout\Traits\HasVisibility;
 use Litepie\Layout\Traits\Responsive;
 use Litepie\Layout\Traits\Translatable;
 use Litepie\Layout\Traits\Validatable;
-use Litepie\Layout\Traits\CreatesSections;
-use Litepie\Layout\Traits\CreatesComponents;
 
 /**
  * BaseSection
@@ -32,15 +32,15 @@ use Litepie\Layout\Traits\CreatesComponents;
  */
 abstract class BaseSection implements Component, Renderable
 {
-    use Debuggable,
-        HasVisibility,
+    use CreatesComponents,
+        CreatesSections,
+        Debuggable,
         HasDataSource,
         HasEvents,
+        HasVisibility,
         Responsive,
         Translatable,
-        Validatable,
-        CreatesSections,
-        CreatesComponents;
+        Validatable;
 
     protected string $name;
 
@@ -199,15 +199,15 @@ abstract class BaseSection implements Component, Renderable
 
     /**
      * Add a section or component (auto-detects type based on component's type property)
-     * 
-     * @param Component $item Section or Component instance to add
+     *
+     * @param  Component  $item  Section or Component instance to add
      * @return self For method chaining
      */
     public function add(Component $item): self
     {
         $type = $item->getType();
         $sectionTypes = ['layout', 'grid', 'row', 'tabs', 'accordion', 'wizard', 'header', 'footer', 'sidebar'];
-        
+
         if (in_array($type, $sectionTypes)) {
             return $this->addSection($item);
         } else {
@@ -259,7 +259,7 @@ abstract class BaseSection implements Component, Renderable
         $result = [];
 
         // Serialize nested sections
-        if (!empty($this->sections)) {
+        if (! empty($this->sections)) {
             $serializedSections = [];
             foreach ($this->sections as $section) {
                 if (method_exists($section, 'toArray')) {
@@ -272,7 +272,7 @@ abstract class BaseSection implements Component, Renderable
         }
 
         // Serialize components
-        if (!empty($this->components)) {
+        if (! empty($this->components)) {
             $serializedComponents = [];
             foreach ($this->components as $component) {
                 if (method_exists($component, 'toArray')) {

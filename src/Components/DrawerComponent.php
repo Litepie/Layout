@@ -12,20 +12,29 @@ class DrawerComponent extends BaseComponent
 {
     // Core properties
     protected string $anchor = 'left'; // left, right, top, bottom
+
     protected string $variant = 'temporary'; // temporary, persistent, mini, permanent
+
     protected bool $open = false;
+
     protected ?string $width = null;
+
     protected ?string $height = null;
+
     protected ?string $miniWidth = null;
 
     // Backdrop properties
     protected bool $backdrop = true;
+
     protected ?string $backdropColor = null;
+
     protected bool $closeOnBackdrop = true;
+
     protected bool $closeOnEscape = true;
 
     // UI elements
     protected bool $closeButton = true;
+
     protected bool $defaultOpen = false;
 
     // Mini variant properties
@@ -33,25 +42,36 @@ class DrawerComponent extends BaseComponent
 
     // Content sections
     protected ?array $header = null;
+
     protected ?array $content = null;
+
     protected ?array $footer = null;
+
     protected ?array $trigger = null;
 
     // Layout configuration (separate from content)
     protected ?string $layout = null;
+
     protected ?array $layoutConfig = null;
 
     // Styling
     protected ?string $backgroundColor = null;
+
     protected ?string $textColor = null;
+
     protected ?int $elevation = null;
+
     protected ?string $borderRadius = null;
+
     protected ?string $transition = null;
+
     protected ?int $transitionDuration = null;
 
     // Advanced
     protected ?string $parent = null; // For nested drawers
+
     protected ?string $maxWidth = null;
+
     protected ?string $maxHeight = null;
 
     public function __construct(string $name)
@@ -74,6 +94,7 @@ class DrawerComponent extends BaseComponent
     public function anchor(string $anchor): self
     {
         $this->anchor = $anchor;
+
         return $this;
     }
 
@@ -83,6 +104,7 @@ class DrawerComponent extends BaseComponent
     public function width(string $width): self
     {
         $this->width = $width;
+
         return $this;
     }
 
@@ -92,6 +114,7 @@ class DrawerComponent extends BaseComponent
     public function height(string $height): self
     {
         $this->height = $height;
+
         return $this;
     }
 
@@ -101,6 +124,7 @@ class DrawerComponent extends BaseComponent
     public function variant(string $variant): self
     {
         $this->variant = $variant;
+
         return $this;
     }
 
@@ -110,6 +134,7 @@ class DrawerComponent extends BaseComponent
     public function open(bool $open = true): self
     {
         $this->open = $open;
+
         return $this;
     }
 
@@ -123,6 +148,7 @@ class DrawerComponent extends BaseComponent
     public function backdrop(bool $show = true): self
     {
         $this->backdrop = $show;
+
         return $this;
     }
 
@@ -132,6 +158,7 @@ class DrawerComponent extends BaseComponent
     public function backdropColor(string $color): self
     {
         $this->backdropColor = $color;
+
         return $this;
     }
 
@@ -141,6 +168,7 @@ class DrawerComponent extends BaseComponent
     public function closeOnBackdrop(bool $close = true): self
     {
         $this->closeOnBackdrop = $close;
+
         return $this;
     }
 
@@ -150,6 +178,7 @@ class DrawerComponent extends BaseComponent
     public function closeOnEscape(bool $close = true): self
     {
         $this->closeOnEscape = $close;
+
         return $this;
     }
 
@@ -163,6 +192,7 @@ class DrawerComponent extends BaseComponent
     public function closeButton(bool $show = true): self
     {
         $this->closeButton = $show;
+
         return $this;
     }
 
@@ -172,6 +202,7 @@ class DrawerComponent extends BaseComponent
     public function defaultOpen(bool $open = true): self
     {
         $this->defaultOpen = $open;
+
         return $this;
     }
 
@@ -185,6 +216,7 @@ class DrawerComponent extends BaseComponent
     public function miniWidth(string $width): self
     {
         $this->miniWidth = $width;
+
         return $this;
     }
 
@@ -194,6 +226,7 @@ class DrawerComponent extends BaseComponent
     public function expandOnHover(bool $expand = true): self
     {
         $this->expandOnHover = $expand;
+
         return $this;
     }
 
@@ -207,6 +240,7 @@ class DrawerComponent extends BaseComponent
     public function header(array $config): self
     {
         $this->header = $config;
+
         return $this;
     }
 
@@ -216,6 +250,7 @@ class DrawerComponent extends BaseComponent
     public function content(array $config): self
     {
         $this->content = $config;
+
         return $this;
     }
 
@@ -225,6 +260,7 @@ class DrawerComponent extends BaseComponent
     public function footer(array $config): self
     {
         $this->footer = $config;
+
         return $this;
     }
 
@@ -234,6 +270,7 @@ class DrawerComponent extends BaseComponent
     public function trigger(array $config): self
     {
         $this->trigger = $config;
+
         return $this;
     }
 
@@ -241,9 +278,8 @@ class DrawerComponent extends BaseComponent
      * Set content layout structure with grid configuration.
      * This method merges layout configuration into the content.
      *
-     * @param string $layoutType The layout type (e.g., 'grid', 'flex', 'stack')
-     * @param array $layoutConfig The layout configuration array
-     * @return self
+     * @param  string  $layoutType  The layout type (e.g., 'grid', 'flex', 'stack')
+     * @param  array  $layoutConfig  The layout configuration array
      */
     public function contentLayout(string $layoutType, array $layoutConfig): self
     {
@@ -256,34 +292,33 @@ class DrawerComponent extends BaseComponent
     /**
      * Set layout type separately.
      *
-     * @param string $layoutType The layout type (e.g., 'grid', 'flex', 'stack')
-     * @return self
+     * @param  string  $layoutType  The layout type (e.g., 'grid', 'flex', 'stack')
      */
     public function layout(string $layoutType): self
     {
         $this->layout = $layoutType;
+
         return $this;
     }
 
     /**
      * Set layout configuration separately.
      *
-     * @param array $layoutConfig The layout configuration array
-     * @return self
+     * @param  array  $layoutConfig  The layout configuration array
      */
     public function layoutConfig(array $layoutConfig): self
     {
         $this->layoutConfig = $layoutConfig;
+
         return $this;
     }
 
     /**
      * Set content with component and optional layout configuration.
      *
-     * @param mixed $component The component data
-     * @param string|null $layoutType Optional layout type
-     * @param array|null $layoutConfig Optional layout configuration
-     * @return self
+     * @param  mixed  $component  The component data
+     * @param  string|null  $layoutType  Optional layout type
+     * @param  array|null  $layoutConfig  Optional layout configuration
      */
     public function contentWithLayout($component, ?string $layoutType = null, ?array $layoutConfig = null): self
     {
@@ -310,6 +345,7 @@ class DrawerComponent extends BaseComponent
     public function backgroundColor(string $color): self
     {
         $this->backgroundColor = $color;
+
         return $this;
     }
 
@@ -319,6 +355,7 @@ class DrawerComponent extends BaseComponent
     public function textColor(string $color): self
     {
         $this->textColor = $color;
+
         return $this;
     }
 
@@ -328,6 +365,7 @@ class DrawerComponent extends BaseComponent
     public function elevation(int $level): self
     {
         $this->elevation = $level;
+
         return $this;
     }
 
@@ -337,6 +375,7 @@ class DrawerComponent extends BaseComponent
     public function borderRadius(string $radius): self
     {
         $this->borderRadius = $radius;
+
         return $this;
     }
 
@@ -346,6 +385,7 @@ class DrawerComponent extends BaseComponent
     public function transition(string $type): self
     {
         $this->transition = $type;
+
         return $this;
     }
 
@@ -355,6 +395,7 @@ class DrawerComponent extends BaseComponent
     public function transitionDuration(int $ms): self
     {
         $this->transitionDuration = $ms;
+
         return $this;
     }
 
@@ -368,6 +409,7 @@ class DrawerComponent extends BaseComponent
     public function parent(string $drawerName): self
     {
         $this->parent = $drawerName;
+
         return $this;
     }
 
@@ -377,6 +419,7 @@ class DrawerComponent extends BaseComponent
     public function maxWidth(string $width): self
     {
         $this->maxWidth = $width;
+
         return $this;
     }
 
@@ -386,6 +429,7 @@ class DrawerComponent extends BaseComponent
     public function maxHeight(string $height): self
     {
         $this->maxHeight = $height;
+
         return $this;
     }
 

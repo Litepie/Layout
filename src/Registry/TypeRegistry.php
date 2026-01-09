@@ -4,10 +4,10 @@ namespace Litepie\Layout\Registry;
 
 /**
  * TypeRegistry
- * 
+ *
  * Central registry for all available component and section types.
  * Provides O(1) lookup performance and eliminates expensive class_exists() calls.
- * 
+ *
  * Performance Benefits:
  * - Cached class resolution (60% faster)
  * - No filesystem checks during runtime
@@ -18,18 +18,21 @@ class TypeRegistry
 {
     /**
      * Registered section types
+     *
      * @var array<string, class-string>
      */
     protected static array $sections = [];
 
     /**
      * Registered component types
+     *
      * @var array<string, class-string>
      */
     protected static array $components = [];
 
     /**
      * Cached aliases for quick lookup
+     *
      * @var array<string, string>
      */
     protected static array $aliases = [];
@@ -90,22 +93,23 @@ class TypeRegistry
 
     /**
      * Register a section type
-     * 
-     * @param string $type Type identifier (e.g., 'grid')
-     * @param class-string $className Fully qualified class name
-     * @param bool $skipValidation Skip class_exists check (for lazy loading)
+     *
+     * @param  string  $type  Type identifier (e.g., 'grid')
+     * @param  class-string  $className  Fully qualified class name
+     * @param  bool  $skipValidation  Skip class_exists check (for lazy loading)
+     *
      * @throws \InvalidArgumentException If class doesn't exist and validation not skipped
      */
     public static function registerSection(string $type, string $className, bool $skipValidation = false): void
     {
-        if (!$skipValidation && !class_exists($className)) {
+        if (! $skipValidation && ! class_exists($className)) {
             throw new \InvalidArgumentException(
                 "Cannot register section '{$type}': Class '{$className}' does not exist"
             );
         }
 
         static::$sections[$type] = $className;
-        
+
         // Also register kebab-case variant
         $kebab = static::toKebabCase($type);
         if ($kebab !== $type) {
@@ -115,22 +119,23 @@ class TypeRegistry
 
     /**
      * Register a component type
-     * 
-     * @param string $type Type identifier (e.g., 'button')
-     * @param class-string $className Fully qualified class name
-     * @param bool $skipValidation Skip class_exists check (for lazy loading)
+     *
+     * @param  string  $type  Type identifier (e.g., 'button')
+     * @param  class-string  $className  Fully qualified class name
+     * @param  bool  $skipValidation  Skip class_exists check (for lazy loading)
+     *
      * @throws \InvalidArgumentException If class doesn't exist and validation not skipped
      */
     public static function registerComponent(string $type, string $className, bool $skipValidation = false): void
     {
-        if (!$skipValidation && !class_exists($className)) {
+        if (! $skipValidation && ! class_exists($className)) {
             throw new \InvalidArgumentException(
                 "Cannot register component '{$type}': Class '{$className}' does not exist"
             );
         }
 
         static::$components[$type] = $className;
-        
+
         // Also register kebab-case variant
         $kebab = static::toKebabCase($type);
         if ($kebab !== $type) {
@@ -140,33 +145,33 @@ class TypeRegistry
 
     /**
      * Get section class name by type
-     * 
-     * @param string $type Type identifier
+     *
+     * @param  string  $type  Type identifier
      * @return class-string|null
      */
     public static function getSection(string $type): ?string
     {
         static::initialize();
-        
+
         // Check aliases first
         $type = static::$aliases[$type] ?? $type;
-        
+
         return static::$sections[$type] ?? null;
     }
 
     /**
      * Get component class name by type
-     * 
-     * @param string $type Type identifier
+     *
+     * @param  string  $type  Type identifier
      * @return class-string|null
      */
     public static function getComponent(string $type): ?string
     {
         static::initialize();
-        
+
         // Check aliases first
         $type = static::$aliases[$type] ?? $type;
-        
+
         return static::$components[$type] ?? null;
     }
 
@@ -177,6 +182,7 @@ class TypeRegistry
     {
         static::initialize();
         $type = static::$aliases[$type] ?? $type;
+
         return isset(static::$sections[$type]);
     }
 
@@ -187,50 +193,55 @@ class TypeRegistry
     {
         static::initialize();
         $type = static::$aliases[$type] ?? $type;
+
         return isset(static::$components[$type]);
     }
 
     /**
      * Get all registered section types
-     * 
+     *
      * @return array<string, class-string>
      */
     public static function getAllSections(): array
     {
         static::initialize();
+
         return static::$sections;
     }
 
     /**
      * Get all registered component types
-     * 
+     *
      * @return array<string, class-string>
      */
     public static function getAllComponents(): array
     {
         static::initialize();
+
         return static::$components;
     }
 
     /**
      * Get all registered section type names
-     * 
+     *
      * @return string[]
      */
     public static function getAllSectionTypes(): array
     {
         static::initialize();
+
         return array_keys(static::$sections);
     }
 
     /**
      * Get all registered component type names
-     * 
+     *
      * @return string[]
      */
     public static function getAllComponentTypes(): array
     {
         static::initialize();
+
         return array_keys(static::$components);
     }
 
@@ -259,7 +270,7 @@ class TypeRegistry
     public static function getStats(): array
     {
         static::initialize();
-        
+
         return [
             'sections' => count(static::$sections),
             'components' => count(static::$components),

@@ -20,8 +20,11 @@ namespace Litepie\Layout\Sections;
 class TabsSection extends BaseSection
 {
     protected array $tabs = [];
+
     protected ?string $activeTab = null;
+
     protected string $position = 'top'; // top, left, right, bottom
+
     protected bool $lazy = false;
 
     public function __construct(string $name)
@@ -100,18 +103,21 @@ class TabsSection extends BaseSection
     public function activeTab(string $tabId): self
     {
         $this->activeTab = $tabId;
+
         return $this;
     }
 
     public function position(string $position): self
     {
         $this->position = $position;
+
         return $this;
     }
 
     public function lazy(bool $lazy = true): self
     {
         $this->lazy = $lazy;
+
         return $this;
     }
 
@@ -130,9 +136,9 @@ class TabsSection extends BaseSection
         parent::resolveAuthorization($user);
 
         foreach ($this->tabs as $id => &$tab) {
-            if (!empty($tab['permissions'])) {
+            if (! empty($tab['permissions'])) {
                 $tab['authorized'] = $this->checkPermissions($user, $tab['permissions']);
-            } elseif (!empty($tab['roles'])) {
+            } elseif (! empty($tab['roles'])) {
                 $tab['authorized'] = $this->checkRoles($user, $tab['roles']);
             } else {
                 $tab['authorized'] = true;
@@ -157,7 +163,7 @@ class TabsSection extends BaseSection
     public function toArray(): array
     {
         $data = $this->getCommonProperties();
-        
+
         $tabsOutput = [];
         foreach ($this->tabs as $id => $tab) {
             $tabData = [
@@ -172,15 +178,15 @@ class TabsSection extends BaseSection
                 'authorized' => $tab['authorized'] ?? true,
             ];
 
-            if (!empty($tab['sections'])) {
-                $tabData['sections'] = array_map(function($section) {
-                    return method_exists($section, 'toArray') ? $section->toArray() : (array)$section;
+            if (! empty($tab['sections'])) {
+                $tabData['sections'] = array_map(function ($section) {
+                    return method_exists($section, 'toArray') ? $section->toArray() : (array) $section;
                 }, $tab['sections']);
             }
 
-            if (!empty($tab['components'])) {
-                $tabData['components'] = array_map(function($component) {
-                    return method_exists($component, 'toArray') ? $component->toArray() : (array)$component;
+            if (! empty($tab['components'])) {
+                $tabData['components'] = array_map(function ($component) {
+                    return method_exists($component, 'toArray') ? $component->toArray() : (array) $component;
                 }, $tab['components']);
             }
 

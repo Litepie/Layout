@@ -4,14 +4,13 @@ namespace Litepie\Layout;
 
 use Litepie\Layout\Components\CustomComponent;
 use Litepie\Layout\Contracts\Component;
+use Litepie\Layout\Contracts\Renderable;
 use Litepie\Layout\Sections\LayoutSection;
 use Litepie\Layout\Traits\Cacheable;
 use Litepie\Layout\Traits\Debuggable;
 use Litepie\Layout\Traits\Exportable;
 use Litepie\Layout\Traits\HandlesComputedFields;
 use Litepie\Layout\Traits\Testable;
-
-use Litepie\Layout\Contracts\Renderable;
 
 /**
  * LayoutBuilder
@@ -225,7 +224,7 @@ class LayoutBuilder implements Renderable
         $className = str_replace('-', '', ucwords($type, '-'));
 
         // Try Section suffix (containers: Header, Layout, Grid, Tabs, Accordion, Row, Column)
-        $sectionClass = 'Litepie\\Layout\\Sections\\' . $className . 'Section';
+        $sectionClass = 'Litepie\\Layout\\Sections\\'.$className.'Section';
         if (class_exists($sectionClass)) {
             $section = $sectionClass::make($name);
             $section->parentBuilder = $this;
@@ -255,7 +254,7 @@ class LayoutBuilder implements Renderable
         $className = str_replace('-', '', ucwords($type, '-'));
 
         // Try Component suffix (content: Form, Card, Table, List, Button, Text, etc.)
-        $componentClass = 'Litepie\\Layout\\Components\\' . $className . 'Component';
+        $componentClass = 'Litepie\\Layout\\Components\\'.$className.'Component';
         if (class_exists($componentClass)) {
             $component = $componentClass::make($name);
             $component->parentBuilder = $this;
@@ -367,7 +366,7 @@ class LayoutBuilder implements Renderable
             'shared_data_params' => $this->sharedDataParams,
             'meta' => $this->meta,
             'sections' => array_map(
-                fn($section) => method_exists($section, 'toArray') ? $section->toArray() : (array) $section,
+                fn ($section) => method_exists($section, 'toArray') ? $section->toArray() : (array) $section,
                 $this->sections
             ),
         ];

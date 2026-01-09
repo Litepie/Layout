@@ -170,7 +170,7 @@ class CardComponent extends BaseComponent
      */
     public function addHeaderAction(string $label, string $url, array $options = []): self
     {
-        if (!is_array($this->action)) {
+        if (! is_array($this->action)) {
             $this->action = [];
         }
 
@@ -185,16 +185,16 @@ class CardComponent extends BaseComponent
 
     /**
      * Add a dropdown menu to the card header.
-     * 
-     * @param string $label The dropdown button label
-     * @param array $items Array of menu items. Each item can have:
-     *                     - 'label': Menu item text
-     *                     - 'url': Action URL
-     *                     - 'icon': Optional icon
-     *                     - 'confirmation': Confirmation dialog config
-     *                     - 'modal': Modal dialog config
-     * @param array $options Additional options (icon, variant, etc.)
-     * 
+     *
+     * @param  string  $label  The dropdown button label
+     * @param  array  $items  Array of menu items. Each item can have:
+     *                        - 'label': Menu item text
+     *                        - 'url': Action URL
+     *                        - 'icon': Optional icon
+     *                        - 'confirmation': Confirmation dialog config
+     *                        - 'modal': Modal dialog config
+     * @param  array  $options  Additional options (icon, variant, etc.)
+     *
      * Example:
      * ->addHeaderDropdown('Actions', [
      *     ['label' => 'Edit', 'url' => '/edit', 'icon' => 'edit'],
@@ -210,7 +210,7 @@ class CardComponent extends BaseComponent
      */
     public function addHeaderDropdown(string $label, array $items, array $options = []): self
     {
-        if (!is_array($this->action)) {
+        if (! is_array($this->action)) {
             $this->action = [];
         }
 
@@ -393,7 +393,7 @@ class CardComponent extends BaseComponent
             'subheader' => $this->subheader,
             'disableTypography' => $this->disableTypography ?: null,
         ]);
-        if (!empty($header)) {
+        if (! empty($header)) {
             $data['header'] = $header;
         }
 
@@ -403,12 +403,12 @@ class CardComponent extends BaseComponent
             'src' => $this->src,
             'component' => $this->component,
         ]);
-        if (!empty($media)) {
+        if (! empty($media)) {
             $data['media'] = $media;
         }
 
         // Add actions section if any action properties are set
-        if (!empty($this->actions) || $this->disableSpacing) {
+        if (! empty($this->actions) || $this->disableSpacing) {
             $data['actions'] = $this->filterNullValues([
                 'disableSpacing' => $this->disableSpacing ?: null,
                 'items' => $this->serializeActionItems($this->actions),
@@ -433,7 +433,7 @@ class CardComponent extends BaseComponent
      */
     protected function serializeActions(string|array|null $action): string|array|null
     {
-        if (!is_array($action)) {
+        if (! is_array($action)) {
             return $action;
         }
 
@@ -448,12 +448,12 @@ class CardComponent extends BaseComponent
                     if (is_string($dropdownItem)) {
                         return $dropdownItem;
                     }
-                    
+
                     // Convert ActionModal to array
                     if (isset($dropdownItem['modal']) && $dropdownItem['modal'] instanceof ActionModal) {
                         $dropdownItem['modal'] = $dropdownItem['modal']->toArray();
                     }
-                    
+
                     return $dropdownItem;
                 }, $item['items']);
             }
@@ -476,6 +476,7 @@ class CardComponent extends BaseComponent
             if (isset($action['modal']) && $action['modal'] instanceof ActionModal) {
                 $action['modal'] = $action['modal']->toArray();
             }
+
             return $action;
         }, $actions);
     }

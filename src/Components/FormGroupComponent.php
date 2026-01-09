@@ -25,9 +25,13 @@ class FormGroupComponent extends BaseComponent
     protected array $columnWidths = [];
 
     protected ?int $gridRow = null;
+
     protected ?int $gridColumn = null;
+
     protected ?int $gridRowEnd = null;
+
     protected ?int $gridColumnEnd = null;
+
     protected ?int $columnSpan = null;
 
     public function __construct(string $name)
@@ -98,9 +102,8 @@ class FormGroupComponent extends BaseComponent
 
     /**
      * Set column widths for fields within the group
-     * 
-     * @param array $widths Array of width values (e.g., ['1fr', '2fr', '1fr'], ['33%', '33%', '33%'], ['300px', '200px', '400px'])
-     * @return self
+     *
+     * @param  array  $widths  Array of width values (e.g., ['1fr', '2fr', '1fr'], ['33%', '33%', '33%'], ['300px', '200px', '400px'])
      */
     public function columnWidths(array $widths): self
     {
@@ -111,10 +114,9 @@ class FormGroupComponent extends BaseComponent
 
     /**
      * Set grid row and column position for the group
-     * 
-     * @param int $row Row number (1-based)
-     * @param int $column Column number (1-based)
-     * @return self
+     *
+     * @param  int  $row  Row number (1-based)
+     * @param  int  $column  Column number (1-based)
      */
     public function position(int $row, int $column): self
     {
@@ -126,9 +128,8 @@ class FormGroupComponent extends BaseComponent
 
     /**
      * Set grid row (CSS Grid row-start)
-     * 
-     * @param int $row Row number (1-based)
-     * @return self
+     *
+     * @param  int  $row  Row number (1-based)
      */
     public function gridRow(int $row): self
     {
@@ -139,9 +140,8 @@ class FormGroupComponent extends BaseComponent
 
     /**
      * Set grid column (CSS Grid column-start)
-     * 
-     * @param int $column Column number (1-based)
-     * @return self
+     *
+     * @param  int  $column  Column number (1-based)
      */
     public function gridColumn(int $column): self
     {
@@ -152,9 +152,8 @@ class FormGroupComponent extends BaseComponent
 
     /**
      * Set grid row end (CSS Grid row-end)
-     * 
-     * @param int $rowEnd Row end number
-     * @return self
+     *
+     * @param  int  $rowEnd  Row end number
      */
     public function gridRowEnd(int $rowEnd): self
     {
@@ -165,9 +164,8 @@ class FormGroupComponent extends BaseComponent
 
     /**
      * Set grid column end (CSS Grid column-end)
-     * 
-     * @param int $columnEnd Column end number
-     * @return self
+     *
+     * @param  int  $columnEnd  Column end number
      */
     public function gridColumnEnd(int $columnEnd): self
     {
@@ -178,9 +176,8 @@ class FormGroupComponent extends BaseComponent
 
     /**
      * Set how many columns this group should span
-     * 
-     * @param int $span Number of columns to span (1, 2, 3, etc.)
-     * @return self
+     *
+     * @param  int  $span  Number of columns to span (1, 2, 3, etc.)
      */
     public function columnSpan(int $span): self
     {
@@ -196,6 +193,7 @@ class FormGroupComponent extends BaseComponent
     {
         $field = \Litepie\Form\Field::make($type, $name);
         $this->fields[] = $field; // Use indexed array to preserve order
+
         return $field;
     }
 
@@ -206,6 +204,7 @@ class FormGroupComponent extends BaseComponent
     {
         // Always add to indexed array to preserve order
         $this->fields[] = $field;
+
         return $this;
     }
 
@@ -382,10 +381,10 @@ class FormGroupComponent extends BaseComponent
             'variant' => $this->variant,
             'columns' => $this->columns,
             'gap' => $this->gap,
-            'columnWidths' => !empty($this->columnWidths) ? $this->columnWidths : null,
+            'columnWidths' => ! empty($this->columnWidths) ? $this->columnWidths : null,
             'gridPosition' => $this->getGridPosition(),
             'fields' => array_map(
-                fn($field) => (is_object($field) && method_exists($field, 'toArray'))
+                fn ($field) => (is_object($field) && method_exists($field, 'toArray'))
                     ? $field->toArray()
                     : (array) $field,
                 $this->fields
@@ -395,8 +394,6 @@ class FormGroupComponent extends BaseComponent
 
     /**
      * Get grid position information for the group
-     * 
-     * @return array|null
      */
     protected function getGridPosition(): ?array
     {

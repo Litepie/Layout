@@ -71,8 +71,8 @@ class ListComponent extends BaseComponent
 
     /**
      * Set list variant/style
-     * 
-     * @param string $variant Variant type: 'ordered', 'unordered', 'none'
+     *
+     * @param  string  $variant  Variant type: 'ordered', 'unordered', 'none'
      */
     public function variant(string $variant): self
     {
@@ -93,8 +93,8 @@ class ListComponent extends BaseComponent
 
     /**
      * Add multiple simple text items from an array of strings
-     * 
-     * @param array $items Array of strings to be added as list items
+     *
+     * @param  array  $items  Array of strings to be added as list items
      */
     public function items(array $items): self
     {
@@ -115,23 +115,23 @@ class ListComponent extends BaseComponent
 
     /**
      * Add a list item
-     * 
-     * @param array $config Item configuration with keys:
-     *   - primary: Primary text (string)
-     *   - secondary: Secondary text (string)
-     *   - button: Make item clickable (bool)
-     *   - href: Link URL (string)
-     *   - selected: Selected state (bool)
-     *   - disabled: Disabled state (bool)
-     *   - divider: Show divider after item (bool)
-     *   - disableGutters: Disable gutters (bool)
-     *   - disablePadding: Disable padding (bool)
-     *   - alignItems: Alignment (flex-start, center)
-     *   - inset: Inset item (bool)
-     *   - icon: Leading icon config (string or array)
-     *   - avatar: Leading avatar config (array with src, alt, etc)
-     *   - secondaryAction: Secondary action config (button/icon button)
-     *   - nested: Nested list items (array)
+     *
+     * @param  array  $config  Item configuration with keys:
+     *                         - primary: Primary text (string)
+     *                         - secondary: Secondary text (string)
+     *                         - button: Make item clickable (bool)
+     *                         - href: Link URL (string)
+     *                         - selected: Selected state (bool)
+     *                         - disabled: Disabled state (bool)
+     *                         - divider: Show divider after item (bool)
+     *                         - disableGutters: Disable gutters (bool)
+     *                         - disablePadding: Disable padding (bool)
+     *                         - alignItems: Alignment (flex-start, center)
+     *                         - inset: Inset item (bool)
+     *                         - icon: Leading icon config (string or array)
+     *                         - avatar: Leading avatar config (array with src, alt, etc)
+     *                         - secondaryAction: Secondary action config (button/icon button)
+     *                         - nested: Nested list items (array)
      */
     public function addItem(array $config): self
     {
