@@ -462,17 +462,16 @@ class ButtonComponent extends BaseComponent
 
     /**
      * Set confirmation dialog configuration
-     * 
-     * @param array $config Confirmation dialog configuration
-     *   - title: string - Dialog title
-     *   - message: string - Dialog message/content
-     *   - confirmLabel: string - Confirm button label (default: 'Confirm')
-     *   - cancelLabel: string - Cancel button label (default: 'Cancel')
-     *   - confirmVariant: string - Confirm button variant (default: 'contained')
-     *   - confirmColor: string - Confirm button color (default: 'primary')
-     *   - icon: string - Dialog icon
-     *   - iconColor: string - Icon color
-     * @return self
+     *
+     * @param  array  $config  Confirmation dialog configuration
+     *                         - title: string - Dialog title
+     *                         - message: string - Dialog message/content
+     *                         - confirmLabel: string - Confirm button label (default: 'Confirm')
+     *                         - cancelLabel: string - Cancel button label (default: 'Cancel')
+     *                         - confirmVariant: string - Confirm button variant (default: 'contained')
+     *                         - confirmColor: string - Confirm button color (default: 'primary')
+     *                         - icon: string - Dialog icon
+     *                         - iconColor: string - Icon color
      */
     public function confirm(array $config): self
     {
@@ -490,13 +489,12 @@ class ButtonComponent extends BaseComponent
 
     /**
      * Associate button with a form configuration
-     * 
-     * @param array|null $form Form configuration
-     *   - id: string - Form ID
-     *   - placement: string - Placement of form modal/popover
-     *   - offset: array - Offset positioning
-     *   - closeOnClick: bool - Close on click outside
-     * @return self
+     *
+     * @param  array|null  $form  Form configuration
+     *                            - id: string - Form ID
+     *                            - placement: string - Placement of form modal/popover
+     *                            - offset: array - Offset positioning
+     *                            - closeOnClick: bool - Close on click outside
      */
     public function form(?array $form): self
     {

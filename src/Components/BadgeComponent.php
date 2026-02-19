@@ -271,7 +271,7 @@ class BadgeComponent extends BaseComponent
 
     /**
      * Set status colors and icons mapping
-     * 
+     *
      * Example:
      * [
      *     'draft' => ['color' => 'default', 'icon' => 'edit'],
@@ -280,8 +280,7 @@ class BadgeComponent extends BaseComponent
      *     'sold' => ['color' => 'info', 'icon' => 'cash'],
      * ]
      *
-     * @param array $badgeConfig Array mapping status values to color and icon config
-     * @return self
+     * @param  array  $badgeConfig  Array mapping status values to color and icon config
      */
     public function badgeConfig(array $badgeConfig): self
     {

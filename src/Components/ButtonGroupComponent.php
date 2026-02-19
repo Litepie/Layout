@@ -7,7 +7,7 @@ namespace Litepie\Layout\Components;
  *
  * Groups multiple buttons together with consistent styling.
  * Commonly used in toolbars, forms, and action panels.
- * 
+ *
  * API Properties:
  * - orientation: 'horizontal' or 'vertical' layout
  * - variant: Button variant applied to all children ('contained', 'outlined', 'text')
@@ -308,7 +308,7 @@ class ButtonGroupComponent extends BaseComponent
             'fullWidth' => $this->fullWidth ?: null,
             'spacing' => $this->spacing,
             'dividers' => $this->dividers ?: null,
-            'children' => !empty($this->children) ? $this->children : null,
+            'children' => ! empty($this->children) ? $this->children : null,
         ]));
     }
 }

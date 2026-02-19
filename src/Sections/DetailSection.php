@@ -9,7 +9,7 @@ use Litepie\Layout\SlotManager;
  *
  * Detail section provides a static detail/view page layout with configurable sections.
  * Designed for displaying detailed information in a structured layout.
- * 
+ *
  * SUPPORTED SECTIONS (ONLY):
  * - header: Detail header content
  * - footer: Detail footer content
@@ -42,9 +42,13 @@ class DetailSection extends BaseSection
 
     // Styling
     protected ?string $backgroundColor = null;
+
     protected ?string $textColor = null;
+
     protected ?string $borderRadius = null;
+
     protected ?string $padding = null;
+
     protected ?string $margin = null;
 
     public function __construct(string $name)
@@ -63,14 +67,14 @@ class DetailSection extends BaseSection
 
     /**
      * Validate section name
-     * 
+     *
      * @throws \InvalidArgumentException if section is not supported
      */
     private function validateSection(string $section): void
     {
-        if (!in_array($section, self::SUPPORTED_SECTIONS)) {
+        if (! in_array($section, self::SUPPORTED_SECTIONS)) {
             throw new \InvalidArgumentException(
-                "Section '{$section}' is not supported in DetailSection. Only these sections are allowed: " .
+                "Section '{$section}' is not supported in DetailSection. Only these sections are allowed: ".
                     implode(', ', self::SUPPORTED_SECTIONS)
             );
         }
@@ -79,65 +83,65 @@ class DetailSection extends BaseSection
     /**
      * Set detail header section
      * Only accepts SlotManager instances
-     * 
-     * @param SlotManager $slotManager SlotManager instance
-     * @return self
+     *
+     * @param  SlotManager  $slotManager  SlotManager instance
      */
     public function setHeader(SlotManager $slotManager): self
     {
         $this->detailSections['header'] = $slotManager->toArray();
+
         return $this;
     }
 
     /**
      * Set detail footer section
      * Only accepts SlotManager instances
-     * 
-     * @param SlotManager $slotManager SlotManager instance
-     * @return self
+     *
+     * @param  SlotManager  $slotManager  SlotManager instance
      */
     public function setFooter(SlotManager $slotManager): self
     {
         $this->detailSections['footer'] = $slotManager->toArray();
+
         return $this;
     }
 
     /**
      * Set detail main content section
      * Only accepts SlotManager instances
-     * 
-     * @param SlotManager $slotManager SlotManager instance
-     * @return self
+     *
+     * @param  SlotManager  $slotManager  SlotManager instance
      */
     public function setMain(SlotManager $slotManager): self
     {
         $this->detailSections['main'] = $slotManager->toArray();
+
         return $this;
     }
 
     /**
      * Set detail left section content
      * Only accepts SlotManager instances
-     * 
-     * @param SlotManager $slotManager SlotManager instance
-     * @return self
+     *
+     * @param  SlotManager  $slotManager  SlotManager instance
      */
     public function setLeft(SlotManager $slotManager): self
     {
         $this->detailSections['left'] = $slotManager->toArray();
+
         return $this;
     }
 
     /**
      * Set detail right section content
      * Only accepts SlotManager instances
-     * 
-     * @param SlotManager $slotManager SlotManager instance
-     * @return self
+     *
+     * @param  SlotManager  $slotManager  SlotManager instance
      */
     public function setRight(SlotManager $slotManager): self
     {
         $this->detailSections['right'] = $slotManager->toArray();
+
         return $this;
     }
 
@@ -147,32 +151,32 @@ class DetailSection extends BaseSection
 
     /**
      * Configure a section's layout and properties
-     * 
-     * @param string $section Section name (header, footer, main, left, right)
-     * @param array $config Configuration array with properties like:
-     *   - width: Section width (e.g., '300px', '25%', '3fr')
-     *   - height: Section height (e.g., '100px', 'auto')
-     *   - minWidth: Minimum width
-     *   - maxWidth: Maximum width
-     *   - minHeight: Minimum height
-     *   - maxHeight: Maximum height
-     *   - gridColumnSpan: Grid column span (for grid layouts)
-     *   - gridRowSpan: Grid row span
-     *   - order: Flex/grid order
-     *   - flex: Flex grow/shrink/basis
-     *   - padding: Section padding
-     *   - margin: Section margin
-     *   - backgroundColor: Section background color
-     *   - borderRadius: Section border radius
-     *   - overflow: Overflow behavior ('auto', 'hidden', 'scroll')
-     *   - sticky: Whether section is sticky
-     *   - position: CSS position ('relative', 'absolute', 'fixed', 'sticky')
-     *   - zIndex: Z-index for stacking
-     *   - className: Additional CSS classes
-     *   - style: Custom inline styles
-     * @return self
+     *
+     * @param  string  $section  Section name (header, footer, main, left, right)
+     * @param  array  $config  Configuration array with properties like:
+     *                         - width: Section width (e.g., '300px', '25%', '3fr')
+     *                         - height: Section height (e.g., '100px', 'auto')
+     *                         - minWidth: Minimum width
+     *                         - maxWidth: Maximum width
+     *                         - minHeight: Minimum height
+     *                         - maxHeight: Maximum height
+     *                         - gridColumnSpan: Grid column span (for grid layouts)
+     *                         - gridRowSpan: Grid row span
+     *                         - order: Flex/grid order
+     *                         - flex: Flex grow/shrink/basis
+     *                         - padding: Section padding
+     *                         - margin: Section margin
+     *                         - backgroundColor: Section background color
+     *                         - borderRadius: Section border radius
+     *                         - overflow: Overflow behavior ('auto', 'hidden', 'scroll')
+     *                         - sticky: Whether section is sticky
+     *                         - position: CSS position ('relative', 'absolute', 'fixed', 'sticky')
+     *                         - zIndex: Z-index for stacking
+     *                         - className: Additional CSS classes
+     *                         - style: Custom inline styles
+     *
      * @throws \InvalidArgumentException if section is not supported
-     * 
+     *
      * @example
      * $detail->config('left', [
      *     'width' => '300px',
@@ -188,15 +192,15 @@ class DetailSection extends BaseSection
             $this->sectionConfig[$section] ?? [],
             $config
         );
+
         return $this;
     }
 
     /**
      * Configure multiple sections at once
-     * 
-     * @param array $configs Associative array with section names as keys and config arrays as values
-     * @return self
-     * 
+     *
+     * @param  array  $configs  Associative array with section names as keys and config arrays as values
+     *
      * @example
      * $detail->configSections([
      *     'left' => ['width' => '250px', 'gridColumnSpan' => 3],
@@ -209,25 +213,24 @@ class DetailSection extends BaseSection
         foreach ($configs as $section => $config) {
             $this->config($section, $config);
         }
+
         return $this;
     }
 
     /**
      * Get configuration for a specific section
-     * 
-     * @param string $section Section name
-     * @return array
+     *
+     * @param  string  $section  Section name
      */
     public function getSectionConfig(string $section): array
     {
         $this->validateSection($section);
+
         return $this->sectionConfig[$section] ?? [];
     }
 
     /**
      * Get all section configurations
-     * 
-     * @return array
      */
     public function getAllSectionConfigs(): array
     {
@@ -236,14 +239,14 @@ class DetailSection extends BaseSection
 
     /**
      * Clear configuration for a specific section
-     * 
-     * @param string $section Section name
-     * @return self
+     *
+     * @param  string  $section  Section name
      */
     public function clearSectionConfig(string $section): self
     {
         $this->validateSection($section);
         $this->sectionConfig[$section] = [];
+
         return $this;
     }
 
@@ -257,6 +260,7 @@ class DetailSection extends BaseSection
     public function backgroundColor(string $color): self
     {
         $this->backgroundColor = $color;
+
         return $this;
     }
 
@@ -266,6 +270,7 @@ class DetailSection extends BaseSection
     public function textColor(string $color): self
     {
         $this->textColor = $color;
+
         return $this;
     }
 
@@ -275,6 +280,7 @@ class DetailSection extends BaseSection
     public function borderRadius(string $radius): self
     {
         $this->borderRadius = $radius;
+
         return $this;
     }
 
@@ -284,6 +290,7 @@ class DetailSection extends BaseSection
     public function padding(string $padding): self
     {
         $this->padding = $padding;
+
         return $this;
     }
 
@@ -293,6 +300,7 @@ class DetailSection extends BaseSection
     public function margin(string $margin): self
     {
         $this->margin = $margin;
+
         return $this;
     }
 
@@ -348,14 +356,14 @@ class DetailSection extends BaseSection
         ]);
 
         // Add sections (only non-empty sections)
-        $sections = array_filter($this->detailSections, fn($section) => !empty($section));
-        if (!empty($sections)) {
+        $sections = array_filter($this->detailSections, fn ($section) => ! empty($section));
+        if (! empty($sections)) {
             $result['sections'] = $sections;
         }
 
         // Add section configurations (only non-empty configs)
-        $sectionConfig = array_filter($this->sectionConfig, fn($config) => !empty($config));
-        if (!empty($sectionConfig)) {
+        $sectionConfig = array_filter($this->sectionConfig, fn ($config) => ! empty($config));
+        if (! empty($sectionConfig)) {
             $result['sectionConfig'] = $sectionConfig;
         }
 
@@ -367,6 +375,6 @@ class DetailSection extends BaseSection
      */
     protected function filterNullValues(array $array): array
     {
-        return array_filter($array, fn($value) => $value !== null);
+        return array_filter($array, fn ($value) => $value !== null);
     }
 }

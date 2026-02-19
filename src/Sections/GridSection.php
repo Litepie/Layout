@@ -31,25 +31,45 @@ namespace Litepie\Layout\Sections;
 class GridSection extends BaseSection
 {
     protected int $gridColumns;
+
     protected int $gridRows;
+
     protected ?string $gap = null;
+
     protected ?string $columnGap = null;
+
     protected ?string $rowGap = null;
+
     protected ?string $templateColumns = null;
+
     protected ?string $templateRows = null;
+
     protected ?string $templateAreas = null;
+
     protected ?string $autoFlow = null;
+
     protected ?string $autoColumns = null;
+
     protected ?string $autoRows = null;
+
     protected ?string $alignItems = null;
+
     protected ?string $justifyItems = null;
+
     protected ?string $alignContent = null;
+
     protected ?string $justifyContent = null;
+
     protected ?string $placeItems = null;
+
     protected ?string $placeContent = null;
+
     protected ?bool $responsive = null;
+
     protected ?int $minColumnWidth = null;
+
     protected ?array $columnSizes = null;
+
     protected ?int $gridColumnSpan = null;
 
     public function __construct(string $name, int $columns = 1, int $rows = 1)
@@ -258,7 +278,7 @@ class GridSection extends BaseSection
      * Set column sizes as an array (e.g., [6, 6] or [8, 2, 2])
      * Automatically converts to templateColumns using 'fr' units
      * Also stores the array for API output
-     * 
+     *
      * Usage: ->columnSizes([6, 6]) generates 'grid-template-columns: 6fr 6fr'
      *        ->columnSizes([8, 2, 2]) generates 'grid-template-columns: 8fr 2fr 2fr'
      */
@@ -267,7 +287,7 @@ class GridSection extends BaseSection
         $this->columnSizes = $sizes;
 
         // Also set templateColumns automatically
-        $template = implode(' ', array_map(fn($size) => $size . 'fr', $sizes));
+        $template = implode(' ', array_map(fn ($size) => $size.'fr', $sizes));
         $this->templateColumns = $template;
 
         return $this;
@@ -282,6 +302,7 @@ class GridSection extends BaseSection
         $this->templateColumns = "repeat(auto-fit, minmax({$minWidth}px, 1fr))";
         $this->responsive = true;
         $this->minColumnWidth = $minWidth;
+
         return $this;
     }
 
@@ -294,6 +315,7 @@ class GridSection extends BaseSection
         $this->templateColumns = "repeat(auto-fill, minmax({$minWidth}px, 1fr))";
         $this->responsive = true;
         $this->minColumnWidth = $minWidth;
+
         return $this;
     }
 
@@ -305,6 +327,7 @@ class GridSection extends BaseSection
     public function gridColumnSpan(int $span): self
     {
         $this->gridColumnSpan = $span;
+
         return $this;
     }
 
@@ -327,25 +350,63 @@ class GridSection extends BaseSection
             'rows' => $this->gridRows,
         ];
 
-        if ($this->gap !== null) $gridProperties['gap'] = $this->gap;
-        if ($this->columnGap !== null) $gridProperties['columnGap'] = $this->columnGap;
-        if ($this->rowGap !== null) $gridProperties['rowGap'] = $this->rowGap;
-        if ($this->templateColumns !== null) $gridProperties['templateColumns'] = $this->templateColumns;
-        if ($this->templateRows !== null) $gridProperties['templateRows'] = $this->templateRows;
-        if ($this->templateAreas !== null) $gridProperties['templateAreas'] = $this->templateAreas;
-        if ($this->autoFlow !== null) $gridProperties['autoFlow'] = $this->autoFlow;
-        if ($this->autoColumns !== null) $gridProperties['autoColumns'] = $this->autoColumns;
-        if ($this->autoRows !== null) $gridProperties['autoRows'] = $this->autoRows;
-        if ($this->alignItems !== null) $gridProperties['alignItems'] = $this->alignItems;
-        if ($this->justifyItems !== null) $gridProperties['justifyItems'] = $this->justifyItems;
-        if ($this->alignContent !== null) $gridProperties['alignContent'] = $this->alignContent;
-        if ($this->justifyContent !== null) $gridProperties['justifyContent'] = $this->justifyContent;
-        if ($this->placeItems !== null) $gridProperties['placeItems'] = $this->placeItems;
-        if ($this->placeContent !== null) $gridProperties['placeContent'] = $this->placeContent;
-        if ($this->responsive !== null) $gridProperties['responsive'] = $this->responsive;
-        if ($this->minColumnWidth !== null) $gridProperties['minColumnWidth'] = $this->minColumnWidth;
-        if ($this->columnSizes !== null) $gridProperties['columnSizes'] = $this->columnSizes;
-        if ($this->gridColumnSpan !== null) $gridProperties['gridColumnSpan'] = $this->gridColumnSpan;
+        if ($this->gap !== null) {
+            $gridProperties['gap'] = $this->gap;
+        }
+        if ($this->columnGap !== null) {
+            $gridProperties['columnGap'] = $this->columnGap;
+        }
+        if ($this->rowGap !== null) {
+            $gridProperties['rowGap'] = $this->rowGap;
+        }
+        if ($this->templateColumns !== null) {
+            $gridProperties['templateColumns'] = $this->templateColumns;
+        }
+        if ($this->templateRows !== null) {
+            $gridProperties['templateRows'] = $this->templateRows;
+        }
+        if ($this->templateAreas !== null) {
+            $gridProperties['templateAreas'] = $this->templateAreas;
+        }
+        if ($this->autoFlow !== null) {
+            $gridProperties['autoFlow'] = $this->autoFlow;
+        }
+        if ($this->autoColumns !== null) {
+            $gridProperties['autoColumns'] = $this->autoColumns;
+        }
+        if ($this->autoRows !== null) {
+            $gridProperties['autoRows'] = $this->autoRows;
+        }
+        if ($this->alignItems !== null) {
+            $gridProperties['alignItems'] = $this->alignItems;
+        }
+        if ($this->justifyItems !== null) {
+            $gridProperties['justifyItems'] = $this->justifyItems;
+        }
+        if ($this->alignContent !== null) {
+            $gridProperties['alignContent'] = $this->alignContent;
+        }
+        if ($this->justifyContent !== null) {
+            $gridProperties['justifyContent'] = $this->justifyContent;
+        }
+        if ($this->placeItems !== null) {
+            $gridProperties['placeItems'] = $this->placeItems;
+        }
+        if ($this->placeContent !== null) {
+            $gridProperties['placeContent'] = $this->placeContent;
+        }
+        if ($this->responsive !== null) {
+            $gridProperties['responsive'] = $this->responsive;
+        }
+        if ($this->minColumnWidth !== null) {
+            $gridProperties['minColumnWidth'] = $this->minColumnWidth;
+        }
+        if ($this->columnSizes !== null) {
+            $gridProperties['columnSizes'] = $this->columnSizes;
+        }
+        if ($this->gridColumnSpan !== null) {
+            $gridProperties['gridColumnSpan'] = $this->gridColumnSpan;
+        }
 
         return array_merge($data, $gridProperties, [
             'permissions' => $this->permissions ?? [],

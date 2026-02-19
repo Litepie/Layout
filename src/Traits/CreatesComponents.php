@@ -3,38 +3,40 @@
 namespace Litepie\Layout\Traits;
 
 use Litepie\Layout\Contracts\Component;
-use Litepie\Layout\Registry\TypeRegistry;
 use Litepie\Layout\Exceptions\ComponentNotFoundException;
+use Litepie\Layout\Registry\TypeRegistry;
 
 /**
  * CreatesComponents Trait
  *
  * Provides ability to create and add component instances.
  * Components are leaf nodes (Card, Button, Text, Table, etc.)
- * 
+ *
  * This trait should be used by container classes (Sections) that can hold components.
  */
 trait CreatesComponents
 {
     /**
      * Storage for components
+     *
      * @var Component[]
      */
     protected array $components = [];
 
     /**
      * Create and add a Component
-     * 
-     * @param string $type Component type (card, button, text, filter, etc.)
-     * @param string $name Unique identifier
+     *
+     * @param  string  $type  Component type (card, button, text, filter, etc.)
+     * @param  string  $name  Unique identifier
      * @return Component The created component instance
+     *
      * @throws ComponentNotFoundException If component type doesn't exist
      */
     public function component(string $type, string $name): Component
     {
         $className = $this->resolveComponentClassName($type);
 
-        if (!$className) {
+        if (! $className) {
             throw new ComponentNotFoundException($type, TypeRegistry::getAllComponentTypes());
         }
 
@@ -69,13 +71,13 @@ trait CreatesComponents
      */
     public function hasComponents(): bool
     {
-        return !empty($this->components);
+        return ! empty($this->components);
     }
 
     /**
      * Resolve component class name from type using TypeRegistry (O(1) lookup)
-     * 
-     * @param string $type Component type identifier
+     *
+     * @param  string  $type  Component type identifier
      * @return string|null Full class name or null if not found
      */
     protected function resolveComponentClassName(string $type): ?string
@@ -183,6 +185,7 @@ trait CreatesComponents
         // Set the media type to 'video' automatically
         // @phpstan-ignore-next-line - MediaComponent has video() method
         $component->video();
+
         return $component;
     }
 

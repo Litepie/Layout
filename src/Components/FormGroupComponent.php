@@ -27,11 +27,17 @@ class FormGroupComponent extends BaseComponent
     protected array $columnWidths = [];
 
     protected ?int $gridRow = null;
+
     protected ?int $gridColumn = null;
+
     protected ?int $gridRowEnd = null;
+
     protected ?int $gridColumnEnd = null;
+
     protected ?int $columnSpan = null;
+
     protected bool $isEditable = true;
+
     protected bool $isCreate = false;
 
     public function __construct(string $name)
@@ -47,6 +53,7 @@ class FormGroupComponent extends BaseComponent
         if (empty($name)) {
             throw new \InvalidArgumentException('Form group name cannot be empty. A unique identifier is required.');
         }
+
         return new static($name);
     }
 
@@ -108,9 +115,8 @@ class FormGroupComponent extends BaseComponent
 
     /**
      * Set column widths for fields within the group
-     * 
-     * @param array $widths Array of width values (e.g., ['1fr', '2fr', '1fr'], ['33%', '33%', '33%'], ['300px', '200px', '400px'])
-     * @return self
+     *
+     * @param  array  $widths  Array of width values (e.g., ['1fr', '2fr', '1fr'], ['33%', '33%', '33%'], ['300px', '200px', '400px'])
      */
     public function columnWidths(array $widths): self
     {
@@ -121,10 +127,9 @@ class FormGroupComponent extends BaseComponent
 
     /**
      * Set grid row and column position for the group
-     * 
-     * @param int $row Row number (1-based)
-     * @param int $column Column number (1-based)
-     * @return self
+     *
+     * @param  int  $row  Row number (1-based)
+     * @param  int  $column  Column number (1-based)
      */
     public function position(int $row, int $column): self
     {
@@ -136,9 +141,8 @@ class FormGroupComponent extends BaseComponent
 
     /**
      * Set grid row (CSS Grid row-start)
-     * 
-     * @param int $row Row number (1-based)
-     * @return self
+     *
+     * @param  int  $row  Row number (1-based)
      */
     public function gridRow(int $row): self
     {
@@ -149,9 +153,8 @@ class FormGroupComponent extends BaseComponent
 
     /**
      * Set grid column (CSS Grid column-start)
-     * 
-     * @param int $column Column number (1-based)
-     * @return self
+     *
+     * @param  int  $column  Column number (1-based)
      */
     public function gridColumn(int $column): self
     {
@@ -162,9 +165,8 @@ class FormGroupComponent extends BaseComponent
 
     /**
      * Set grid row end (CSS Grid row-end)
-     * 
-     * @param int $rowEnd Row end number
-     * @return self
+     *
+     * @param  int  $rowEnd  Row end number
      */
     public function gridRowEnd(int $rowEnd): self
     {
@@ -175,9 +177,8 @@ class FormGroupComponent extends BaseComponent
 
     /**
      * Set grid column end (CSS Grid column-end)
-     * 
-     * @param int $columnEnd Column end number
-     * @return self
+     *
+     * @param  int  $columnEnd  Column end number
      */
     public function gridColumnEnd(int $columnEnd): self
     {
@@ -188,9 +189,8 @@ class FormGroupComponent extends BaseComponent
 
     /**
      * Set how many columns this group should span
-     * 
-     * @param int $span Number of columns to span (1, 2, 3, etc.)
-     * @return self
+     *
+     * @param  int  $span  Number of columns to span (1, 2, 3, etc.)
      */
     public function columnSpan(int $span): self
     {
@@ -202,9 +202,8 @@ class FormGroupComponent extends BaseComponent
     /**
      * Set the unique key for this form group
      * Format: form.{formName}.{groupName}
-     * 
-     * @param string $key The unique key identifier
-     * @return self
+     *
+     * @param  string  $key  The unique key identifier
      */
     public function setKey(string $key): self
     {
@@ -218,8 +217,6 @@ class FormGroupComponent extends BaseComponent
 
     /**
      * Get the key for this form group
-     * 
-     * @return string|null
      */
     public function getKey(): ?string
     {
@@ -229,15 +226,16 @@ class FormGroupComponent extends BaseComponent
     /**
      * Create a field inside this group and return it for chaining
      * Note: Fields in groups are stored as indexed array to preserve order
-     * 
-     * @param string $type Field type
-     * @param string $name Field name
+     *
+     * @param  string  $type  Field type
+     * @param  string  $name  Field name
      * @return mixed Field instance for chaining
      */
     protected function createField(string $type, string $name)
     {
         $field = \Litepie\Form\Field::make($type, $name);
         $this->fields[] = $field; // Use indexed array to preserve order
+
         return $field;
     }
 
@@ -248,6 +246,7 @@ class FormGroupComponent extends BaseComponent
     {
         // Always add to indexed array to preserve order
         $this->fields[] = $field;
+
         return $this;
     }
 
@@ -404,7 +403,7 @@ class FormGroupComponent extends BaseComponent
 
     /**
      * Get all fields in this group
-     * 
+     *
      * @return array Indexed array of field objects
      */
     public function getFields(): array
@@ -414,8 +413,8 @@ class FormGroupComponent extends BaseComponent
 
     /**
      * Get a specific field by its name
-     * 
-     * @param string $name Field name to search for
+     *
+     * @param  string  $name  Field name to search for
      * @return mixed|null Field object if found, null otherwise
      */
     public function getField(string $name)
@@ -437,8 +436,8 @@ class FormGroupComponent extends BaseComponent
 
     /**
      * Check if a field with the given name exists in this group
-     * 
-     * @param string $name Field name to check
+     *
+     * @param  string  $name  Field name to check
      * @return bool True if field exists, false otherwise
      */
     public function hasField(string $name): bool
@@ -448,26 +447,23 @@ class FormGroupComponent extends BaseComponent
 
     /**
      * Set whether the group is editable
-     *
-     * @param bool $editable
-     * @return self
      */
     public function editable(bool $editable = true): self
     {
         $this->isEditable = $editable;
+
         return $this;
     }
 
     /**
      * Method create.
      *
-     * @param bool $isCreate Whether the form group is in create mode
-     *
-     * @return self
+     * @param  bool  $isCreate  Whether the form group is in create mode
      */
     public function create(bool $isCreate = true): self
     {
         $this->isCreate = $isCreate;
+
         return $this;
     }
 
@@ -477,7 +473,7 @@ class FormGroupComponent extends BaseComponent
         if (empty($this->key)) {
             throw new \RuntimeException(
                 "Form group '{$this->name}' is missing required key property. "
-                    . "Key must follow pattern: form.{{formName}}.{{groupName}}"
+                    .'Key must follow pattern: form.{{formName}}.{{groupName}}'
             );
         }
 
@@ -491,12 +487,12 @@ class FormGroupComponent extends BaseComponent
             'variant' => $this->variant,
             'columns' => $this->columns,
             'gap' => $this->gap,
-            'columnWidths' => !empty($this->columnWidths) ? $this->columnWidths : null,
+            'columnWidths' => ! empty($this->columnWidths) ? $this->columnWidths : null,
             'gridPosition' => $this->getGridPosition(),
             'isEditable' => $this->isEditable,
             'isCreate' => $this->isCreate,
             'fields' => array_map(
-                fn($field) => (is_object($field) && method_exists($field, 'toArray'))
+                fn ($field) => (is_object($field) && method_exists($field, 'toArray'))
                     ? $field->toArray()
                     : (array) $field,
                 $this->fields
@@ -506,8 +502,6 @@ class FormGroupComponent extends BaseComponent
 
     /**
      * Get grid position information for the group
-     * 
-     * @return array|null
      */
     protected function getGridPosition(): ?array
     {

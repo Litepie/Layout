@@ -205,18 +205,17 @@ class TableComponent extends BaseComponent
 
     /**
      * Configure row click actions
-     * 
-     * @param string $type Action type ('aside', 'modal')
-     * @param string $component Component name to open
-     * @param string|null $dataUrl Optional data URL with placeholders like '/api/blogs/:id'
-     * @return self
+     *
+     * @param  string  $type  Action type ('aside', 'modal')
+     * @param  string  $component  Component name to open
+     * @param  string|null  $dataUrl  Optional data URL with placeholders like '/api/blogs/:id'
      */
     public function rowActions(string $type, string $component, ?string $dataUrl = null, ?array $config = null): self
     {
         $this->rowActionsConfig = [
             'type' => $type,
             'component' => $component,
-            'config' => $config
+            'config' => $config,
         ];
 
         if ($dataUrl !== null) {
@@ -229,15 +228,15 @@ class TableComponent extends BaseComponent
     /**
      * Enable row clickability and configure row actions
      * This is a convenience method that combines rowClickable with rowActions
-     * 
-     * @param string $type Action type ('aside', 'modal')
-     * @param string $component Component name to open
-     * @param string|null $dataUrl Optional data URL with placeholders like '/api/blogs/:id'
-     * @return self
+     *
+     * @param  string  $type  Action type ('aside', 'modal')
+     * @param  string  $component  Component name to open
+     * @param  string|null  $dataUrl  Optional data URL with placeholders like '/api/blogs/:id'
      */
     public function clickableRows(string $type, string $component, ?string $dataUrl = null, ?array $config = null): self
     {
         $this->rowClickable = true;
+
         return $this->rowActions($type, $component, $dataUrl, $config);
     }
 

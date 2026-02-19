@@ -99,15 +99,16 @@ class TypeRegistry
 
     /**
      * Register a section type
-     * 
-     * @param string $type Type identifier (e.g., 'grid')
-     * @param class-string $className Fully qualified class name
-     * @param bool $skipValidation Skip class_exists check (for lazy loading)
+     *
+     * @param  string  $type  Type identifier (e.g., 'grid')
+     * @param  class-string  $className  Fully qualified class name
+     * @param  bool  $skipValidation  Skip class_exists check (for lazy loading)
+     *
      * @throws \InvalidArgumentException If class doesn't exist and validation not skipped
      */
     public static function registerSection(string $type, string $className, bool $skipValidation = false): void
     {
-        if (!$skipValidation && !class_exists($className)) {
+        if (! $skipValidation && ! class_exists($className)) {
             throw new \InvalidArgumentException(
                 "Cannot register section '{$type}': Class '{$className}' does not exist"
             );
@@ -124,15 +125,16 @@ class TypeRegistry
 
     /**
      * Register a component type
-     * 
-     * @param string $type Type identifier (e.g., 'button')
-     * @param class-string $className Fully qualified class name
-     * @param bool $skipValidation Skip class_exists check (for lazy loading)
+     *
+     * @param  string  $type  Type identifier (e.g., 'button')
+     * @param  class-string  $className  Fully qualified class name
+     * @param  bool  $skipValidation  Skip class_exists check (for lazy loading)
+     *
      * @throws \InvalidArgumentException If class doesn't exist and validation not skipped
      */
     public static function registerComponent(string $type, string $className, bool $skipValidation = false): void
     {
-        if (!$skipValidation && !class_exists($className)) {
+        if (! $skipValidation && ! class_exists($className)) {
             throw new \InvalidArgumentException(
                 "Cannot register component '{$type}': Class '{$className}' does not exist"
             );
@@ -149,8 +151,8 @@ class TypeRegistry
 
     /**
      * Get section class name by type
-     * 
-     * @param string $type Type identifier
+     *
+     * @param  string  $type  Type identifier
      * @return class-string|null
      */
     public static function getSection(string $type): ?string
@@ -165,8 +167,8 @@ class TypeRegistry
 
     /**
      * Get component class name by type
-     * 
-     * @param string $type Type identifier
+     *
+     * @param  string  $type  Type identifier
      * @return class-string|null
      */
     public static function getComponent(string $type): ?string

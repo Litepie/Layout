@@ -4,13 +4,14 @@ namespace Litepie\Layout\Exceptions;
 
 /**
  * ComponentNotFoundException
- * 
+ *
  * Thrown when attempting to create a component type that doesn't exist.
  * Provides detailed information about available types for better debugging.
  */
 class ComponentNotFoundException extends LayoutException
 {
     protected string $componentType;
+
     protected array $availableTypes;
 
     public function __construct(string $type, array $availableTypes = [])
@@ -19,13 +20,13 @@ class ComponentNotFoundException extends LayoutException
         $this->availableTypes = $availableTypes;
 
         $message = "Component type '{$type}' not found.";
-        
-        if (!empty($availableTypes)) {
+
+        if (! empty($availableTypes)) {
             $suggestions = $this->findSimilar($type, $availableTypes);
-            if (!empty($suggestions)) {
-                $message .= " Did you mean: " . implode(', ', array_map(fn($s) => "'{$s}'", $suggestions)) . "?";
+            if (! empty($suggestions)) {
+                $message .= ' Did you mean: '.implode(', ', array_map(fn ($s) => "'{$s}'", $suggestions)).'?';
             } else {
-                $message .= " Available types: " . implode(', ', array_map(fn($s) => "'{$s}'", array_slice($availableTypes, 0, 10)));
+                $message .= ' Available types: '.implode(', ', array_map(fn ($s) => "'{$s}'", array_slice($availableTypes, 0, 10)));
             }
         }
 
@@ -44,6 +45,7 @@ class ComponentNotFoundException extends LayoutException
                 $similar[] = $type;
             }
         }
+
         return array_slice($similar, 0, 3); // Max 3 suggestions
     }
 

@@ -5,55 +5,55 @@ namespace Litepie\Layout\Components;
 class FilterComponent extends BaseComponent
 {
     protected string $filterType = 'standard'; // standard, advanced, sidebar, inline, drawer
-    
+
     protected array $filters = [];
-    
+
     protected ?string $searchField = null;
-    
+
     protected bool $searchable = true;
-    
+
     protected ?string $searchPlaceholder = 'Search...';
-    
+
     protected bool $showClearAll = true;
-    
+
     protected bool $showApplyButton = true;
-    
+
     protected bool $showResetButton = true;
-    
+
     protected string $applyButtonText = 'Apply Filters';
-    
+
     protected string $resetButtonText = 'Reset';
-    
+
     protected string $clearAllText = 'Clear All';
-    
+
     protected bool $collapsible = false;
-    
+
     protected bool $collapsed = false;
-    
+
     protected ?string $submitAction = null;
-    
+
     protected string $submitMethod = 'GET';
-    
+
     protected bool $liveFilter = false;
-    
+
     protected int $liveFilterDelay = 300; // milliseconds
-    
+
     protected bool $showActiveCount = true;
-    
+
     protected string $position = 'top'; // top, left, right
-    
+
     protected string $width = 'medium'; // small, medium, large, full
-    
+
     protected bool $sticky = false;
-    
+
     protected array $presets = [];
-    
+
     protected ?string $activePreset = null;
-    
+
     protected bool $rememberFilters = false;
-    
+
     protected ?string $storageKey = null;
-    
+
     protected array $quickFilters = [];
 
     public function __construct(string $name)
@@ -72,6 +72,7 @@ class FilterComponent extends BaseComponent
     public function filterType(string $type): self
     {
         $this->filterType = $type;
+
         return $this;
     }
 
@@ -102,11 +103,11 @@ class FilterComponent extends BaseComponent
 
     /**
      * Add a filter field
-     * 
-     * @param string $name Field name
-     * @param string $type Filter type (select, multiselect, checkbox, radio, range, date, daterange, text, number, toggle, chips)
-     * @param string $label Field label
-     * @param array $options Filter options
+     *
+     * @param  string  $name  Field name
+     * @param  string  $type  Filter type (select, multiselect, checkbox, radio, range, date, daterange, text, number, toggle, chips)
+     * @param  string  $label  Field label
+     * @param  array  $options  Filter options
      */
     public function addFilter(string $name, string $type, string $label, array $options = []): self
     {
@@ -126,7 +127,7 @@ class FilterComponent extends BaseComponent
     {
         return $this->addFilter($name, 'select', $label, array_merge([
             'options' => $options,
-            'placeholder' => 'Select ' . $label,
+            'placeholder' => 'Select '.$label,
         ], $config));
     }
 
@@ -137,7 +138,7 @@ class FilterComponent extends BaseComponent
     {
         return $this->addFilter($name, 'multiselect', $label, array_merge([
             'options' => $options,
-            'placeholder' => 'Select ' . $label,
+            'placeholder' => 'Select '.$label,
         ], $config));
     }
 
@@ -213,7 +214,7 @@ class FilterComponent extends BaseComponent
     public function addTextFilter(string $name, string $label, array $config = []): self
     {
         return $this->addFilter($name, 'text', $label, array_merge([
-            'placeholder' => 'Enter ' . strtolower($label),
+            'placeholder' => 'Enter '.strtolower($label),
         ], $config));
     }
 
@@ -223,7 +224,7 @@ class FilterComponent extends BaseComponent
     public function addNumberFilter(string $name, string $label, array $config = []): self
     {
         return $this->addFilter($name, 'number', $label, array_merge([
-            'placeholder' => 'Enter ' . strtolower($label),
+            'placeholder' => 'Enter '.strtolower($label),
         ], $config));
     }
 
@@ -270,11 +271,11 @@ class FilterComponent extends BaseComponent
     /**
      * Add quick filter (simplified filter that appears in quick filter bar)
      * Quick filters provide fast, simple filtering options that appear above the main advanced filters
-     * 
-     * @param string $name Field name
-     * @param string $label Field label
-     * @param string $type Filter type (select, daterange, range, etc.)
-     * @param array $options Filter options or configuration
+     *
+     * @param  string  $name  Field name
+     * @param  string  $label  Field label
+     * @param  string  $type  Filter type (select, daterange, range, etc.)
+     * @param  array  $options  Filter options or configuration
      */
     public function addQuickFilter(string $name, string $label, string $type, array $options = []): self
     {
@@ -288,7 +289,7 @@ class FilterComponent extends BaseComponent
         // If options is a numeric array and type is select, treat as options list
         if ($type === 'select' && isset($options[0]) && is_array($options[0])) {
             $filterConfig['options'] = $options;
-            $filterConfig['placeholder'] = 'Select ' . $label;
+            $filterConfig['placeholder'] = 'Select '.$label;
         } else {
             // Otherwise merge options as configuration
             $filterConfig = array_merge($filterConfig, $options);
@@ -302,44 +303,47 @@ class FilterComponent extends BaseComponent
     /**
      * Add operators to a specific filter
      * Operators define how the filter value should be compared (is, is_not, in, not_in, greater_than, less_than, between, etc.)
-     * 
-     * @param string $filterName The name of the filter to add operators to
-     * @param array $operators Array of operators: [['value' => 'is', 'label' => 'Is'], ...]
+     *
+     * @param  string  $filterName  The name of the filter to add operators to
+     * @param  array  $operators  Array of operators: [['value' => 'is', 'label' => 'Is'], ...]
      */
     public function addOperators(string $filterName, array $operators): self
     {
         if (isset($this->filters[$filterName])) {
             $this->filters[$filterName]['operators'] = $operators;
         }
+
         return $this;
     }
 
     /**
      * Add quick options to a specific filter
      * Quick options provide pre-configured filter values with operators for common use cases
-     * 
-     * @param string $filterName The name of the filter to add quick options to
-     * @param array $quickOptions Array of quick options: [['label' => 'High Priority', 'value' => 'high', 'operator' => 'is'], ...]
+     *
+     * @param  string  $filterName  The name of the filter to add quick options to
+     * @param  array  $quickOptions  Array of quick options: [['label' => 'High Priority', 'value' => 'high', 'operator' => 'is'], ...]
      */
     public function addQuickOptions(string $filterName, array $quickOptions): self
     {
         if (isset($this->filters[$filterName])) {
             $this->filters[$filterName]['quickOptions'] = $quickOptions;
         }
+
         return $this;
     }
 
     /**
      * Set the default operator for a filter
-     * 
-     * @param string $filterName The name of the filter
-     * @param string $operator The default operator value
+     *
+     * @param  string  $filterName  The name of the filter
+     * @param  string  $operator  The default operator value
      */
     public function setDefaultOperator(string $filterName, string $operator): self
     {
         if (isset($this->filters[$filterName])) {
             $this->filters[$filterName]['defaultOperator'] = $operator;
         }
+
         return $this;
     }
 
@@ -349,6 +353,7 @@ class FilterComponent extends BaseComponent
     public function filters(array $filters): self
     {
         $this->filters = $filters;
+
         return $this;
     }
 
@@ -358,6 +363,7 @@ class FilterComponent extends BaseComponent
     public function searchable(bool $searchable = true): self
     {
         $this->searchable = $searchable;
+
         return $this;
     }
 
@@ -367,6 +373,7 @@ class FilterComponent extends BaseComponent
     public function searchField(string $field): self
     {
         $this->searchField = $field;
+
         return $this;
     }
 
@@ -376,6 +383,7 @@ class FilterComponent extends BaseComponent
     public function searchPlaceholder(string $placeholder): self
     {
         $this->searchPlaceholder = $placeholder;
+
         return $this;
     }
 
@@ -385,6 +393,7 @@ class FilterComponent extends BaseComponent
     public function showClearAll(bool $show = true): self
     {
         $this->showClearAll = $show;
+
         return $this;
     }
 
@@ -394,6 +403,7 @@ class FilterComponent extends BaseComponent
     public function showApplyButton(bool $show = true): self
     {
         $this->showApplyButton = $show;
+
         return $this;
     }
 
@@ -403,6 +413,7 @@ class FilterComponent extends BaseComponent
     public function showResetButton(bool $show = true): self
     {
         $this->showResetButton = $show;
+
         return $this;
     }
 
@@ -412,18 +423,21 @@ class FilterComponent extends BaseComponent
     public function applyButtonText(string $text): self
     {
         $this->applyButtonText = $text;
+
         return $this;
     }
 
     public function resetButtonText(string $text): self
     {
         $this->resetButtonText = $text;
+
         return $this;
     }
 
     public function clearAllText(string $text): self
     {
         $this->clearAllText = $text;
+
         return $this;
     }
 
@@ -433,6 +447,7 @@ class FilterComponent extends BaseComponent
     public function collapsible(bool $collapsible = true): self
     {
         $this->collapsible = $collapsible;
+
         return $this;
     }
 
@@ -442,6 +457,7 @@ class FilterComponent extends BaseComponent
     public function collapsed(bool $collapsed = true): self
     {
         $this->collapsed = $collapsed;
+
         return $this;
     }
 
@@ -451,6 +467,7 @@ class FilterComponent extends BaseComponent
     public function submitAction(string $action): self
     {
         $this->submitAction = $action;
+
         return $this;
     }
 
@@ -460,6 +477,7 @@ class FilterComponent extends BaseComponent
     public function submitMethod(string $method): self
     {
         $this->submitMethod = strtoupper($method);
+
         return $this;
     }
 
@@ -470,6 +488,7 @@ class FilterComponent extends BaseComponent
     {
         $this->liveFilter = $live;
         $this->liveFilterDelay = $delay;
+
         return $this;
     }
 
@@ -479,6 +498,7 @@ class FilterComponent extends BaseComponent
     public function showActiveCount(bool $show = true): self
     {
         $this->showActiveCount = $show;
+
         return $this;
     }
 
@@ -488,6 +508,7 @@ class FilterComponent extends BaseComponent
     public function position(string $position): self
     {
         $this->position = $position;
+
         return $this;
     }
 
@@ -497,6 +518,7 @@ class FilterComponent extends BaseComponent
     public function width(string $width): self
     {
         $this->width = $width;
+
         return $this;
     }
 
@@ -506,6 +528,7 @@ class FilterComponent extends BaseComponent
     public function sticky(bool $sticky = true): self
     {
         $this->sticky = $sticky;
+
         return $this;
     }
 
@@ -518,6 +541,7 @@ class FilterComponent extends BaseComponent
             'label' => $label,
             'filters' => $filters,
         ];
+
         return $this;
     }
 
@@ -527,6 +551,7 @@ class FilterComponent extends BaseComponent
     public function presets(array $presets): self
     {
         $this->presets = $presets;
+
         return $this;
     }
 
@@ -536,6 +561,7 @@ class FilterComponent extends BaseComponent
     public function activePreset(string $preset): self
     {
         $this->activePreset = $preset;
+
         return $this;
     }
 
@@ -546,6 +572,7 @@ class FilterComponent extends BaseComponent
     {
         $this->rememberFilters = $remember;
         $this->storageKey = $storageKey ?? $this->name;
+
         return $this;
     }
 

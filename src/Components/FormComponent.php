@@ -4,24 +4,36 @@ namespace Litepie\Layout\Components;
 
 /**
  * FormComponent - Form builder with field and group management
- * 
+ *
  * Provides a fluent API for building forms with fields and groups.
  * Supports both traditional fields and organized field groups.
  */
 class FormComponent extends BaseComponent
 {
     protected array $formFields = [];
+
     protected ?string $label = null;
+
     protected ?string $action = null;
+
     protected string $method = 'POST';
+
     protected ?string $enctype = null;
+
     protected array $validation = [];
+
     protected int $formColumns = 1;
+
     protected string $gap = 'md';
+
     protected array $columnWidths = [];
+
     protected bool $collapsible = false;
+
     protected bool $collapsed = false;
+
     protected ?array $layoutConfig = null;
+
     protected ?string $layoutMap = null;
 
     public function __construct(string $name)
@@ -37,6 +49,7 @@ class FormComponent extends BaseComponent
         if (empty($name)) {
             throw new \InvalidArgumentException('Form name cannot be empty. A unique identifier is required.');
         }
+
         return new static($name);
     }
 
@@ -47,63 +60,69 @@ class FormComponent extends BaseComponent
     public function label(string $label): self
     {
         $this->label = $label;
+
         return $this;
     }
 
     public function action(string $action): self
     {
         $this->action = $action;
+
         return $this;
     }
 
     public function method(string $method): self
     {
         $this->method = strtoupper($method);
+
         return $this;
     }
 
     public function enctype(string $enctype): self
     {
         $this->enctype = $enctype;
+
         return $this;
     }
 
     public function validationRules(array $rules): self
     {
         $this->validation = array_merge($this->validation, $rules);
+
         return $this;
     }
 
     public function columns(int $columns): self
     {
         $this->formColumns = $columns;
+
         return $this;
     }
 
     public function gap(string $gap): self
     {
         $this->gap = $gap;
+
         return $this;
     }
 
     /**
      * Set column widths for form layout
-     * 
-     * @param array $widths Array of width values (e.g., ['1fr', '2fr'], ['40%', '60%'], ['300px', '400px'])
-     * @return self
+     *
+     * @param  array  $widths  Array of width values (e.g., ['1fr', '2fr'], ['40%', '60%'], ['300px', '400px'])
      */
     public function columnWidths(array $widths): self
     {
         $this->columnWidths = $widths;
+
         return $this;
     }
 
     /**
      * Define a layout template for groups using a 2D array
-     * 
-     * @param array $template 2D array where each row contains group names
-     * Example: [['group1', 'group2'], ['group3', null]]
-     * @return self
+     *
+     * @param  array  $template  2D array where each row contains group names
+     *                           Example: [['group1', 'group2'], ['group3', null]]
      */
     public function layoutConfig(array $layoutConfig): self
     {
@@ -114,25 +133,27 @@ class FormComponent extends BaseComponent
 
     /**
      * Set a visual ASCII map of the layout (for documentation)
-     * 
-     * @param string|null $map ASCII art representation of the layout
-     * @return self
+     *
+     * @param  string|null  $map  ASCII art representation of the layout
      */
     public function layoutMap(?string $map = null): self
     {
         $this->layoutMap = $map;
+
         return $this;
     }
 
     public function collapsible(bool $collapsible = true): self
     {
         $this->collapsible = $collapsible;
+
         return $this;
     }
 
     public function collapsed(bool $collapsed = true): self
     {
         $this->collapsed = $collapsed;
+
         return $this;
     }
 
@@ -143,9 +164,9 @@ class FormComponent extends BaseComponent
     /**
      * Create a form group (fieldset) to organize related fields
      * Automatically sets the group key in format: form.{formName}.{groupName}
-     * 
-     * @param string $name Group name/identifier (must be unique within the form)
-     * @return FormGroupComponent
+     *
+     * @param  string  $name  Group name/identifier (must be unique within the form)
+     *
      * @throws \InvalidArgumentException if group name is empty or already exists
      */
     public function group(string $name): FormGroupComponent
@@ -164,6 +185,7 @@ class FormComponent extends BaseComponent
         // Set the key in format: form.{formName}.{groupName}
         $group->setKey("form.{$this->name}.{$name}");
         $this->formFields[$name] = $group;
+
         return $group;
     }
 
@@ -173,12 +195,11 @@ class FormComponent extends BaseComponent
 
     /**
      * Add a field with options - backward compatible method
-     * 
-     * @param string $name Field name
-     * @param string $type Field type
-     * @param string $label Field label
-     * @param array $options Field options
-     * @return self
+     *
+     * @param  string  $name  Field name
+     * @param  string  $type  Field type
+     * @param  string  $label  Field label
+     * @param  array  $options  Field options
      */
     public function addField(string $name, string $type, string $label, array $options = []): self
     {
@@ -193,13 +214,14 @@ class FormComponent extends BaseComponent
         }
 
         $this->formFields[$name] = $field;
+
         return $this;
     }
 
     /**
      * Add a button field to the form (convenience method)
      * Usage: addButton('submit', 'Submit Form', 'submit', ['variant' => 'primary'])
-     * 
+     *
      * @deprecated Use addField() with type 'button', 'submit', or 'reset' instead
      */
     public function addButton(string $name, string $label, string|array $type = 'button', array $options = []): self
@@ -223,9 +245,8 @@ class FormComponent extends BaseComponent
 
     /**
      * Add an existing form field object
-     * 
-     * @param mixed $field Field object or array
-     * @return self
+     *
+     * @param  mixed  $field  Field object or array
      */
     public function addFormField($field): self
     {
@@ -236,27 +257,26 @@ class FormComponent extends BaseComponent
         } else {
             $this->formFields[] = $field;
         }
+
         return $this;
     }
 
     /**
      * Add multiple form fields at once
-     * 
-     * @param array $fields Array of field objects
-     * @return self
+     *
+     * @param  array  $fields  Array of field objects
      */
     public function addFormFields(array $fields): self
     {
         foreach ($fields as $field) {
             $this->addFormField($field);
         }
+
         return $this;
     }
 
     /**
      * Get all form fields
-     * 
-     * @return array
      */
     public function getFormFields(): array
     {
@@ -265,8 +285,8 @@ class FormComponent extends BaseComponent
 
     /**
      * Get a specific form field by name
-     * 
-     * @param string $name Field name
+     *
+     * @param  string  $name  Field name
      * @return mixed
      */
     public function getFormField(string $name)
@@ -280,10 +300,11 @@ class FormComponent extends BaseComponent
 
     /**
      * Create and register a field
-     * 
-     * @param string $type Field type
-     * @param string $name Field name (must be unique)
+     *
+     * @param  string  $type  Field type
+     * @param  string  $name  Field name (must be unique)
      * @return mixed Field instance for chaining
+     *
      * @throws \InvalidArgumentException if field name already exists
      */
     protected function createField(string $type, string $name)
@@ -296,6 +317,7 @@ class FormComponent extends BaseComponent
 
         $field = \Litepie\Form\Field::make($type, $name);
         $this->formFields[$name] = $field;
+
         return $field;
     }
 
@@ -304,26 +326,32 @@ class FormComponent extends BaseComponent
     {
         return $this->createField('text', $name);
     }
+
     public function email(string $name)
     {
         return $this->createField('email', $name);
     }
+
     public function password(string $name)
     {
         return $this->createField('password', $name);
     }
+
     public function number(string $name)
     {
         return $this->createField('number', $name);
     }
+
     public function tel(string $name)
     {
         return $this->createField('tel', $name);
     }
+
     public function url(string $name)
     {
         return $this->createField('url', $name);
     }
+
     public function textarea(string $name)
     {
         return $this->createField('textarea', $name);
@@ -334,18 +362,22 @@ class FormComponent extends BaseComponent
     {
         return $this->createField('select', $name);
     }
+
     public function multiselect(string $name)
     {
         return $this->createField('multiselect', $name);
     }
+
     public function checkbox(string $name)
     {
         return $this->createField('checkbox', $name);
     }
+
     public function radio(string $name)
     {
         return $this->createField('radio', $name);
     }
+
     public function switch(string $name)
     {
         return $this->createField('switch', $name);
@@ -356,10 +388,12 @@ class FormComponent extends BaseComponent
     {
         return $this->createField('date', $name);
     }
+
     public function time(string $name)
     {
         return $this->createField('time', $name);
     }
+
     public function datetime(string $name)
     {
         return $this->createField('datetime', $name);
@@ -376,18 +410,22 @@ class FormComponent extends BaseComponent
     {
         return $this->createField('range', $name);
     }
+
     public function slider(string $name)
     {
         return $this->createField('range', $name);
     }
+
     public function rating(string $name)
     {
         return $this->createField('rating', $name);
     }
+
     public function color(string $name)
     {
         return $this->createField('color', $name);
     }
+
     public function hiddenField(string $name)
     {
         return $this->createField('hidden', $name);
@@ -398,10 +436,12 @@ class FormComponent extends BaseComponent
     {
         return $this->createField('submit', $name);
     }
+
     public function button(string $name)
     {
         return $this->createField('button', $name);
     }
+
     public function reset(string $name)
     {
         return $this->createField('reset', $name);
@@ -414,8 +454,6 @@ class FormComponent extends BaseComponent
     /**
      * Convert form to array representation
      * Separates groups and standalone fields intelligently
-     * 
-     * @return array
      */
     public function toArray(): array
     {
@@ -432,7 +470,7 @@ class FormComponent extends BaseComponent
     /**
      * Separate form fields into groups and regular fields
      * Preserves the order as defined, returns indexed arrays
-     * 
+     *
      * @return array [groups, fields]
      */
     protected function separateGroupsAndFields(): array
@@ -458,8 +496,6 @@ class FormComponent extends BaseComponent
 
     /**
      * Get form properties for output
-     * 
-     * @return array
      */
     protected function getFormProperties(): array
     {
@@ -471,7 +507,7 @@ class FormComponent extends BaseComponent
             'validation' => $this->validation,
             'columns' => $this->formColumns,
             'gap' => $this->gap,
-            'columnWidths' => !empty($this->columnWidths) ? $this->columnWidths : null,
+            'columnWidths' => ! empty($this->columnWidths) ? $this->columnWidths : null,
             'collapsible' => $this->collapsible,
             'collapsed' => $this->collapsed,
             'layoutConfig' => $this->layoutConfig,
@@ -481,20 +517,19 @@ class FormComponent extends BaseComponent
 
     /**
      * Add fields and groups to result array
-     * 
-     * @param array $result Base result array
-     * @param array $groups Groups array
-     * @param array $fields Fields array
-     * @return array
+     *
+     * @param  array  $result  Base result array
+     * @param  array  $groups  Groups array
+     * @param  array  $fields  Fields array
      */
     protected function addFieldsToResult(array $result, array $groups, array $fields): array
     {
-        if (!empty($groups)) {
+        if (! empty($groups)) {
             $result['groups'] = $groups;
-            if (!empty($fields)) {
+            if (! empty($fields)) {
                 $result['fields'] = $fields;
             }
-        } elseif (!empty($fields)) {
+        } elseif (! empty($fields)) {
             $result['fields'] = $fields;
         }
 

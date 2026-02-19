@@ -4,11 +4,9 @@ namespace Litepie\Layout\Components;
 
 /**
  * MediaComponent
- * 
+ *
  * Versatile media component supporting images, videos, audio, and galleries.
  * Provides comprehensive configuration for display, playback, and editing.
- * 
- * @package Litepie\Layout\Components
  */
 class MediaComponent extends BaseComponent
 {
@@ -165,6 +163,7 @@ class MediaComponent extends BaseComponent
     public function mediaType(string $type): self
     {
         $this->mediaType = $type;
+
         return $this;
     }
 
@@ -208,6 +207,7 @@ class MediaComponent extends BaseComponent
     public function layout(string $layout): self
     {
         $this->layout = $layout;
+
         return $this;
     }
 
@@ -241,6 +241,7 @@ class MediaComponent extends BaseComponent
     public function columns(int $columns): self
     {
         $this->mediaColumns = $columns;
+
         return $this;
     }
 
@@ -263,6 +264,7 @@ class MediaComponent extends BaseComponent
                 $this->mediaType = 'image';
                 break;
         }
+
         return $this;
     }
 
@@ -272,6 +274,7 @@ class MediaComponent extends BaseComponent
     public function aspectRatio(string $ratio): self
     {
         $this->aspectRatio = $ratio;
+
         return $this;
     }
 
@@ -281,6 +284,7 @@ class MediaComponent extends BaseComponent
     public function lightbox(bool $lightbox = true): self
     {
         $this->lightbox = $lightbox;
+
         return $this;
     }
 
@@ -290,6 +294,7 @@ class MediaComponent extends BaseComponent
     public function captions(bool $captions = true): self
     {
         $this->captions = $captions;
+
         return $this;
     }
 
@@ -299,6 +304,7 @@ class MediaComponent extends BaseComponent
     public function alt(string $text): self
     {
         $this->altText = $text;
+
         return $this;
     }
 
@@ -308,13 +314,14 @@ class MediaComponent extends BaseComponent
     public function title(string $title): self
     {
         $this->title = $title;
+
         return $this;
     }
 
     /**
      * Set border radius
-     * 
-     * @param bool|string $size true, false, or size (sm, md, lg, xl, full)
+     *
+     * @param  bool|string  $size  true, false, or size (sm, md, lg, xl, full)
      */
     public function rounded(bool|string $size = true): self
     {
@@ -325,6 +332,7 @@ class MediaComponent extends BaseComponent
         } else {
             $this->rounded = $size;
         }
+
         return $this;
     }
 
@@ -335,6 +343,7 @@ class MediaComponent extends BaseComponent
     {
         $this->width = $width;
         $this->height = $height;
+
         return $this;
     }
 
@@ -344,6 +353,7 @@ class MediaComponent extends BaseComponent
     public function width(int $width): self
     {
         $this->width = $width;
+
         return $this;
     }
 
@@ -353,6 +363,7 @@ class MediaComponent extends BaseComponent
     public function height(int $height): self
     {
         $this->height = $height;
+
         return $this;
     }
 
@@ -362,6 +373,7 @@ class MediaComponent extends BaseComponent
     public function responsive(bool $responsive = true): self
     {
         $this->responsive = $responsive;
+
         return $this;
     }
 
@@ -374,6 +386,7 @@ class MediaComponent extends BaseComponent
     {
         $this->imageUrl = $url;
         $this->mediaType = 'image';
+
         return $this;
     }
 
@@ -383,6 +396,7 @@ class MediaComponent extends BaseComponent
     public function thumbnail(string $url): self
     {
         $this->thumbnailUrl = $url;
+
         return $this;
     }
 
@@ -395,6 +409,7 @@ class MediaComponent extends BaseComponent
     {
         $this->videoUrl = $url;
         $this->mediaType = 'video';
+
         return $this;
     }
 
@@ -404,6 +419,7 @@ class MediaComponent extends BaseComponent
     public function poster(string $url): self
     {
         $this->posterUrl = $url;
+
         return $this;
     }
 
@@ -413,6 +429,7 @@ class MediaComponent extends BaseComponent
     public function autoplay(bool $autoplay = true): self
     {
         $this->autoplay = $autoplay;
+
         return $this;
     }
 
@@ -422,6 +439,7 @@ class MediaComponent extends BaseComponent
     public function controls(bool $controls = true): self
     {
         $this->controls = $controls;
+
         return $this;
     }
 
@@ -431,6 +449,7 @@ class MediaComponent extends BaseComponent
     public function loop(bool $loop = true): self
     {
         $this->loop = $loop;
+
         return $this;
     }
 
@@ -440,6 +459,7 @@ class MediaComponent extends BaseComponent
     public function muted(bool $muted = true): self
     {
         $this->muted = $muted;
+
         return $this;
     }
 
@@ -454,6 +474,7 @@ class MediaComponent extends BaseComponent
             'label' => $label,
             'srclang' => $srclang,
         ];
+
         return $this;
     }
 
@@ -463,6 +484,7 @@ class MediaComponent extends BaseComponent
     public function tracks(array $tracks): self
     {
         $this->tracks = $tracks;
+
         return $this;
     }
 
@@ -472,6 +494,7 @@ class MediaComponent extends BaseComponent
     public function quality(string $quality): self
     {
         $this->quality = $quality;
+
         return $this;
     }
 
@@ -484,6 +507,7 @@ class MediaComponent extends BaseComponent
             'title' => $title,
             'time' => $time,
         ];
+
         return $this;
     }
 
@@ -493,6 +517,7 @@ class MediaComponent extends BaseComponent
     public function chapters(array $chapters): self
     {
         $this->chapters = $chapters;
+
         return $this;
     }
 
@@ -502,6 +527,7 @@ class MediaComponent extends BaseComponent
     public function pip(bool $pip = true): self
     {
         $this->pip = $pip;
+
         return $this;
     }
 
@@ -511,6 +537,7 @@ class MediaComponent extends BaseComponent
     public function fullscreen(bool $fullscreen = true): self
     {
         $this->fullscreen = $fullscreen;
+
         return $this;
     }
 
@@ -520,6 +547,7 @@ class MediaComponent extends BaseComponent
     public function playbackRate(float $rate): self
     {
         $this->playbackRate = $rate;
+
         return $this;
     }
 
@@ -529,6 +557,7 @@ class MediaComponent extends BaseComponent
     public function volume(float $volume): self
     {
         $this->volume = max(0, min(1, $volume));
+
         return $this;
     }
 
@@ -537,10 +566,11 @@ class MediaComponent extends BaseComponent
      */
     public function preload(string $preload): self
     {
-        if (!in_array($preload, ['none', 'metadata', 'auto'])) {
+        if (! in_array($preload, ['none', 'metadata', 'auto'])) {
             throw new \InvalidArgumentException("Preload must be 'none', 'metadata', or 'auto'");
         }
         $this->preload = $preload;
+
         return $this;
     }
 
@@ -554,6 +584,7 @@ class MediaComponent extends BaseComponent
             'type' => $type,
             'quality' => $quality,
         ];
+
         return $this;
     }
 
@@ -563,6 +594,7 @@ class MediaComponent extends BaseComponent
     public function sources(array $sources): self
     {
         $this->sources = $sources;
+
         return $this;
     }
 
@@ -572,6 +604,7 @@ class MediaComponent extends BaseComponent
     public function downloadable(bool $downloadable = true): self
     {
         $this->downloadable = $downloadable;
+
         return $this;
     }
 
@@ -582,6 +615,7 @@ class MediaComponent extends BaseComponent
     {
         $this->downloadUrl = $url;
         $this->downloadable = true;
+
         return $this;
     }
 
@@ -591,6 +625,7 @@ class MediaComponent extends BaseComponent
     public function showDuration(bool $show = true): self
     {
         $this->showDuration = $show;
+
         return $this;
     }
 
@@ -600,6 +635,7 @@ class MediaComponent extends BaseComponent
     public function showCurrentTime(bool $show = true): self
     {
         $this->showCurrentTime = $show;
+
         return $this;
     }
 
@@ -609,6 +645,7 @@ class MediaComponent extends BaseComponent
     public function showProgress(bool $show = true): self
     {
         $this->showProgress = $show;
+
         return $this;
     }
 
@@ -618,6 +655,7 @@ class MediaComponent extends BaseComponent
     public function showVolume(bool $show = true): self
     {
         $this->showVolume = $show;
+
         return $this;
     }
 
@@ -627,6 +665,7 @@ class MediaComponent extends BaseComponent
     public function keyboard(bool $keyboard = true): self
     {
         $this->keyboard = $keyboard;
+
         return $this;
     }
 
@@ -635,10 +674,11 @@ class MediaComponent extends BaseComponent
      */
     public function crossOrigin(?string $crossOrigin): self
     {
-        if ($crossOrigin !== null && !in_array($crossOrigin, ['anonymous', 'use-credentials'])) {
+        if ($crossOrigin !== null && ! in_array($crossOrigin, ['anonymous', 'use-credentials'])) {
             throw new \InvalidArgumentException("crossOrigin must be 'anonymous' or 'use-credentials'");
         }
         $this->crossOrigin = $crossOrigin;
+
         return $this;
     }
 
@@ -648,6 +688,7 @@ class MediaComponent extends BaseComponent
     public function config(array $config): self
     {
         $this->config = array_merge($this->config, $config);
+
         return $this;
     }
 
@@ -660,6 +701,7 @@ class MediaComponent extends BaseComponent
     {
         $this->audioUrl = $url;
         $this->mediaType = 'audio';
+
         return $this;
     }
 
@@ -675,6 +717,7 @@ class MediaComponent extends BaseComponent
             'alt' => $options['alt'] ?? null,
             'caption' => $options['caption'] ?? null,
         ];
+
         return $this;
     }
 
@@ -682,13 +725,13 @@ class MediaComponent extends BaseComponent
 
     /**
      * Attach a FormComponent for editing this media
-     * 
-     * @param FormComponent $form The form component to use for editing
-     * @return self
+     *
+     * @param  FormComponent  $form  The form component to use for editing
      */
     public function edit(FormComponent $form): self
     {
         $this->editForm = $form;
+
         return $this;
     }
 

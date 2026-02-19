@@ -7,71 +7,56 @@ use Litepie\Layout\Sections\BaseSection;
 
 /**
  * SlotManager
- * 
+ *
  * Manages sections and components with strict type validation.
  * Stores everything in a single internal configuration/conversation array.
- * 
+ *
  * Responsibilities:
  * - Register sections with validation
  * - Register components with validation
  * - Store configuration data
  * - Provide clean getter/setter methods
- * 
+ *
  * Does NOT handle rendering or UI behavior.
- * 
- * @package Litepie\Layout
  */
 class SlotManager
 {
     public const PRIORITY_SECTION = 'sections';
+
     public const PRIORITY_COMPONENT = 'components';
 
     /**
      * Section storage
-     *
-     * @var array
      */
     protected array $sections = [];
 
     /**
      * Components storage
-     *
-     * @var array
      */
     protected array $components = [];
 
     /**
      * Configuration storage
-     *
-     * @var array
      */
     protected array $config = [];
 
     /**
      * Priority order: 'section' or 'component'
-     *
-     * @var string
      */
     protected string $priority = self::PRIORITY_SECTION;
 
     /**
      * Order of sections/components
-     *
-     * @var array
      */
     protected array $order = [];
 
     /**
      * Automatic insertion order tracking
-     *
-     * @var array
      */
     protected array $insertionOrder = [];
 
     /**
      * Slot name/identifier
-     *
-     * @var string|null
      */
     protected ?string $name = null;
 
@@ -86,8 +71,7 @@ class SlotManager
     /**
      * Create a new SlotManager instance
      *
-     * @param string|null $name Optional slot identifier
-     * @return static
+     * @param  string|null  $name  Optional slot identifier
      */
     public static function make(?string $name = null): static
     {
@@ -97,7 +81,7 @@ class SlotManager
     /**
      * Register a section
      *
-     * @param BaseSection $section Section instance (HeaderSection, FooterSection, GridSection, etc.)
+     * @param  BaseSection  $section  Section instance (HeaderSection, FooterSection, GridSection, etc.)
      * @return $this
      */
     public function setSection(BaseSection $section): static
@@ -116,7 +100,7 @@ class SlotManager
     /**
      * Register a component
      *
-     * @param Component $component Component instance
+     * @param  Component  $component  Component instance
      * @return $this
      */
     public function setComponent(Component $component): static
@@ -135,7 +119,7 @@ class SlotManager
     /**
      * Set configuration
      *
-     * @param array $config Configuration array
+     * @param  array  $config  Configuration array
      * @return $this
      */
     public function setConfig(array $config): static
@@ -148,7 +132,7 @@ class SlotManager
     /**
      * Set priority order
      *
-     * @param string $priority Use SlotManager::PRIORITY_SECTION or SlotManager::PRIORITY_COMPONENT
+     * @param  string  $priority  Use SlotManager::PRIORITY_SECTION or SlotManager::PRIORITY_COMPONENT
      * @return $this
      */
     public function setPriority(string $priority): static
@@ -162,8 +146,6 @@ class SlotManager
 
     /**
      * Get registered section
-     *
-     * @return array
      */
     public function getSections(): array
     {
@@ -172,8 +154,6 @@ class SlotManager
 
     /**
      * Get registered components
-     *
-     * @return array
      */
     public function getComponents(): array
     {
@@ -182,8 +162,6 @@ class SlotManager
 
     /**
      * Get configuration
-     *
-     * @return array
      */
     public function getConfig(): array
     {
@@ -192,8 +170,6 @@ class SlotManager
 
     /**
      * Get priority order
-     *
-     * @return string
      */
     public function getPriority(): string
     {
@@ -202,8 +178,6 @@ class SlotManager
 
     /**
      * Get order of sections/components
-     *
-     * @return array
      */
     public function getOrder(): array
     {
@@ -212,8 +186,6 @@ class SlotManager
 
     /**
      * Get automatic insertion order
-     *
-     * @return array
      */
     public function getInsertionOrder(): array
     {
@@ -222,8 +194,6 @@ class SlotManager
 
     /**
      * Get effective order (returns insertion order)
-     *
-     * @return array
      */
     public function getEffectiveOrder(): array
     {
@@ -232,8 +202,6 @@ class SlotManager
 
     /**
      * Get slot name
-     *
-     * @return string|null
      */
     public function getName(): ?string
     {
@@ -243,59 +211,50 @@ class SlotManager
     /**
      * Set slot name
      *
-     * @param string $name Slot identifier
+     * @param  string  $name  Slot identifier
      * @return $this
      */
     public function setName(string $name): static
     {
         $this->name = $name;
+
         return $this;
     }
 
     /**
      * Check if has sections
-     *
-     * @return bool
      */
     public function hasSections(): bool
     {
-        return !empty($this->sections);
+        return ! empty($this->sections);
     }
 
     /**
      * Check if has components
-     *
-     * @return bool
      */
     public function hasComponents(): bool
     {
-        return !empty($this->components);
+        return ! empty($this->components);
     }
 
     /**
      * Check if has configuration
-     *
-     * @return bool
      */
     public function hasConfig(): bool
     {
-        return !empty($this->config);
+        return ! empty($this->config);
     }
 
     /**
      * Check if has custom order
-     *
-     * @return bool
      */
     public function hasOrder(): bool
     {
-        return !empty($this->order);
+        return ! empty($this->order);
     }
 
     /**
      * Check if priority is set to custom value
-     *
-     * @return bool
      */
     public function isCustomPriority(): bool
     {
@@ -310,6 +269,7 @@ class SlotManager
     public function clearSections(): static
     {
         $this->sections = [];
+
         return $this;
     }
 
@@ -321,11 +281,11 @@ class SlotManager
     public function clearComponents(): static
     {
         $this->components = [];
+
         return $this;
     }
 
     /**
-
      * Reset priority to default (sections)
      *
      * @return $this
@@ -333,6 +293,7 @@ class SlotManager
     public function resetPriority(): static
     {
         $this->priority = self::PRIORITY_SECTION;
+
         return $this;
     }
 
@@ -348,13 +309,12 @@ class SlotManager
         $this->config = [];
         $this->insertionOrder = [];
         $this->priority = self::PRIORITY_SECTION;
+
         return $this;
     }
 
     /**
      * Convert to array representation
-     *
-     * @return array
      */
     public function toArray(): array
     {
@@ -371,7 +331,7 @@ class SlotManager
         }
 
         // Add metadata to enforce order preservation
-        if (!empty($this->insertionOrder)) {
+        if (! empty($this->insertionOrder)) {
             $data['config']['orderEnforced'] = true;
             $data['config']['preserveOrder'] = true;
         }

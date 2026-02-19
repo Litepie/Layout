@@ -2,7 +2,6 @@
 
 namespace Litepie\Layout;
 
-use Litepie\Layout\Contracts\Renderable;
 use Litepie\Layout\Contracts\Component;
 
 class Subsection implements Component
@@ -485,10 +484,11 @@ class Subsection implements Component
         $className = str_replace('-', '', ucwords($type, '-'));
 
         // Try Components namespace
-        $componentClass = 'Litepie\\Layout\\Components\\' . $className . 'Component';
+        $componentClass = 'Litepie\\Layout\\Components\\'.$className.'Component';
         if (class_exists($componentClass)) {
             $component = $componentClass::make($name);
             $this->add($component);
+
             return $component;
         }
 
@@ -551,7 +551,6 @@ class Subsection implements Component
         return $this->component('alert', $name);
     }
 
-
     /**
      * Create and add a StepperComponent
      */
@@ -611,6 +610,7 @@ class Subsection implements Component
         if (class_exists($class)) {
             $component = $class::make($name, $type);
             $this->add($component);
+
             return $component;
         }
 
@@ -633,10 +633,10 @@ class Subsection implements Component
             'label' => $this->label,
             'description' => $this->description,
             'icon' => $this->icon,
-            'fields' => array_map(fn($field) => method_exists($field, 'toArray') ? $field->toArray() : (array) $field, $this->formFields),
-            'components' => array_map(fn($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp, $this->components),
+            'fields' => array_map(fn ($field) => method_exists($field, 'toArray') ? $field->toArray() : (array) $field, $this->formFields),
+            'components' => array_map(fn ($comp) => method_exists($comp, 'toArray') ? $comp->toArray() : (array) $comp, $this->components),
             'actions' => $this->actions,
-            'modals' => array_map(fn($modal) => $modal->toArray(), $this->modals),
+            'modals' => array_map(fn ($modal) => $modal->toArray(), $this->modals),
             'order' => $this->order,
             'collapsible' => $this->collapsible,
             'collapsed' => $this->collapsed,

@@ -8,14 +8,14 @@ use Litepie\Layout\Contracts\Component;
  * AsideSection
  *
  * Aside section provides side panels that slide in from edges of the screen.
- * 
+ *
  * SUPPORTED SECTIONS (ONLY):
  * - header: Aside header content
  * - footer: Aside footer content
  * - main: Main aside content (center)
  * - left: Left sidebar content
  * - right: Right sidebar content
- * 
+ *
  * Supports multiple anchor positions (left, right, top, bottom) and variants (temporary, persistent, mini, permanent).
  */
 class AsideSection extends BaseSection
@@ -25,20 +25,29 @@ class AsideSection extends BaseSection
 
     // Core properties
     protected string $anchor = 'left'; // left, right, top, bottom
+
     protected string $variant = 'temporary'; // temporary, persistent, mini, permanent
+
     protected bool $open = false;
+
     protected ?string $width = null;
+
     protected ?string $height = null;
+
     protected ?string $miniWidth = null;
 
     // Backdrop properties
     protected bool $backdrop = true;
+
     protected ?string $backdropColor = null;
+
     protected bool $closeOnBackdrop = true;
+
     protected bool $closeOnEscape = true;
 
     // UI elements
     protected bool $closeButton = true;
+
     protected bool $defaultOpen = false;
 
     // Mini variant properties
@@ -66,15 +75,22 @@ class AsideSection extends BaseSection
 
     // Styling
     protected ?string $backgroundColor = null;
+
     protected ?string $textColor = null;
+
     protected ?int $elevation = null;
+
     protected ?string $borderRadius = null;
+
     protected ?string $transition = null;
+
     protected ?int $transitionDuration = null;
 
     // Advanced
     protected ?string $parent = null; // For nested drawers
+
     protected ?string $maxWidth = null;
+
     protected ?string $maxHeight = null;
 
     public function __construct(string $name)
@@ -97,6 +113,7 @@ class AsideSection extends BaseSection
     public function anchor(string $anchor): self
     {
         $this->anchor = $anchor;
+
         return $this;
     }
 
@@ -106,6 +123,7 @@ class AsideSection extends BaseSection
     public function width(string $width): self
     {
         $this->width = $width;
+
         return $this;
     }
 
@@ -115,6 +133,7 @@ class AsideSection extends BaseSection
     public function height(string $height): self
     {
         $this->height = $height;
+
         return $this;
     }
 
@@ -124,6 +143,7 @@ class AsideSection extends BaseSection
     public function variant(string $variant): self
     {
         $this->variant = $variant;
+
         return $this;
     }
 
@@ -133,6 +153,7 @@ class AsideSection extends BaseSection
     public function open(bool $open = true): self
     {
         $this->open = $open;
+
         return $this;
     }
 
@@ -146,6 +167,7 @@ class AsideSection extends BaseSection
     public function backdrop(bool $show = true): self
     {
         $this->backdrop = $show;
+
         return $this;
     }
 
@@ -155,6 +177,7 @@ class AsideSection extends BaseSection
     public function backdropColor(string $color): self
     {
         $this->backdropColor = $color;
+
         return $this;
     }
 
@@ -164,6 +187,7 @@ class AsideSection extends BaseSection
     public function closeOnBackdrop(bool $close = true): self
     {
         $this->closeOnBackdrop = $close;
+
         return $this;
     }
 
@@ -173,6 +197,7 @@ class AsideSection extends BaseSection
     public function closeOnEscape(bool $close = true): self
     {
         $this->closeOnEscape = $close;
+
         return $this;
     }
 
@@ -186,6 +211,7 @@ class AsideSection extends BaseSection
     public function closeButton(bool $show = true): self
     {
         $this->closeButton = $show;
+
         return $this;
     }
 
@@ -195,6 +221,7 @@ class AsideSection extends BaseSection
     public function defaultOpen(bool $open = true): self
     {
         $this->defaultOpen = $open;
+
         return $this;
     }
 
@@ -208,6 +235,7 @@ class AsideSection extends BaseSection
     public function miniWidth(string $width): self
     {
         $this->miniWidth = $width;
+
         return $this;
     }
 
@@ -217,6 +245,7 @@ class AsideSection extends BaseSection
     public function expandOnHover(bool $expand = true): self
     {
         $this->expandOnHover = $expand;
+
         return $this;
     }
 
@@ -226,14 +255,14 @@ class AsideSection extends BaseSection
 
     /**
      * Validate section name
-     * 
+     *
      * @throws \InvalidArgumentException if section is not supported
      */
     private function validateSection(string $section): void
     {
-        if (!in_array($section, self::SUPPORTED_SECTIONS)) {
+        if (! in_array($section, self::SUPPORTED_SECTIONS)) {
             throw new \InvalidArgumentException(
-                "Section '{$section}' is not supported in AsideSection. Only these sections are allowed: " .
+                "Section '{$section}' is not supported in AsideSection. Only these sections are allowed: ".
                     implode(', ', self::SUPPORTED_SECTIONS)
             );
         }
@@ -241,9 +270,8 @@ class AsideSection extends BaseSection
 
     /**
      * Set aside header section
-     * 
-     * @param array|\Closure $config Component data array or closure
-     * @return self
+     *
+     * @param  array|\Closure  $config  Component data array or closure
      */
     public function header($config): self
     {
@@ -252,14 +280,14 @@ class AsideSection extends BaseSection
         } elseif (is_array($config)) {
             $this->asideSections['header'] = $config;
         }
+
         return $this;
     }
 
     /**
      * Set aside footer section
-     * 
-     * @param array|\Closure $config Component data array or closure
-     * @return self
+     *
+     * @param  array|\Closure  $config  Component data array or closure
      */
     public function footer($config): self
     {
@@ -268,14 +296,14 @@ class AsideSection extends BaseSection
         } elseif (is_array($config)) {
             $this->asideSections['footer'] = $config;
         }
+
         return $this;
     }
 
     /**
      * Set aside main content section
-     * 
-     * @param array|\Closure $config Component data array or closure
-     * @return self
+     *
+     * @param  array|\Closure  $config  Component data array or closure
      */
     public function main($config): self
     {
@@ -284,14 +312,14 @@ class AsideSection extends BaseSection
         } elseif (is_array($config)) {
             $this->asideSections['main'] = $config;
         }
+
         return $this;
     }
 
     /**
      * Set aside left section content
-     * 
-     * @param array|\Closure $config Component data array or closure
-     * @return self
+     *
+     * @param  array|\Closure  $config  Component data array or closure
      */
     public function left($config): self
     {
@@ -300,14 +328,14 @@ class AsideSection extends BaseSection
         } elseif (is_array($config)) {
             $this->asideSections['left'] = $config;
         }
+
         return $this;
     }
 
     /**
      * Set aside right section content
-     * 
-     * @param array|\Closure $config Component data array or closure
-     * @return self
+     *
+     * @param  array|\Closure  $config  Component data array or closure
      */
     public function right($config): self
     {
@@ -316,6 +344,7 @@ class AsideSection extends BaseSection
         } elseif (is_array($config)) {
             $this->asideSections['right'] = $config;
         }
+
         return $this;
     }
 
@@ -325,10 +354,10 @@ class AsideSection extends BaseSection
 
     /**
      * Add a component to a specific section
-     * 
-     * @param string $section Section name (header, footer, main, left, right)
-     * @param mixed $component Component instance (with toArray()) or array
-     * @return self
+     *
+     * @param  string  $section  Section name (header, footer, main, left, right)
+     * @param  mixed  $component  Component instance (with toArray()) or array
+     *
      * @throws \InvalidArgumentException if section is not supported
      */
     public function addToSection(string $section, $component): self
@@ -386,10 +415,9 @@ class AsideSection extends BaseSection
 
     /**
      * Add multiple components to a section
-     * 
-     * @param string $section Section name
-     * @param array $components Array of component instances or arrays
-     * @return self
+     *
+     * @param  string  $section  Section name
+     * @param  array  $components  Array of component instances or arrays
      */
     public function addComponentsToSection(string $section, array $components): self
     {
@@ -404,39 +432,39 @@ class AsideSection extends BaseSection
 
     /**
      * Clear all components from a section
-     * 
-     * @param string $section Section name
-     * @return self
+     *
+     * @param  string  $section  Section name
      */
     public function clearSection(string $section): self
     {
         $this->validateSection($section);
         $this->asideSections[$section] = [];
+
         return $this;
     }
 
     /**
      * Get components from a specific section
-     * 
-     * @param string $section Section name
-     * @return array
+     *
+     * @param  string  $section  Section name
      */
     public function getSectionComponents(string $section): array
     {
         $this->validateSection($section);
+
         return $this->asideSections[$section];
     }
 
     /**
      * Check if a section has components
-     * 
-     * @param string $section Section name
-     * @return bool
+     *
+     * @param  string  $section  Section name
      */
     public function hasSectionComponents(string $section): bool
     {
         $this->validateSection($section);
-        return !empty($this->asideSections[$section]);
+
+        return ! empty($this->asideSections[$section]);
     }
 
     /**
@@ -453,32 +481,32 @@ class AsideSection extends BaseSection
 
     /**
      * Configure a section's layout and properties
-     * 
-     * @param string $section Section name (header, footer, main, left, right)
-     * @param array $config Configuration array with properties like:
-     *   - width: Section width (e.g., '300px', '25%', '3fr')
-     *   - height: Section height (e.g., '100px', 'auto')
-     *   - minWidth: Minimum width
-     *   - maxWidth: Maximum width
-     *   - minHeight: Minimum height
-     *   - maxHeight: Maximum height
-     *   - gridColumnSpan: Grid column span (for grid layouts)
-     *   - gridRowSpan: Grid row span
-     *   - order: Flex/grid order
-     *   - flex: Flex grow/shrink/basis
-     *   - padding: Section padding
-     *   - margin: Section margin
-     *   - backgroundColor: Section background color
-     *   - borderRadius: Section border radius
-     *   - overflow: Overflow behavior ('auto', 'hidden', 'scroll')
-     *   - sticky: Whether section is sticky
-     *   - position: CSS position ('relative', 'absolute', 'fixed', 'sticky')
-     *   - zIndex: Z-index for stacking
-     *   - className: Additional CSS classes
-     *   - style: Custom inline styles
-     * @return self
+     *
+     * @param  string  $section  Section name (header, footer, main, left, right)
+     * @param  array  $config  Configuration array with properties like:
+     *                         - width: Section width (e.g., '300px', '25%', '3fr')
+     *                         - height: Section height (e.g., '100px', 'auto')
+     *                         - minWidth: Minimum width
+     *                         - maxWidth: Maximum width
+     *                         - minHeight: Minimum height
+     *                         - maxHeight: Maximum height
+     *                         - gridColumnSpan: Grid column span (for grid layouts)
+     *                         - gridRowSpan: Grid row span
+     *                         - order: Flex/grid order
+     *                         - flex: Flex grow/shrink/basis
+     *                         - padding: Section padding
+     *                         - margin: Section margin
+     *                         - backgroundColor: Section background color
+     *                         - borderRadius: Section border radius
+     *                         - overflow: Overflow behavior ('auto', 'hidden', 'scroll')
+     *                         - sticky: Whether section is sticky
+     *                         - position: CSS position ('relative', 'absolute', 'fixed', 'sticky')
+     *                         - zIndex: Z-index for stacking
+     *                         - className: Additional CSS classes
+     *                         - style: Custom inline styles
+     *
      * @throws \InvalidArgumentException if section is not supported
-     * 
+     *
      * @example
      * $aside->config('left', [
      *     'width' => '300px',
@@ -494,15 +522,15 @@ class AsideSection extends BaseSection
             $this->sectionConfig[$section] ?? [],
             $config
         );
+
         return $this;
     }
 
     /**
      * Configure multiple sections at once
-     * 
-     * @param array $configs Associative array with section names as keys and config arrays as values
-     * @return self
-     * 
+     *
+     * @param  array  $configs  Associative array with section names as keys and config arrays as values
+     *
      * @example
      * $aside->configSections([
      *     'left' => ['width' => '250px', 'gridColumnSpan' => 3],
@@ -515,25 +543,24 @@ class AsideSection extends BaseSection
         foreach ($configs as $section => $config) {
             $this->config($section, $config);
         }
+
         return $this;
     }
 
     /**
      * Get configuration for a specific section
-     * 
-     * @param string $section Section name
-     * @return array
+     *
+     * @param  string  $section  Section name
      */
     public function getSectionConfig(string $section): array
     {
         $this->validateSection($section);
+
         return $this->sectionConfig[$section] ?? [];
     }
 
     /**
      * Get all section configurations
-     * 
-     * @return array
      */
     public function getAllSectionConfigs(): array
     {
@@ -542,14 +569,14 @@ class AsideSection extends BaseSection
 
     /**
      * Clear configuration for a specific section
-     * 
-     * @param string $section Section name
-     * @return self
+     *
+     * @param  string  $section  Section name
      */
     public function clearSectionConfig(string $section): self
     {
         $this->validateSection($section);
         $this->sectionConfig[$section] = [];
+
         return $this;
     }
 
@@ -563,6 +590,7 @@ class AsideSection extends BaseSection
     public function trigger(array $config): self
     {
         $this->trigger = $config;
+
         return $this;
     }
 
@@ -581,6 +609,7 @@ class AsideSection extends BaseSection
     public function backgroundColor(string $color): self
     {
         $this->backgroundColor = $color;
+
         return $this;
     }
 
@@ -590,6 +619,7 @@ class AsideSection extends BaseSection
     public function textColor(string $color): self
     {
         $this->textColor = $color;
+
         return $this;
     }
 
@@ -599,6 +629,7 @@ class AsideSection extends BaseSection
     public function elevation(int $level): self
     {
         $this->elevation = $level;
+
         return $this;
     }
 
@@ -608,6 +639,7 @@ class AsideSection extends BaseSection
     public function borderRadius(string $radius): self
     {
         $this->borderRadius = $radius;
+
         return $this;
     }
 
@@ -617,6 +649,7 @@ class AsideSection extends BaseSection
     public function transition(string $type): self
     {
         $this->transition = $type;
+
         return $this;
     }
 
@@ -626,6 +659,7 @@ class AsideSection extends BaseSection
     public function transitionDuration(int $ms): self
     {
         $this->transitionDuration = $ms;
+
         return $this;
     }
 
@@ -639,6 +673,7 @@ class AsideSection extends BaseSection
     public function parent(string $asideName): self
     {
         $this->parent = $asideName;
+
         return $this;
     }
 
@@ -648,6 +683,7 @@ class AsideSection extends BaseSection
     public function maxWidth(string $width): self
     {
         $this->maxWidth = $width;
+
         return $this;
     }
 
@@ -657,6 +693,7 @@ class AsideSection extends BaseSection
     public function maxHeight(string $height): self
     {
         $this->maxHeight = $height;
+
         return $this;
     }
 
@@ -849,24 +886,24 @@ class AsideSection extends BaseSection
         // Add sections (only non-empty sections)
         $sections = [];
         foreach (self::SUPPORTED_SECTIONS as $sectionName) {
-            if (!empty($this->asideSections[$sectionName])) {
+            if (! empty($this->asideSections[$sectionName])) {
                 $sections[$sectionName] = $this->asideSections[$sectionName];
             }
         }
 
-        if (!empty($sections)) {
+        if (! empty($sections)) {
             $result['sections'] = $sections;
         }
 
         // Add section configurations as separate top-level key
         $sectionConfig = [];
         foreach (self::SUPPORTED_SECTIONS as $sectionName) {
-            if (!empty($this->sectionConfig[$sectionName])) {
+            if (! empty($this->sectionConfig[$sectionName])) {
                 $sectionConfig[$sectionName] = $this->sectionConfig[$sectionName];
             }
         }
 
-        if (!empty($sectionConfig)) {
+        if (! empty($sectionConfig)) {
             $result['sectionConfig'] = $sectionConfig;
         }
 
@@ -878,6 +915,6 @@ class AsideSection extends BaseSection
      */
     protected function filterNullValues(array $array): array
     {
-        return array_filter($array, fn($value) => $value !== null);
+        return array_filter($array, fn ($value) => $value !== null);
     }
 }

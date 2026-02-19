@@ -162,12 +162,11 @@ class CardComponent extends BaseComponent
     /**
      * Add a form component as the card's content.
      * Automatically handles form conversion from objects or arrays.
-     * 
-     * @param mixed $formComponent Form component (object with toArray() or array)
-     * @param array $options Optional configuration:
-     *   - 'actions': Array of action items for card footer
-     *   - 'footer': Footer content
-     * @return self
+     *
+     * @param  mixed  $formComponent  Form component (object with toArray() or array)
+     * @param  array  $options  Optional configuration:
+     *                          - 'actions': Array of action items for card footer
+     *                          - 'footer': Footer content
      */
     public function addForm(mixed $formComponent, array $options = []): self
     {
@@ -213,7 +212,7 @@ class CardComponent extends BaseComponent
      */
     public function addHeaderAction(string $label, string $url, array $options = []): self
     {
-        if (!is_array($this->action)) {
+        if (! is_array($this->action)) {
             $this->action = [];
         }
 
@@ -228,16 +227,16 @@ class CardComponent extends BaseComponent
 
     /**
      * Add a dropdown menu to the card header.
-     * 
-     * @param string $label The dropdown button label
-     * @param array $items Array of menu items. Each item can have:
-     *                     - 'label': Menu item text
-     *                     - 'url': Action URL
-     *                     - 'icon': Optional icon
-     *                     - 'confirmation': Confirmation dialog config
-     *                     - 'modal': Modal dialog config
-     * @param array $options Additional options (icon, variant, etc.)
-     * 
+     *
+     * @param  string  $label  The dropdown button label
+     * @param  array  $items  Array of menu items. Each item can have:
+     *                        - 'label': Menu item text
+     *                        - 'url': Action URL
+     *                        - 'icon': Optional icon
+     *                        - 'confirmation': Confirmation dialog config
+     *                        - 'modal': Modal dialog config
+     * @param  array  $options  Additional options (icon, variant, etc.)
+     *
      * Example:
      * ->addHeaderDropdown('Actions', [
      *     ['label' => 'Edit', 'url' => '/edit', 'icon' => 'edit'],
@@ -253,7 +252,7 @@ class CardComponent extends BaseComponent
      */
     public function addHeaderDropdown(string $label, array $items, array $options = []): self
     {
-        if (!is_array($this->action)) {
+        if (! is_array($this->action)) {
             $this->action = [];
         }
 
@@ -421,10 +420,10 @@ class CardComponent extends BaseComponent
     /**
      * Add a component to the card's content area.
      * Accepts any component instance (Button, Text, List, Table, Form, etc.)
-     * 
-     * @param mixed $component Component instance (must have toArray() method)
+     *
+     * @param  mixed  $component  Component instance (must have toArray() method)
      * @return self
-     * 
+     *
      * Example:
      * $card->addComponent($section->text('description')->content('Card description'))
      *      ->addComponent($section->button('action')->label('Click me'));
@@ -443,9 +442,8 @@ class CardComponent extends BaseComponent
     /**
      * Set multiple components at once.
      * Replaces any existing components.
-     * 
-     * @param array $components Array of component instances or arrays
-     * @return self
+     *
+     * @param  array  $components  Array of component instances or arrays
      */
     public function components(array $components): self
     {
@@ -460,8 +458,6 @@ class CardComponent extends BaseComponent
 
     /**
      * Get all components added to the card.
-     * 
-     * @return array
      */
     public function getComponents(): array
     {
@@ -471,9 +467,8 @@ class CardComponent extends BaseComponent
     /**
      * Alias for addComponent() - universal add method.
      * Maintains consistency with Section API.
-     * 
-     * @param mixed $component Component instance
-     * @return self
+     *
+     * @param  mixed  $component  Component instance
      */
     public function add($component): self
     {
@@ -502,7 +497,7 @@ class CardComponent extends BaseComponent
             'subheader' => $this->subheader,
             'disableTypography' => $this->disableTypography ?: null,
         ]);
-        if (!empty($header)) {
+        if (! empty($header)) {
             $data['header'] = $header;
         }
 
@@ -512,12 +507,12 @@ class CardComponent extends BaseComponent
             'src' => $this->src,
             'component' => $this->component,
         ]);
-        if (!empty($media)) {
+        if (! empty($media)) {
             $data['media'] = $media;
         }
 
         // Add actions section if any action properties are set
-        if (!empty($this->actions) || $this->disableSpacing) {
+        if (! empty($this->actions) || $this->disableSpacing) {
             $data['actions'] = $this->filterNullValues([
                 'disableSpacing' => $this->disableSpacing ?: null,
                 'items' => $this->serializeActionItems($this->actions),
@@ -540,7 +535,7 @@ class CardComponent extends BaseComponent
         }
 
         // Add components section if any components are set
-        if (!empty($this->components)) {
+        if (! empty($this->components)) {
             $data['components'] = $this->components;
         }
 
@@ -552,7 +547,7 @@ class CardComponent extends BaseComponent
      */
     protected function serializeActions(string|array|null $action): string|array|null
     {
-        if (!is_array($action)) {
+        if (! is_array($action)) {
             return $action;
         }
 
@@ -595,6 +590,7 @@ class CardComponent extends BaseComponent
             if (isset($action['modal']) && $action['modal'] instanceof ActionModal) {
                 $action['modal'] = $action['modal']->toArray();
             }
+
             return $action;
         }, $actions);
     }
