@@ -5,31 +5,32 @@ namespace Litepie\Layout\Sections;
 use Litepie\Layout\SlotManager;
 
 /**
- * HeaderSection
+ * FooterSection
  *
- * A flexible header component with three sections: left, center, and right.
+ * A flexible footer component with three sections: left, center, and right.
  * Can be used in modals, drawers, layouts, and any other container.
  * 
  * Sections:
- * - left: Left-aligned content (typically back buttons, icons)
- * - center: Center-aligned content (typically title, heading)
- * - right: Right-aligned content (typically actions, close buttons)
+ * - left: Left-aligned content (typically secondary actions, links)
+ * - center: Center-aligned content (typically copyright, info text)
+ * - right: Right-aligned content (typically primary actions, buttons)
  * 
  * @example
- * HeaderSection::make('modal-header')
+ * FooterSection::make('modal-footer')
  *     ->left([
- *         ButtonComponent::make('back-btn')->icon('LiArrowLeft')->variant('text')
+ *         LinkComponent::make('help')->text('Need help?')->href('/help')
  *     ])
  *     ->center([
- *         TextComponent::make('title')->text('Edit Profile')->variant('h3')
+ *         TextComponent::make('copyright')->text('© 2026 Your Company')->variant('caption')
  *     ])
  *     ->right([
- *         ButtonComponent::make('close-btn')->icon('LiX')->variant('text')
+ *         ButtonComponent::make('cancel-btn')->text('Cancel')->variant('outlined'),
+ *         ButtonComponent::make('save-btn')->text('Save Changes')->variant('contained')
  *     ])
  *     ->variant('elevated')
  *     ->padding('md');
  */
-class HeaderSection extends BaseSection
+class FooterSection extends BaseSection
 {
     private const SUPPORTED_SECTIONS = ['left', 'center', 'right'];
 
@@ -44,7 +45,7 @@ class HeaderSection extends BaseSection
 
     public function __construct(string $name)
     {
-        parent::__construct($name, 'header');
+        parent::__construct($name, 'footer');
     }
 
     public static function make(string $name): self
@@ -66,7 +67,7 @@ class HeaderSection extends BaseSection
     {
         if (!in_array($section, self::SUPPORTED_SECTIONS)) {
             throw new \InvalidArgumentException(
-                "Section '{$section}' is not supported in HeaderSection. Only these sections are allowed: " .
+                "Section '{$section}' is not supported in FooterSection. Only these sections are allowed: " .
                     implode(', ', self::SUPPORTED_SECTIONS)
             );
         }
@@ -110,7 +111,7 @@ class HeaderSection extends BaseSection
     // ========================================================================
 
     /**
-     * Set header variant
+     * Set footer variant
      * 
      * @param string $variant default|elevated|bordered|transparent
      */

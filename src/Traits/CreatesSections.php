@@ -3,47 +3,45 @@
 namespace Litepie\Layout\Traits;
 
 use Litepie\Layout\Contracts\Component;
-use Litepie\Layout\Exceptions\SectionNotFoundException;
 use Litepie\Layout\Registry\TypeRegistry;
+use Litepie\Layout\Exceptions\SectionNotFoundException;
 
 /**
  * CreatesSections Trait
  *
  * Provides ability to create and add nested section instances.
  * Sections are containers (Grid, Row, Layout, Tabs, etc.)
- *
+ * 
  * This trait should be used by container classes that can hold nested sections.
  */
 trait CreatesSections
 {
     /**
      * Storage for nested sections
-     *
      * @var Component[]
      */
     protected array $sections = [];
 
     /**
      * Create and add a Section
-     *
-     * @param  string  $type  Section type (grid, row, tabs, accordion, etc.)
-     * @param  string  $name  Unique identifier
+     * 
+     * @param string $type Section type (grid, row, tabs, accordion, etc.)
+     * @param string $name Unique identifier
      * @return Component The created section instance
-     *
      * @throws SectionNotFoundException If section type doesn't exist
      */
     public function section(string $type, string $name): Component
     {
         $className = $this->resolveSectionClassName($type);
-
-        if (! $className) {
+        
+        if (!$className) {
             throw new SectionNotFoundException($type, TypeRegistry::getAllSectionTypes());
         }
 
         $section = $className::make($name);
         $section->parentBuilder = $this;
         $this->sections[] = $section;
-
+        
         return $section;
     }
 
@@ -71,13 +69,13 @@ trait CreatesSections
      */
     public function hasSections(): bool
     {
-        return ! empty($this->sections);
+        return !empty($this->sections);
     }
 
     /**
      * Resolve section class name from type using TypeRegistry (O(1) lookup)
-     *
-     * @param  string  $type  Section type identifier
+     * 
+     * @param string $type Section type identifier
      * @return string|null Full class name or null if not found
      */
     protected function resolveSectionClassName(string $type): ?string
@@ -95,7 +93,6 @@ trait CreatesSections
         $section = $className::make($name, $columns, $rows);
         $section->parentBuilder = $this;
         $this->sections[] = $section;
-
         return $section;
     }
 
@@ -134,7 +131,7 @@ trait CreatesSections
         $subsection = \Litepie\Layout\Subsection::make($name);
         $subsection->parentBuilder = $this;
         $this->sections[] = $subsection;
-
+        
         return $subsection;
     }
 }

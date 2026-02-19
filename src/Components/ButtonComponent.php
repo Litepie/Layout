@@ -4,7 +4,7 @@ namespace Litepie\Layout\Components;
 
 class ButtonComponent extends BaseComponent
 {
-    protected string $label = 'Button';
+    protected ?string $label = null;
 
     protected string $variant = 'contained'; // contained, outlined, text, elevated, tonal
 
@@ -42,10 +42,20 @@ class ButtonComponent extends BaseComponent
 
     protected array $dataAttributes = []; // data-* attributes
 
+    protected ?string $action = null; // Action handler (view, edit, delete, etc.)
+
+    protected bool $isIconButton = false; // Flag to identify icon-only buttons
+
     // Dropdown properties
     protected bool $hasDropdown = false;
 
     protected ?array $dropdownConfig = null;
+
+    // Confirmation dialog properties
+    protected ?array $confirm = null;
+
+    // Form association (if button is part of a form)
+    protected ?array $form = null;
 
     public function __construct(string $name)
     {
@@ -60,7 +70,7 @@ class ButtonComponent extends BaseComponent
     /**
      * Set button label/text
      */
-    public function label(string $label): self
+    public function label(?string $label = null): self
     {
         $this->label = $label;
 
@@ -256,6 +266,26 @@ class ButtonComponent extends BaseComponent
     }
 
     /**
+     * Set button action (view, edit, delete, etc.)
+     */
+    public function action(string $action): self
+    {
+        $this->action = $action;
+
+        return $this;
+    }
+
+    /**
+     * Mark button as icon-only button
+     */
+    public function isIconButton(bool $isIconButton = false): self
+    {
+        $this->isIconButton = $isIconButton;
+
+        return $this;
+    }
+
+    /**
      * Add data attribute
      */
     public function data(string $key, $value): self
@@ -415,6 +445,67 @@ class ButtonComponent extends BaseComponent
     }
 
     /**
+     * Set button group (meta property for frontend rendering hint)
+     */
+    public function group(string $group): self
+    {
+        return $this->meta(['group' => $group]);
+    }
+
+    /**
+     * Set button group position (meta property for frontend rendering hint)
+     */
+    public function groupPosition(string $position): self
+    {
+        return $this->meta(['groupPosition' => $position]);
+    }
+
+    /**
+     * Set confirmation dialog configuration
+     * 
+     * @param array $config Confirmation dialog configuration
+     *   - title: string - Dialog title
+     *   - message: string - Dialog message/content
+     *   - confirmLabel: string - Confirm button label (default: 'Confirm')
+     *   - cancelLabel: string - Cancel button label (default: 'Cancel')
+     *   - confirmVariant: string - Confirm button variant (default: 'contained')
+     *   - confirmColor: string - Confirm button color (default: 'primary')
+     *   - icon: string - Dialog icon
+     *   - iconColor: string - Icon color
+     * @return self
+     */
+    public function confirm(array $config): self
+    {
+        $this->confirm = array_merge([
+            'title' => 'Confirm Action',
+            'message' => 'Are you sure you want to proceed?',
+            'confirmLabel' => 'Confirm',
+            'cancelLabel' => 'Cancel',
+            'confirmVariant' => 'contained',
+            'confirmColor' => 'primary',
+        ], $config);
+
+        return $this;
+    }
+
+    /**
+     * Associate button with a form configuration
+     * 
+     * @param array|null $form Form configuration
+     *   - id: string - Form ID
+     *   - placement: string - Placement of form modal/popover
+     *   - offset: array - Offset positioning
+     *   - closeOnClick: bool - Close on click outside
+     * @return self
+     */
+    public function form(?array $form): self
+    {
+        $this->form = $form;
+
+        return $this;
+    }
+
+    /**
      * Convert to array for JSON output
      */
     public function toArray(): array
@@ -438,9 +529,13 @@ class ButtonComponent extends BaseComponent
             'ariaLabel' => $this->ariaLabel,
             'className' => $this->className,
             'onClick' => $this->onClick,
+            'action' => $this->action,
+            'isIconButton' => $this->isIconButton,
             'dataAttributes' => $this->dataAttributes,
             'hasDropdown' => $this->hasDropdown,
             'dropdownConfig' => $this->dropdownConfig,
+            'confirm' => $this->confirm,
+            'form' => $this->form,
         ]));
     }
 }

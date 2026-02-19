@@ -28,6 +28,12 @@ class TableComponent extends BaseComponent
 
     protected bool $striped = false;
 
+    protected bool $rowClickable = false;
+
+    protected string $displayMode = 'table'; // table, list, grid, cards
+
+    protected ?array $rowActionsConfig = null;
+
     public function __construct(string $name)
     {
         parent::__construct($name, 'table');
@@ -107,6 +113,13 @@ class TableComponent extends BaseComponent
         return $this;
     }
 
+    public function rowClickable(bool $rowClickable = true): self
+    {
+        $this->rowClickable = $rowClickable;
+
+        return $this;
+    }
+
     public function paginated(bool $paginated = true): self
     {
         $this->paginated = $paginated;
@@ -148,6 +161,86 @@ class TableComponent extends BaseComponent
         return $this;
     }
 
+    /**
+     * Set display mode for the table/data
+     */
+    public function displayMode(string $mode): self
+    {
+        $this->displayMode = $mode;
+
+        return $this;
+    }
+
+    /**
+     * Display data as table (default)
+     */
+    public function asTable(): self
+    {
+        return $this->displayMode('table');
+    }
+
+    /**
+     * Display data as list view
+     */
+    public function asList(): self
+    {
+        return $this->displayMode('list');
+    }
+
+    /**
+     * Display data as grid view
+     */
+    public function asGrid(): self
+    {
+        return $this->displayMode('grid');
+    }
+
+    /**
+     * Display data as cards view
+     */
+    public function asCards(): self
+    {
+        return $this->displayMode('cards');
+    }
+
+    /**
+     * Configure row click actions
+     * 
+     * @param string $type Action type ('aside', 'modal')
+     * @param string $component Component name to open
+     * @param string|null $dataUrl Optional data URL with placeholders like '/api/blogs/:id'
+     * @return self
+     */
+    public function rowActions(string $type, string $component, ?string $dataUrl = null, ?array $config = null): self
+    {
+        $this->rowActionsConfig = [
+            'type' => $type,
+            'component' => $component,
+            'config' => $config
+        ];
+
+        if ($dataUrl !== null) {
+            $this->rowActionsConfig['dataUrl'] = $dataUrl;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Enable row clickability and configure row actions
+     * This is a convenience method that combines rowClickable with rowActions
+     * 
+     * @param string $type Action type ('aside', 'modal')
+     * @param string $component Component name to open
+     * @param string|null $dataUrl Optional data URL with placeholders like '/api/blogs/:id'
+     * @return self
+     */
+    public function clickableRows(string $type, string $component, ?string $dataUrl = null, ?array $config = null): self
+    {
+        $this->rowClickable = true;
+        return $this->rowActions($type, $component, $dataUrl, $config);
+    }
+
     public function toArray(): array
     {
         return array_merge($this->getCommonProperties(), $this->filterNullValues([
@@ -159,10 +252,13 @@ class TableComponent extends BaseComponent
             'selectable' => $this->selectable,
             'hoverable' => $this->hoverable,
             'striped' => $this->striped,
+            'rowClickable' => $this->rowClickable,
             'paginated' => $this->paginated,
-            'per_page' => $this->perPage,
-            'sort_column' => $this->sortColumn,
-            'sort_direction' => $this->sortDirection,
+            'perPage' => $this->perPage,
+            'sortColumn' => $this->sortColumn,
+            'sortDirection' => $this->sortDirection,
+            'displayMode' => $this->displayMode !== 'table' ? $this->displayMode : null,
+            'rowActions' => $this->rowActionsConfig,
         ]));
     }
 }

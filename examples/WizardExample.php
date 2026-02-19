@@ -4,9 +4,9 @@
  * Wizard Example - Clean 4-Level Architecture
  */
 
-use Litepie\Layout\Components\FormComponent;
 use Litepie\Layout\LayoutBuilder;
 use Litepie\Layout\Sections\WizardSection;
+use Litepie\Layout\Components\FormComponent;
 
 $layout = LayoutBuilder::create('wizard-demo', 'wizard');
 

@@ -4,13 +4,14 @@ namespace Litepie\Layout;
 
 use Litepie\Layout\Components\CustomComponent;
 use Litepie\Layout\Contracts\Component;
-use Litepie\Layout\Contracts\Renderable;
 use Litepie\Layout\Sections\LayoutSection;
 use Litepie\Layout\Traits\Cacheable;
 use Litepie\Layout\Traits\Debuggable;
 use Litepie\Layout\Traits\Exportable;
 use Litepie\Layout\Traits\HandlesComputedFields;
 use Litepie\Layout\Traits\Testable;
+
+use Litepie\Layout\Contracts\Renderable;
 
 /**
  * LayoutBuilder
@@ -22,12 +23,25 @@ use Litepie\Layout\Traits\Testable;
  * Sections contain Slots (named areas like 'left', 'right', 'body', 'items')
  * Slots contain Components or nested Sections
  *
+ * SUPPORTED TOP-LEVEL SECTIONS (ONLY):
+ * - header: Page header content
+ * - footer: Page footer content  
+ * - main: Main page content
+ * - search: Search functionality
+ * - actions: Action buttons/controls
+ *
  * Note: addComponent() method name is maintained for backward compatibility
  * but primarily adds Sections. For pure components, wrap them in a Section.
  */
 class LayoutBuilder implements Renderable
 {
     use Cacheable, Debuggable, Exportable, HandlesComputedFields, Testable;
+
+    /**
+     * Supported top-level sections
+     * Only these 5 sections are allowed in the layout
+     */
+    private const SUPPORTED_SECTIONS = ['header', 'footer', 'main', 'search', 'actions'];
 
     protected string $name;
 
@@ -186,6 +200,51 @@ class LayoutBuilder implements Renderable
         return $this;
     }
 
+    // ========================================================================
+    // Supported Layout Sections
+    // Only these 5 sections are allowed: header, footer, main, search, actions
+    // ========================================================================
+
+    /**
+     * Add header section
+     */
+    public function header(\Closure $callback): self
+    {
+        return $this->section('header', $callback);
+    }
+
+    /**
+     * Add footer section
+     */
+    public function footer(\Closure $callback): self
+    {
+        return $this->section('footer', $callback);
+    }
+
+    /**
+     * Add main section
+     */
+    public function main(\Closure $callback): self
+    {
+        return $this->section('main', $callback);
+    }
+
+    /**
+     * Add search section
+     */
+    public function search(\Closure $callback): self
+    {
+        return $this->section('search', $callback);
+    }
+
+    /**
+     * Add actions section
+     */
+    public function actions(\Closure $callback): self
+    {
+        return $this->section('actions', $callback);
+    }
+
     /**
      * Create and add a Section (container component like Grid, Row, Column, Tabs, etc.)
      * Sections are containers that have slots which hold other components or sections
@@ -203,6 +262,14 @@ class LayoutBuilder implements Renderable
         if ($nameOrCallback instanceof \Closure) {
             $sectionName = $typeOrName;
             $callback = $nameOrCallback;
+
+            // Validate section name
+            if (!in_array($sectionName, self::SUPPORTED_SECTIONS)) {
+                throw new \InvalidArgumentException(
+                    "Section '{$sectionName}' is not supported. Only these sections are allowed: " .
+                        implode(', ', self::SUPPORTED_SECTIONS)
+                );
+            }
 
             // Create a LayoutSection (container for other components)
             $layoutSection = LayoutSection::make($sectionName);
@@ -224,7 +291,7 @@ class LayoutBuilder implements Renderable
         $className = str_replace('-', '', ucwords($type, '-'));
 
         // Try Section suffix (containers: Header, Layout, Grid, Tabs, Accordion, Row, Column)
-        $sectionClass = 'Litepie\\Layout\\Sections\\'.$className.'Section';
+        $sectionClass = 'Litepie\\Layout\\Sections\\' . $className . 'Section';
         if (class_exists($sectionClass)) {
             $section = $sectionClass::make($name);
             $section->parentBuilder = $this;
@@ -234,7 +301,7 @@ class LayoutBuilder implements Renderable
         }
 
         // If section type not found, throw exception
-        throw new \InvalidArgumentException("Section type '{$type}' not found. Available section types: grid, row, column, tabs, accordion, layout, header, etc.");
+        throw new \InvalidArgumentException("Section type '{$type}' not found. Available section types: grid, row, column, tabs, accordion, layout, etc.");
     }
 
     /**
@@ -254,7 +321,7 @@ class LayoutBuilder implements Renderable
         $className = str_replace('-', '', ucwords($type, '-'));
 
         // Try Component suffix (content: Form, Card, Table, List, Button, Text, etc.)
-        $componentClass = 'Litepie\\Layout\\Components\\'.$className.'Component';
+        $componentClass = 'Litepie\\Layout\\Components\\' . $className . 'Component';
         if (class_exists($componentClass)) {
             $component = $componentClass::make($name);
             $component->parentBuilder = $this;
@@ -366,7 +433,7 @@ class LayoutBuilder implements Renderable
             'shared_data_params' => $this->sharedDataParams,
             'meta' => $this->meta,
             'sections' => array_map(
-                fn ($section) => method_exists($section, 'toArray') ? $section->toArray() : (array) $section,
+                fn($section) => method_exists($section, 'toArray') ? $section->toArray() : (array) $section,
                 $this->sections
             ),
         ];

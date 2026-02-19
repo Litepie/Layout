@@ -5,9 +5,9 @@ namespace Litepie\Layout\Components;
 use Litepie\Layout\Contracts\Component;
 use Litepie\Layout\Contracts\Renderable;
 use Litepie\Layout\Traits\Debuggable;
+use Litepie\Layout\Traits\HasVisibility;
 use Litepie\Layout\Traits\HasDataSource;
 use Litepie\Layout\Traits\HasEvents;
-use Litepie\Layout\Traits\HasVisibility;
 use Litepie\Layout\Traits\Responsive;
 use Litepie\Layout\Traits\Translatable;
 use Litepie\Layout\Traits\Validatable;
@@ -26,9 +26,9 @@ use Litepie\Layout\Traits\Validatable;
 abstract class BaseComponent implements Component, Renderable
 {
     use Debuggable,
+        HasVisibility,
         HasDataSource,
         HasEvents,
-        HasVisibility,
         Responsive,
         Translatable,
         Validatable;
@@ -267,9 +267,13 @@ abstract class BaseComponent implements Component, Renderable
      */
     protected function filterNullValues(array $properties): array
     {
-        return array_filter($properties, function ($value) {
+        return array_filter($properties, function ($value, $key) {
             if ($value === null) {
                 return false;
+            }
+            // Keep meta array even if empty - it's important for configuration
+            if ($key === 'meta') {
+                return true;
             }
             if (is_array($value) && empty($value)) {
                 return false;
@@ -277,9 +281,8 @@ abstract class BaseComponent implements Component, Renderable
             if ($value === false || $value === true) {
                 return true; // Keep boolean values
             }
-
             return true;
-        });
+        }, ARRAY_FILTER_USE_BOTH);
     }
 
     abstract public function toArray(): array;

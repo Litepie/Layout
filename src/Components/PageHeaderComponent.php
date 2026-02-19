@@ -4,10 +4,10 @@ namespace Litepie\Layout\Components;
 
 /**
  * PageHeader Component
- *
+ * 
  * A composite component that combines breadcrumb navigation and page title
  * in a cohesive, reusable header layout.
- *
+ * 
  * @example
  * $section->pageHeader('main-header')
  *     ->title('Sales Orders')
@@ -23,27 +23,27 @@ namespace Litepie\Layout\Components;
 class PageHeaderComponent extends BaseComponent
 {
     protected ?string $pageTitle = null;
-
+    
     protected ?string $subtitle = null;
-
+    
     protected array $breadcrumbs = [];
-
+    
     protected string $align = 'left'; // left, center, right
-
+    
     protected string $spacing = 'md'; // sm, md, lg, xl
-
+    
     protected ?string $icon = null;
-
+    
     protected bool $showBreadcrumb = true;
-
+    
     protected bool $showTitle = true;
-
+    
     protected ?string $titleVariant = 'h1';
-
+    
     protected ?string $titleSize = '2xl';
-
+    
     protected ?string $titleWeight = 'bold';
-
+    
     protected bool $titleGutterBottom = true;
 
     public function __construct(string $name)
@@ -62,7 +62,6 @@ class PageHeaderComponent extends BaseComponent
     public function title(string $title): self
     {
         $this->pageTitle = $title;
-
         return $this;
     }
 
@@ -72,19 +71,17 @@ class PageHeaderComponent extends BaseComponent
     public function subtitle(string $subtitle): self
     {
         $this->subtitle = $subtitle;
-
         return $this;
     }
 
     /**
      * Set breadcrumb items
-     *
-     * @param  array  $items  Array of breadcrumb items: [['label' => 'Home', 'link' => '/', 'icon' => 'LiHome'], ...]
+     * 
+     * @param array $items Array of breadcrumb items: [['label' => 'Home', 'link' => '/', 'icon' => 'LiHome'], ...]
      */
     public function breadcrumbs(array $items): self
     {
         $this->breadcrumbs = $items;
-
         return $this;
     }
 
@@ -94,21 +91,20 @@ class PageHeaderComponent extends BaseComponent
     public function addBreadcrumb(string $label, ?string $link = null, ?string $icon = null, bool $active = false): self
     {
         $item = ['label' => $label];
-
+        
         if ($link !== null) {
             $item['link'] = $link;
         }
-
+        
         if ($icon !== null) {
             $item['icon'] = $icon;
         }
-
+        
         if ($active) {
             $item['active'] = true;
         }
-
+        
         $this->breadcrumbs[] = $item;
-
         return $this;
     }
 
@@ -118,7 +114,6 @@ class PageHeaderComponent extends BaseComponent
     public function align(string $align): self
     {
         $this->align = $align;
-
         return $this;
     }
 
@@ -128,7 +123,6 @@ class PageHeaderComponent extends BaseComponent
     public function spacing(string $spacing): self
     {
         $this->spacing = $spacing;
-
         return $this;
     }
 
@@ -138,7 +132,6 @@ class PageHeaderComponent extends BaseComponent
     public function icon(string $icon): self
     {
         $this->icon = $icon;
-
         return $this;
     }
 
@@ -148,7 +141,6 @@ class PageHeaderComponent extends BaseComponent
     public function showBreadcrumb(bool $show = true): self
     {
         $this->showBreadcrumb = $show;
-
         return $this;
     }
 
@@ -158,7 +150,6 @@ class PageHeaderComponent extends BaseComponent
     public function showTitle(bool $show = true): self
     {
         $this->showTitle = $show;
-
         return $this;
     }
 
@@ -168,7 +159,6 @@ class PageHeaderComponent extends BaseComponent
     public function titleVariant(string $variant): self
     {
         $this->titleVariant = $variant;
-
         return $this;
     }
 
@@ -178,7 +168,6 @@ class PageHeaderComponent extends BaseComponent
     public function titleSize(string $size): self
     {
         $this->titleSize = $size;
-
         return $this;
     }
 
@@ -188,7 +177,6 @@ class PageHeaderComponent extends BaseComponent
     public function titleWeight(string $weight): self
     {
         $this->titleWeight = $weight;
-
         return $this;
     }
 
@@ -198,7 +186,6 @@ class PageHeaderComponent extends BaseComponent
     public function titleGutterBottom(bool $gutter = true): self
     {
         $this->titleGutterBottom = $gutter;
-
         return $this;
     }
 

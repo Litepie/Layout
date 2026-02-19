@@ -278,7 +278,7 @@ class AvatarComponent extends BaseComponent
             'bgColor' => $this->bgColor,
             'color' => $this->color,
             'imgProps' => $this->imgProps,
-            'useFallback' => ! $this->useFallback ? false : null,
+            'useFallback' => !$this->useFallback ? false : null,
         ]));
     }
 }

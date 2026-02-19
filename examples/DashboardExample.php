@@ -6,8 +6,8 @@
  * Demonstrates: Layout → Section → Slot → Component
  */
 
-use Litepie\Layout\Components\ChartComponent;
 use Litepie\Layout\Components\StatsComponent;
+use Litepie\Layout\Components\ChartComponent;
 use Litepie\Layout\Components\TableComponent;
 use Litepie\Layout\LayoutBuilder;
 use Litepie\Layout\Sections\GridSection;

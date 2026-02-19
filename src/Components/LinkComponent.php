@@ -163,7 +163,7 @@ class LinkComponent extends BaseComponent
     public function addClass(string $class): self
     {
         if ($this->className) {
-            $this->className .= ' '.$class;
+            $this->className .= ' ' . $class;
         } else {
             $this->className = $class;
         }
@@ -197,7 +197,7 @@ class LinkComponent extends BaseComponent
     {
         $href = "mailto:{$email}";
         if ($subject) {
-            $href .= '?subject='.urlencode($subject);
+            $href .= "?subject=" . urlencode($subject);
         }
         $this->href = $href;
         $this->prefixIcon = 'mail';
@@ -207,7 +207,7 @@ class LinkComponent extends BaseComponent
 
     public function phone(string $phone): self
     {
-        $this->href = 'tel:'.preg_replace('/[^0-9+]/', '', $phone);
+        $this->href = "tel:" . preg_replace('/[^0-9+]/', '', $phone);
         $this->text = $this->text ?? $phone;
         $this->prefixIcon = 'phone';
 

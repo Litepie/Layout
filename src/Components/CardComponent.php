@@ -97,6 +97,16 @@ class CardComponent extends BaseComponent
      */
     protected ?string $color = null;
 
+    /**
+     * Form component data.
+     */
+    protected mixed $form = null;
+
+    /**
+     * Array of child components to be rendered in the card content.
+     */
+    protected array $components = [];
+
     public function __construct(string $name)
     {
         parent::__construct($name, 'card');
@@ -149,6 +159,39 @@ class CardComponent extends BaseComponent
         return $this->children($content);
     }
 
+    /**
+     * Add a form component as the card's content.
+     * Automatically handles form conversion from objects or arrays.
+     * 
+     * @param mixed $formComponent Form component (object with toArray() or array)
+     * @param array $options Optional configuration:
+     *   - 'actions': Array of action items for card footer
+     *   - 'footer': Footer content
+     * @return self
+     */
+    public function addForm(mixed $formComponent, array $options = []): self
+    {
+        // Convert form to array if it's an object with toArray() method
+        $formContent = is_object($formComponent) && method_exists($formComponent, 'toArray')
+            ? $formComponent->toArray()
+            : $formComponent;
+
+        // Set the form data
+        $this->form = $formContent;
+
+        // Add actions if provided
+        if (isset($options['actions']) && is_array($options['actions'])) {
+            $this->actions($options['actions']);
+        }
+
+        // Add footer if provided
+        if (isset($options['footer'])) {
+            $this->footer($options['footer']);
+        }
+
+        return $this;
+    }
+
     // ========================================================================
     // CardHeader API Methods
     // ========================================================================
@@ -170,7 +213,7 @@ class CardComponent extends BaseComponent
      */
     public function addHeaderAction(string $label, string $url, array $options = []): self
     {
-        if (! is_array($this->action)) {
+        if (!is_array($this->action)) {
             $this->action = [];
         }
 
@@ -185,16 +228,16 @@ class CardComponent extends BaseComponent
 
     /**
      * Add a dropdown menu to the card header.
-     *
-     * @param  string  $label  The dropdown button label
-     * @param  array  $items  Array of menu items. Each item can have:
-     *                        - 'label': Menu item text
-     *                        - 'url': Action URL
-     *                        - 'icon': Optional icon
-     *                        - 'confirmation': Confirmation dialog config
-     *                        - 'modal': Modal dialog config
-     * @param  array  $options  Additional options (icon, variant, etc.)
-     *
+     * 
+     * @param string $label The dropdown button label
+     * @param array $items Array of menu items. Each item can have:
+     *                     - 'label': Menu item text
+     *                     - 'url': Action URL
+     *                     - 'icon': Optional icon
+     *                     - 'confirmation': Confirmation dialog config
+     *                     - 'modal': Modal dialog config
+     * @param array $options Additional options (icon, variant, etc.)
+     * 
      * Example:
      * ->addHeaderDropdown('Actions', [
      *     ['label' => 'Edit', 'url' => '/edit', 'icon' => 'edit'],
@@ -210,7 +253,7 @@ class CardComponent extends BaseComponent
      */
     public function addHeaderDropdown(string $label, array $items, array $options = []): self
     {
-        if (! is_array($this->action)) {
+        if (!is_array($this->action)) {
             $this->action = [];
         }
 
@@ -372,6 +415,72 @@ class CardComponent extends BaseComponent
     }
 
     // ========================================================================
+    // Component Management
+    // ========================================================================
+
+    /**
+     * Add a component to the card's content area.
+     * Accepts any component instance (Button, Text, List, Table, Form, etc.)
+     * 
+     * @param mixed $component Component instance (must have toArray() method)
+     * @return self
+     * 
+     * Example:
+     * $card->addComponent($section->text('description')->content('Card description'))
+     *      ->addComponent($section->button('action')->label('Click me'));
+     */
+    public function addComponent($component): self
+    {
+        if (is_object($component) && method_exists($component, 'toArray')) {
+            $this->components[] = $component->toArray();
+        } elseif (is_array($component)) {
+            $this->components[] = $component;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set multiple components at once.
+     * Replaces any existing components.
+     * 
+     * @param array $components Array of component instances or arrays
+     * @return self
+     */
+    public function components(array $components): self
+    {
+        $this->components = [];
+
+        foreach ($components as $component) {
+            $this->addComponent($component);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get all components added to the card.
+     * 
+     * @return array
+     */
+    public function getComponents(): array
+    {
+        return $this->components;
+    }
+
+    /**
+     * Alias for addComponent() - universal add method.
+     * Maintains consistency with Section API.
+     * 
+     * @param mixed $component Component instance
+     * @return self
+     */
+    public function add($component): self
+    {
+        return $this->addComponent($component);
+    }
+
+    // ========================================================================
     // Serialization
     // ========================================================================
 
@@ -393,7 +502,7 @@ class CardComponent extends BaseComponent
             'subheader' => $this->subheader,
             'disableTypography' => $this->disableTypography ?: null,
         ]);
-        if (! empty($header)) {
+        if (!empty($header)) {
             $data['header'] = $header;
         }
 
@@ -403,12 +512,12 @@ class CardComponent extends BaseComponent
             'src' => $this->src,
             'component' => $this->component,
         ]);
-        if (! empty($media)) {
+        if (!empty($media)) {
             $data['media'] = $media;
         }
 
         // Add actions section if any action properties are set
-        if (! empty($this->actions) || $this->disableSpacing) {
+        if (!empty($this->actions) || $this->disableSpacing) {
             $data['actions'] = $this->filterNullValues([
                 'disableSpacing' => $this->disableSpacing ?: null,
                 'items' => $this->serializeActionItems($this->actions),
@@ -425,6 +534,16 @@ class CardComponent extends BaseComponent
             }
         }
 
+        // Add form section if set
+        if ($this->form !== null) {
+            $data['form'] = $this->form;
+        }
+
+        // Add components section if any components are set
+        if (!empty($this->components)) {
+            $data['components'] = $this->components;
+        }
+
         return $data;
     }
 
@@ -433,7 +552,7 @@ class CardComponent extends BaseComponent
      */
     protected function serializeActions(string|array|null $action): string|array|null
     {
-        if (! is_array($action)) {
+        if (!is_array($action)) {
             return $action;
         }
 
@@ -476,7 +595,6 @@ class CardComponent extends BaseComponent
             if (isset($action['modal']) && $action['modal'] instanceof ActionModal) {
                 $action['modal'] = $action['modal']->toArray();
             }
-
             return $action;
         }, $actions);
     }

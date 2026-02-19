@@ -43,7 +43,8 @@ class CodeComponent extends BaseComponent
     /**
      * Set the code content
      *
-     * @param  string  $content  The code to display
+     * @param string $content The code to display
+     * @return self
      */
     public function content(string $content): self
     {
@@ -55,7 +56,8 @@ class CodeComponent extends BaseComponent
     /**
      * Set the programming language for syntax highlighting
      *
-     * @param  string  $language  Language identifier (e.g., 'php', 'javascript', 'python', 'bash', 'sql')
+     * @param string $language Language identifier (e.g., 'php', 'javascript', 'python', 'bash', 'sql')
+     * @return self
      */
     public function language(string $language): self
     {
@@ -67,7 +69,8 @@ class CodeComponent extends BaseComponent
     /**
      * Set the color theme for syntax highlighting
      *
-     * @param  string  $theme  Theme name (e.g., 'light', 'dark', 'monokai', 'github', 'dracula')
+     * @param string $theme Theme name (e.g., 'light', 'dark', 'monokai', 'github', 'dracula')
+     * @return self
      */
     public function theme(string $theme): self
     {
@@ -79,7 +82,8 @@ class CodeComponent extends BaseComponent
     /**
      * Enable or disable line numbers
      *
-     * @param  bool  $lineNumbers  Whether to show line numbers
+     * @param bool $lineNumbers Whether to show line numbers
+     * @return self
      */
     public function lineNumbers(bool $lineNumbers = true): self
     {
@@ -91,7 +95,8 @@ class CodeComponent extends BaseComponent
     /**
      * Highlight specific lines
      *
-     * @param  array|int  $lines  Line numbers to highlight (1-based)
+     * @param array|int $lines Line numbers to highlight (1-based)
+     * @return self
      */
     public function highlightLines(array|int $lines): self
     {
@@ -103,7 +108,8 @@ class CodeComponent extends BaseComponent
     /**
      * Enable or disable copy-to-clipboard button
      *
-     * @param  bool  $copyButton  Whether to show copy button
+     * @param bool $copyButton Whether to show copy button
+     * @return self
      */
     public function copyButton(bool $copyButton = true): self
     {
@@ -115,7 +121,8 @@ class CodeComponent extends BaseComponent
     /**
      * Set the filename to display
      *
-     * @param  string  $filename  Filename or path to display
+     * @param string $filename Filename or path to display
+     * @return self
      */
     public function filename(string $filename): self
     {
@@ -127,7 +134,8 @@ class CodeComponent extends BaseComponent
     /**
      * Enable or disable line wrapping
      *
-     * @param  bool  $wrap  Whether to wrap long lines
+     * @param bool $wrap Whether to wrap long lines
+     * @return self
      */
     public function wrap(bool $wrap = true): self
     {
@@ -139,7 +147,8 @@ class CodeComponent extends BaseComponent
     /**
      * Set maximum height for scrollable code blocks
      *
-     * @param  int  $maxHeight  Maximum height in pixels
+     * @param int $maxHeight Maximum height in pixels
+     * @return self
      */
     public function maxHeight(int $maxHeight): self
     {
@@ -151,7 +160,8 @@ class CodeComponent extends BaseComponent
     /**
      * Set the starting line number
      *
-     * @param  int  $startLine  Starting line number (useful for code snippets)
+     * @param int $startLine Starting line number (useful for code snippets)
+     * @return self
      */
     public function startLine(int $startLine): self
     {
@@ -260,7 +270,7 @@ class CodeComponent extends BaseComponent
             'language' => $this->language,
             'theme' => $this->theme,
             'lineNumbers' => $this->lineNumbers,
-            'highlightLines' => ! empty($this->highlightLines) ? $this->highlightLines : null,
+            'highlightLines' => !empty($this->highlightLines) ? $this->highlightLines : null,
             'copyButton' => $this->copyButton,
             'filename' => $this->filename,
             'wrap' => $this->wrap,

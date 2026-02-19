@@ -20,13 +20,9 @@ namespace Litepie\Layout\Sections;
 class AccordionSection extends BaseSection
 {
     protected array $panels = [];
-
     protected bool $multiple = false;
-
     protected bool $collapsible = true;
-
     protected array $expanded = [];
-
     protected ?string $variant = null;
 
     public function __construct(string $name)
@@ -107,7 +103,6 @@ class AccordionSection extends BaseSection
     public function multiple(bool $multiple = true): self
     {
         $this->multiple = $multiple;
-
         return $this;
     }
 
@@ -119,28 +114,24 @@ class AccordionSection extends BaseSection
     public function collapsible(bool $collapsible = true): self
     {
         $this->collapsible = $collapsible;
-
         return $this;
     }
 
     public function expanded(string $panelId): self
     {
         $this->expanded = [$panelId];
-
         return $this;
     }
 
     public function expandedPanels(array $panelIds): self
     {
         $this->expanded = $panelIds;
-
         return $this;
     }
 
     public function variant(string $variant): self
     {
         $this->variant = $variant;
-
         return $this;
     }
 
@@ -159,9 +150,9 @@ class AccordionSection extends BaseSection
         parent::resolveAuthorization($user);
 
         foreach ($this->panels as $id => &$panel) {
-            if (! empty($panel['permissions'])) {
+            if (!empty($panel['permissions'])) {
                 $panel['authorized'] = $this->checkPermissions($user, $panel['permissions']);
-            } elseif (! empty($panel['roles'])) {
+            } elseif (!empty($panel['roles'])) {
                 $panel['authorized'] = $this->checkRoles($user, $panel['roles']);
             } else {
                 $panel['authorized'] = true;
@@ -186,7 +177,7 @@ class AccordionSection extends BaseSection
     public function toArray(): array
     {
         $data = $this->getCommonProperties();
-
+        
         $panelsOutput = [];
         foreach ($this->panels as $id => $panel) {
             $panelData = [
@@ -202,15 +193,15 @@ class AccordionSection extends BaseSection
                 'authorized' => $panel['authorized'] ?? true,
             ];
 
-            if (! empty($panel['sections'])) {
-                $panelData['sections'] = array_map(function ($section) {
-                    return method_exists($section, 'toArray') ? $section->toArray() : (array) $section;
+            if (!empty($panel['sections'])) {
+                $panelData['sections'] = array_map(function($section) {
+                    return method_exists($section, 'toArray') ? $section->toArray() : (array)$section;
                 }, $panel['sections']);
             }
 
-            if (! empty($panel['components'])) {
-                $panelData['components'] = array_map(function ($component) {
-                    return method_exists($component, 'toArray') ? $component->toArray() : (array) $component;
+            if (!empty($panel['components'])) {
+                $panelData['components'] = array_map(function($component) {
+                    return method_exists($component, 'toArray') ? $component->toArray() : (array)$component;
                 }, $panel['components']);
             }
 

@@ -6,7 +6,7 @@ namespace Litepie\Layout\Components;
  * AvatarGroupComponent
  *
  * Displays a collection of avatars stacked together.
- *
+ * 
  * API Properties:
  * - max: Maximum number of avatars to display before showing "+x"
  * - spacing: Spacing between avatars ('small', 'medium', or number in px)
@@ -144,7 +144,7 @@ class AvatarGroupComponent extends BaseComponent
             'spacing' => $this->spacing !== 'medium' ? $this->spacing : null,
             'total' => $this->total,
             'variant' => $this->variant,
-            'children' => ! empty($this->children) ? $this->children : null,
+            'children' => !empty($this->children) ? $this->children : null,
         ]));
     }
 }

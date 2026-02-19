@@ -8,54 +8,41 @@ namespace Litepie\Layout\Components;
  * Stepper component for displaying progress through a sequence of steps.
  * Supports horizontal/vertical orientation, linear/non-linear navigation,
  * alternative labels, and mobile variants.
+ *
+ * @package Litepie\Layout\Components
  */
 class StepperComponent extends BaseComponent
 {
     protected string $orientation = 'horizontal'; // horizontal, vertical
-
     protected bool $linear = true;
-
     protected bool $alternativeLabel = false;
-
     protected int $activeStep = 0;
-
     protected array $steps = [];
-
+    
     // Mobile stepper specific
     protected bool $mobile = false;
-
     protected string $mobileVariant = 'dots'; // dots, text, progress
-
     protected int $totalSteps = 0;
-
     protected string $position = 'bottom'; // bottom, static
-
+    
     // Step connector
     protected bool $connector = true;
-
     protected ?string $connectorColor = null;
-
+    
     // Navigation
     protected ?array $backButton = null;
-
     protected ?array $nextButton = null;
-
     protected bool $showButtons = true;
-
+    
     // Content
     protected ?string $content = null;
-
     protected bool $expandContent = true;
-
+    
     // Styling
     protected ?string $activeColor = null;
-
     protected ?string $completedColor = null;
-
     protected ?string $inactiveColor = null;
-
     protected ?string $iconSize = null;
-
     protected ?string $spacing = null;
 
     public function __construct(string $name, string $type = 'stepper')
@@ -82,7 +69,6 @@ class StepperComponent extends BaseComponent
     public function orientation(string $orientation): self
     {
         $this->orientation = $orientation;
-
         return $this;
     }
 
@@ -92,7 +78,6 @@ class StepperComponent extends BaseComponent
     public function linear(bool $linear = true): self
     {
         $this->linear = $linear;
-
         return $this;
     }
 
@@ -102,7 +87,6 @@ class StepperComponent extends BaseComponent
     public function alternativeLabel(bool $alternativeLabel = true): self
     {
         $this->alternativeLabel = $alternativeLabel;
-
         return $this;
     }
 
@@ -112,7 +96,6 @@ class StepperComponent extends BaseComponent
     public function activeStep(int $step): self
     {
         $this->activeStep = $step;
-
         return $this;
     }
 
@@ -126,7 +109,6 @@ class StepperComponent extends BaseComponent
     public function steps(array $steps): self
     {
         $this->steps = $steps;
-
         return $this;
     }
 
@@ -136,7 +118,6 @@ class StepperComponent extends BaseComponent
     public function addStep(array $step): self
     {
         $this->steps[] = $step;
-
         return $this;
     }
 
@@ -150,7 +131,6 @@ class StepperComponent extends BaseComponent
     public function mobile(bool $mobile = true): self
     {
         $this->mobile = $mobile;
-
         return $this;
     }
 
@@ -160,7 +140,6 @@ class StepperComponent extends BaseComponent
     public function mobileVariant(string $variant): self
     {
         $this->mobileVariant = $variant;
-
         return $this;
     }
 
@@ -170,7 +149,6 @@ class StepperComponent extends BaseComponent
     public function totalSteps(int $total): self
     {
         $this->totalSteps = $total;
-
         return $this;
     }
 
@@ -180,7 +158,6 @@ class StepperComponent extends BaseComponent
     public function position(string $position): self
     {
         $this->position = $position;
-
         return $this;
     }
 
@@ -194,7 +171,6 @@ class StepperComponent extends BaseComponent
     public function connector(bool $connector = true): self
     {
         $this->connector = $connector;
-
         return $this;
     }
 
@@ -204,7 +180,6 @@ class StepperComponent extends BaseComponent
     public function connectorColor(string $color): self
     {
         $this->connectorColor = $color;
-
         return $this;
     }
 
@@ -218,7 +193,6 @@ class StepperComponent extends BaseComponent
     public function backButton(array $config): self
     {
         $this->backButton = $config;
-
         return $this;
     }
 
@@ -228,7 +202,6 @@ class StepperComponent extends BaseComponent
     public function nextButton(array $config): self
     {
         $this->nextButton = $config;
-
         return $this;
     }
 
@@ -238,7 +211,6 @@ class StepperComponent extends BaseComponent
     public function showButtons(bool $show = true): self
     {
         $this->showButtons = $show;
-
         return $this;
     }
 
@@ -252,7 +224,6 @@ class StepperComponent extends BaseComponent
     public function content(string $content): self
     {
         $this->content = $content;
-
         return $this;
     }
 
@@ -262,7 +233,6 @@ class StepperComponent extends BaseComponent
     public function expandContent(bool $expand = true): self
     {
         $this->expandContent = $expand;
-
         return $this;
     }
 
@@ -276,7 +246,6 @@ class StepperComponent extends BaseComponent
     public function activeColor(string $color): self
     {
         $this->activeColor = $color;
-
         return $this;
     }
 
@@ -286,7 +255,6 @@ class StepperComponent extends BaseComponent
     public function completedColor(string $color): self
     {
         $this->completedColor = $color;
-
         return $this;
     }
 
@@ -296,7 +264,6 @@ class StepperComponent extends BaseComponent
     public function inactiveColor(string $color): self
     {
         $this->inactiveColor = $color;
-
         return $this;
     }
 
@@ -306,7 +273,6 @@ class StepperComponent extends BaseComponent
     public function iconSize(string $size): self
     {
         $this->iconSize = $size;
-
         return $this;
     }
 
@@ -316,7 +282,6 @@ class StepperComponent extends BaseComponent
     public function spacing(string $spacing): self
     {
         $this->spacing = $spacing;
-
         return $this;
     }
 

@@ -12,7 +12,7 @@ namespace Litepie\Layout\Sections;
  *   $row = RowSection::make('side-by-side')
  *       ->gap('md')
  *       ->align('center');
- *
+ *   
  *   $row->add($avatar);
  *   $row->add($text);
  *
@@ -85,7 +85,7 @@ class RowSection extends BaseSection
     public function toArray(): array
     {
         $data = $this->getCommonProperties();
-
+        
         return array_merge($data, [
             'gap' => $this->gap,
             'align' => $this->align,

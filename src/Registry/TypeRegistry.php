@@ -56,10 +56,14 @@ class TypeRegistry
         static::registerSection('row', 'Litepie\\Layout\\Sections\\RowSection');
         static::registerSection('layout', 'Litepie\\Layout\\Sections\\LayoutSection');
         static::registerSection('header', 'Litepie\\Layout\\Sections\\HeaderSection');
+        static::registerSection('footer', 'Litepie\\Layout\\Sections\\FooterSection');
         static::registerSection('tabs', 'Litepie\\Layout\\Sections\\TabsSection');
         static::registerSection('accordion', 'Litepie\\Layout\\Sections\\AccordionSection');
         static::registerSection('wizard', 'Litepie\\Layout\\Sections\\WizardSection');
         static::registerSection('scrollspy', 'Litepie\\Layout\\Sections\\ScrollSpySection');
+        static::registerSection('aside', 'Litepie\\Layout\\Sections\\AsideSection');
+        static::registerSection('drawer', 'Litepie\\Layout\\Sections\\AsideSection'); // Alias for aside
+        static::registerSection('detail', 'Litepie\\Layout\\Sections\\DetailSection');
 
         // Register default components
         static::registerComponent('alert', 'Litepie\\Layout\\Components\\AlertComponent');
@@ -68,15 +72,17 @@ class TypeRegistry
         static::registerComponent('badge', 'Litepie\\Layout\\Components\\BadgeComponent');
         static::registerComponent('breadcrumb', 'Litepie\\Layout\\Components\\BreadcrumbComponent');
         static::registerComponent('button', 'Litepie\\Layout\\Components\\ButtonComponent');
+        static::registerComponent('button-group', 'Litepie\\Layout\\Components\\ButtonGroupComponent');
         static::registerComponent('card', 'Litepie\\Layout\\Components\\CardComponent');
         static::registerComponent('chart', 'Litepie\\Layout\\Components\\ChartComponent');
         static::registerComponent('code', 'Litepie\\Layout\\Components\\CodeComponent');
         static::registerComponent('comment', 'Litepie\\Layout\\Components\\CommentComponent');
+        static::registerComponent('custom', 'Litepie\\Layout\\Components\\CustomComponent');
         static::registerComponent('divider', 'Litepie\\Layout\\Components\\DividerComponent');
         static::registerComponent('document', 'Litepie\\Layout\\Components\\DocumentComponent');
-        static::registerComponent('drawer', 'Litepie\\Layout\\Components\\DrawerComponent');
         static::registerComponent('filter', 'Litepie\\Layout\\Components\\FilterComponent');
         static::registerComponent('form', 'Litepie\\Layout\\Components\\FormComponent');
+        static::registerComponent('form-group', 'Litepie\\Layout\\Components\\FormGroupComponent');
         static::registerComponent('link', 'Litepie\\Layout\\Components\\LinkComponent');
         static::registerComponent('list', 'Litepie\\Layout\\Components\\ListComponent');
         static::registerComponent('media', 'Litepie\\Layout\\Components\\MediaComponent');
@@ -93,16 +99,15 @@ class TypeRegistry
 
     /**
      * Register a section type
-     *
-     * @param  string  $type  Type identifier (e.g., 'grid')
-     * @param  class-string  $className  Fully qualified class name
-     * @param  bool  $skipValidation  Skip class_exists check (for lazy loading)
-     *
+     * 
+     * @param string $type Type identifier (e.g., 'grid')
+     * @param class-string $className Fully qualified class name
+     * @param bool $skipValidation Skip class_exists check (for lazy loading)
      * @throws \InvalidArgumentException If class doesn't exist and validation not skipped
      */
     public static function registerSection(string $type, string $className, bool $skipValidation = false): void
     {
-        if (! $skipValidation && ! class_exists($className)) {
+        if (!$skipValidation && !class_exists($className)) {
             throw new \InvalidArgumentException(
                 "Cannot register section '{$type}': Class '{$className}' does not exist"
             );
@@ -119,16 +124,15 @@ class TypeRegistry
 
     /**
      * Register a component type
-     *
-     * @param  string  $type  Type identifier (e.g., 'button')
-     * @param  class-string  $className  Fully qualified class name
-     * @param  bool  $skipValidation  Skip class_exists check (for lazy loading)
-     *
+     * 
+     * @param string $type Type identifier (e.g., 'button')
+     * @param class-string $className Fully qualified class name
+     * @param bool $skipValidation Skip class_exists check (for lazy loading)
      * @throws \InvalidArgumentException If class doesn't exist and validation not skipped
      */
     public static function registerComponent(string $type, string $className, bool $skipValidation = false): void
     {
-        if (! $skipValidation && ! class_exists($className)) {
+        if (!$skipValidation && !class_exists($className)) {
             throw new \InvalidArgumentException(
                 "Cannot register component '{$type}': Class '{$className}' does not exist"
             );
@@ -145,8 +149,8 @@ class TypeRegistry
 
     /**
      * Get section class name by type
-     *
-     * @param  string  $type  Type identifier
+     * 
+     * @param string $type Type identifier
      * @return class-string|null
      */
     public static function getSection(string $type): ?string
@@ -161,8 +165,8 @@ class TypeRegistry
 
     /**
      * Get component class name by type
-     *
-     * @param  string  $type  Type identifier
+     * 
+     * @param string $type Type identifier
      * @return class-string|null
      */
     public static function getComponent(string $type): ?string

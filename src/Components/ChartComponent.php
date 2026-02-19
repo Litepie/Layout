@@ -121,91 +121,78 @@ class ChartComponent extends BaseComponent
     public function value($value): self
     {
         $this->chartOptions['value'] = $value;
-
         return $this;
     }
 
     public function min($min): self
     {
         $this->chartOptions['min'] = $min;
-
         return $this;
     }
 
     public function max($max): self
     {
         $this->chartOptions['max'] = $max;
-
         return $this;
     }
 
     public function zones(array $zones): self
     {
         $this->chartOptions['zones'] = $zones;
-
         return $this;
     }
 
     public function circumference($degrees): self
     {
         $this->chartOptions['circumference'] = $degrees;
-
         return $this;
     }
 
     public function rotation($degrees): self
     {
         $this->chartOptions['rotation'] = $degrees;
-
         return $this;
     }
 
     public function xLabels(array $labels): self
     {
         $this->chartOptions['xLabels'] = $labels;
-
         return $this;
     }
 
     public function yLabels(array $labels): self
     {
         $this->chartOptions['yLabels'] = $labels;
-
         return $this;
     }
 
     public function colorScale(array $colors): self
     {
         $this->chartOptions['colorScale'] = $colors;
-
         return $this;
     }
 
     public function colors(array $colors): self
     {
         $this->chartOptions['colors'] = $colors;
-
         return $this;
     }
 
     public function color(string $color): self
     {
         $this->chartOptions['color'] = $color;
-
         return $this;
     }
 
     public function inverted(bool $inverted = true): self
     {
         $this->chartOptions['inverted'] = $inverted;
-
         return $this;
     }
 
     public function label(string $label): self
     {
         $this->chartOptions['label'] = $label;
-
         return $this;
     }
 
@@ -259,7 +246,7 @@ class ChartComponent extends BaseComponent
     public function chartDataSource(string $url): self
     {
         $this->dataSource($url); // Call parent trait method
-
+        
         return $this;
     }
 

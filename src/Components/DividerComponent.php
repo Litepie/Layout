@@ -8,7 +8,6 @@ use Litepie\Layout\Enums\DividerVariant;
  * DividerComponent
  *
  * Based on MUI Divider API
- *
  * @see https://mui.com/material-ui/api/divider/
  */
 class DividerComponent extends BaseComponent
@@ -35,21 +34,18 @@ class DividerComponent extends BaseComponent
 
     /**
      * The component orientation.
-     *
      * @var string 'horizontal'|'vertical'
      */
     protected string $orientation = 'horizontal';
 
     /**
      * The text alignment.
-     *
      * @var string 'center'|'left'|'right'
      */
     protected string $textAlign = 'center';
 
     /**
      * The variant to use.
-     *
      * @var string 'fullWidth'|'inset'|'middle'
      */
     protected string $variant = 'fullWidth';
